@@ -5,3 +5,14 @@ edition = "2021"
 
 [dependencies]
 ratatui = "0.29.0"
+crossterm = "0.28"
+log = "0.4"
+unicode-segmentation = "1.11"
+unicode-width = "0.2"
+unicode-display-width = "0.3"
+
+rat-event = { version = "0.26", path = "../rat-event" }
+
+[dev-dependencies]
+fern = "0.7"
+anyhow = "1.0"

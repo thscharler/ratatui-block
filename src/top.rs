@@ -2,7 +2,7 @@ use crate::block_joint::Joint;
 use ratatui::symbols::border::{QUADRANT_BOTTOM_HALF, QUADRANT_TOP_HALF};
 use ratatui::widgets::BorderType;
 
-pub(crate) fn vertical_top_joint(border: BorderType, kind: Joint) -> &'static str {
+pub(crate) fn top_joint(border: BorderType, kind: Joint) -> &'static str {
     use ratatui::widgets::BorderType::*;
 
     match (border, kind) {
@@ -26,7 +26,7 @@ pub(crate) fn vertical_top_joint(border: BorderType, kind: Joint) -> &'static st
         (Double, Joint::Out(Plain | Rounded)) => "╧",
         (Double, Joint::Out(Double)) => "╩",
         (Double, Joint::Out(Thick)) => "╧",
-        (Double, Joint::Out(QuadrantInside | QuadrantOutside)) => "╧",
+        (Double, Joint::Out(QuadrantInside | QuadrantOutside)) => "╩",
         (Double, Joint::Through(Plain | Rounded)) => "╪",
         (Double, Joint::Through(Double)) => "╬",
         (Double, Joint::Through(Thick)) => "╪",

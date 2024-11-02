@@ -2,7 +2,7 @@ use crate::block_joint::Joint;
 use ratatui::symbols::border::{QUADRANT_BOTTOM_HALF, QUADRANT_TOP_HALF};
 use ratatui::widgets::BorderType;
 
-pub(crate) fn horizontal_left_joint(border: BorderType, kind: Joint) -> &'static str {
+pub(crate) fn left_joint(border: BorderType, kind: Joint) -> &'static str {
     use ratatui::widgets::BorderType::*;
 
     match (border, kind) {
@@ -15,8 +15,8 @@ pub(crate) fn horizontal_left_joint(border: BorderType, kind: Joint) -> &'static
         (Plain | Rounded, Joint::Out(Thick)) => "┥",
         (Plain | Rounded, Joint::Out(QuadrantInside | QuadrantOutside)) => "┤",
         (Plain | Rounded, Joint::Through(Plain | Rounded)) => "┼",
-        (Plain | Rounded, Joint::Through(Double)) => "╫",
-        (Plain | Rounded, Joint::Through(Thick)) => "╂",
+        (Plain | Rounded, Joint::Through(Double)) => "╪",
+        (Plain | Rounded, Joint::Through(Thick)) => "┿",
         (Plain | Rounded, Joint::Through(QuadrantInside | QuadrantOutside)) => "┼",
 
         (Double, Joint::In(Plain | Rounded)) => "╟",
@@ -26,7 +26,7 @@ pub(crate) fn horizontal_left_joint(border: BorderType, kind: Joint) -> &'static
         (Double, Joint::Out(Plain | Rounded)) => "╢",
         (Double, Joint::Out(Double)) => "╣",
         (Double, Joint::Out(Thick)) => "╢",
-        (Double, Joint::Out(QuadrantInside | QuadrantOutside)) => "╢",
+        (Double, Joint::Out(QuadrantInside | QuadrantOutside)) => "╣",
         (Double, Joint::Through(Plain | Rounded)) => "╫",
         (Double, Joint::Through(Double)) => "╬",
         (Double, Joint::Through(Thick)) => "╫",
