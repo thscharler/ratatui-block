@@ -1,5 +1,9 @@
 use crate::block_joint::Joint;
-use ratatui::symbols::border::{QUADRANT_BOTTOM_HALF, QUADRANT_TOP_HALF};
+use ratatui::symbols::block::FULL;
+use ratatui::symbols::border::{
+    QUADRANT_BOTTOM_HALF, QUADRANT_LEFT_HALF, QUADRANT_TOP_HALF,
+    QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
+};
 use ratatui::widgets::BorderType;
 
 pub(crate) fn left_joint(border: BorderType, kind: Joint) -> &'static str {
@@ -45,8 +49,8 @@ pub(crate) fn left_joint(border: BorderType, kind: Joint) -> &'static str {
         (Thick, Joint::Through(Thick)) => "╋",
         (Thick, Joint::Through(QuadrantInside | QuadrantOutside)) => "╋",
 
-        (QuadrantInside, _) => QUADRANT_BOTTOM_HALF,
-        (QuadrantOutside, _) => QUADRANT_TOP_HALF,
+        (QuadrantInside, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
+        (QuadrantOutside, _) => QUADRANT_LEFT_HALF,
 
         (_, Joint::Manual(c)) => c,
     }

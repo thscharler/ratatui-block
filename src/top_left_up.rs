@@ -1,5 +1,8 @@
 use crate::block_joint::Joint;
-use ratatui::symbols::border::{QUADRANT_BOTTOM_RIGHT, QUADRANT_TOP_RIGHT};
+use ratatui::symbols::border::{
+    QUADRANT_BOTTOM_RIGHT, QUADRANT_RIGHT_HALF, QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT,
+    QUADRANT_TOP_RIGHT,
+};
 use ratatui::widgets::BorderType;
 use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 
@@ -29,8 +32,8 @@ pub(crate) fn top_left_up_joint(border: BorderType, kind: Joint) -> &'static str
             | Joint::Through(Thick | QuadrantInside | QuadrantOutside),
         ) => "┣",
 
-        (QuadrantInside, _) => QUADRANT_BOTTOM_RIGHT,
-        (QuadrantOutside, _) => QUADRANT_TOP_RIGHT,
+        (QuadrantInside, _) => QUADRANT_RIGHT_HALF,
+        (QuadrantOutside, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT,
 
         (_, Joint::Manual(c)) => c,
     }
