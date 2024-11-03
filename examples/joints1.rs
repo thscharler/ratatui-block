@@ -17,12 +17,12 @@ fn main() -> Result<(), anyhow::Error> {
     let mut state = State {
         area: Default::default(),
         restart: false,
-        border: Default::default(),
+        border: BorderType::QuadrantInside,
 
         joint: Joint {
-            border: Default::default(),
+            border: BorderType::Plain,
             side: JointSide::Top,
-            scale: JointScale::In,
+            scale: JointScale::Out,
             mirrored: false,
             pos: JointPos::ProlongStart,
         },
@@ -210,83 +210,157 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(5)) => {
-            if state.restart && state.joint.side == JointSide::Left {
-                state.joint.side = JointSide::Top;
-            } else if state.restart {
-                state.restart = false;
-            } else {
-                match state.joint.side {
-                    JointSide::Top => {
-                        state.joint.pos = match state.joint.pos {
-                            JointPos::ProlongStart => JointPos::Start,
-                            JointPos::Start => JointPos::Pos(0),
-                            JointPos::Pos(n) => {
-                                if n < state.area.width.saturating_sub(1) {
-                                    JointPos::Pos(n + 1)
-                                } else {
-                                    JointPos::End
-                                }
+            match state.joint.side {
+                JointSide::Top => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongStart => JointPos::Start,
+                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Pos(n) => {
+                            if n < state.area.width.saturating_sub(1) {
+                                JointPos::Pos(n + 1)
+                            } else {
+                                JointPos::End
                             }
-                            JointPos::End => JointPos::ProlongEnd,
-                            JointPos::ProlongEnd => JointPos::ProlongStart,
-                        };
-                        if state.joint.pos == JointPos::ProlongStart {
+                        }
+                        JointPos::End => JointPos::ProlongEnd,
+                        JointPos::ProlongEnd => {
                             state.joint.side = JointSide::Right;
+                            JointPos::ProlongStart
                         }
-                    }
-                    JointSide::Right => {
-                        state.joint.pos = match state.joint.pos {
-                            JointPos::ProlongStart => JointPos::Start,
-                            JointPos::Start => JointPos::Pos(0),
-                            JointPos::Pos(n) => {
-                                if n < state.area.height.saturating_sub(1) {
-                                    JointPos::Pos(n + 1)
-                                } else {
-                                    JointPos::End
-                                }
+                    };
+                }
+                JointSide::Right => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongStart => JointPos::Start,
+                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Pos(n) => {
+                            if n < state.area.height.saturating_sub(1) {
+                                JointPos::Pos(n + 1)
+                            } else {
+                                JointPos::End
                             }
-                            JointPos::End => JointPos::ProlongEnd,
-                            JointPos::ProlongEnd => JointPos::ProlongEnd,
-                        };
-                        if state.joint.pos == JointPos::ProlongEnd {
+                        }
+                        JointPos::End => JointPos::ProlongEnd,
+                        JointPos::ProlongEnd => {
                             state.joint.side = JointSide::Bottom;
+                            JointPos::ProlongEnd
                         }
-                    }
-                    JointSide::Bottom => {
-                        state.joint.pos = match state.joint.pos {
-                            JointPos::ProlongEnd => JointPos::End,
-                            JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
-                            JointPos::Pos(n) => {
-                                if n > 0 {
-                                    JointPos::Pos(n - 1)
-                                } else {
-                                    JointPos::Start
-                                }
+                    };
+                }
+                JointSide::Bottom => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongEnd => JointPos::End,
+                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
+                        JointPos::Pos(n) => {
+                            if n > 0 {
+                                JointPos::Pos(n - 1)
+                            } else {
+                                JointPos::Start
                             }
-                            JointPos::Start => JointPos::ProlongStart,
-                            JointPos::ProlongStart => JointPos::ProlongEnd,
-                        };
-                        if state.joint.pos == JointPos::ProlongEnd {
+                        }
+                        JointPos::Start => JointPos::ProlongStart,
+                        JointPos::ProlongStart => {
                             state.joint.side = JointSide::Left;
+                            JointPos::ProlongEnd
                         }
-                    }
-                    JointSide::Left => {
-                        state.joint.pos = match state.joint.pos {
-                            JointPos::ProlongEnd => JointPos::End,
-                            JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
-                            JointPos::Pos(n) => {
-                                if n > 0 {
-                                    JointPos::Pos(n - 1)
-                                } else {
-                                    JointPos::Start
-                                }
+                    };
+                }
+                JointSide::Left => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongEnd => JointPos::End,
+                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
+                        JointPos::Pos(n) => {
+                            if n > 0 {
+                                JointPos::Pos(n - 1)
+                            } else {
+                                JointPos::Start
                             }
-                            JointPos::Start => JointPos::ProlongStart,
-                            JointPos::ProlongStart => {
-                                state.restart = true;
-                                JointPos::ProlongStart
+                        }
+                        JointPos::Start => JointPos::ProlongStart,
+                        JointPos::ProlongStart => {
+                            state.joint.side = JointSide::Top;
+                            JointPos::ProlongStart
+                        }
+                    };
+                }
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press SHIFT-F(5)) => {
+            match state.joint.side {
+                JointSide::Top => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongEnd => JointPos::End,
+                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
+                        JointPos::Pos(n) => {
+                            if n > 0 {
+                                JointPos::Pos(n - 1)
+                            } else {
+                                JointPos::Start
                             }
-                        };
+                        }
+                        JointPos::Start => JointPos::ProlongStart,
+                        JointPos::ProlongStart => {
+                            state.joint.side = JointSide::Left;
+                            JointPos::ProlongStart
+                        }
+                    };
+                }
+                JointSide::Left => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongStart => JointPos::Start,
+                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Pos(n) => {
+                            if n < state.area.height.saturating_sub(1) {
+                                JointPos::Pos(n + 1)
+                            } else {
+                                JointPos::End
+                            }
+                        }
+                        JointPos::End => JointPos::ProlongEnd,
+                        JointPos::ProlongEnd => {
+                            state.joint.side = JointSide::Bottom;
+                            JointPos::ProlongStart
+                        }
+                    };
+                }
+                JointSide::Bottom => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongStart => JointPos::Start,
+                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Pos(n) => {
+                            if n < state.area.width.saturating_sub(1) {
+                                JointPos::Pos(n + 1)
+                            } else {
+                                JointPos::End
+                            }
+                        }
+                        JointPos::End => JointPos::ProlongEnd,
+                        JointPos::ProlongEnd => {
+                            state.joint.side = JointSide::Right;
+                            JointPos::ProlongEnd
+                        }
+                    };
+                }
+                JointSide::Right => {
+                    state.joint.pos = match state.joint.pos {
+                        JointPos::ProlongEnd => JointPos::End,
+                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
+                        JointPos::Pos(n) => {
+                            if n > 0 {
+                                JointPos::Pos(n - 1)
+                            } else {
+                                JointPos::Start
+                            }
+                        }
+                        JointPos::Start => JointPos::ProlongStart,
+                        JointPos::ProlongStart => {
+                            state.joint.side = JointSide::Top;
+                            JointPos::ProlongEnd
+                        }
+                    };
+                    if state.joint.pos == JointPos::ProlongEnd {
+                        state.joint.side = JointSide::Bottom;
                     }
                 }
             };
