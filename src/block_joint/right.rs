@@ -12,10 +12,15 @@ pub(crate) fn right_joint(border: BorderType, joint: Joint) -> &'static str {
 
     match (border, joint) {
         (QuadrantInside, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT,
+
         (QuadrantOutside, Joint::In(_) | Joint::Through(_)) => {
             QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT
         }
         (QuadrantOutside, _) => QUADRANT_RIGHT_HALF,
+
+        (_, Joint::AltIn(_)) => "⚠",
+        (_, Joint::AltOut(_)) => "⚠",
+        (_, Joint::AltThrough(_)) => "⚠",
 
         _ => {
             let (border, joint) = flip_sides(border, joint);

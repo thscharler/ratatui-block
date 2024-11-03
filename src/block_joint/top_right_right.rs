@@ -28,10 +28,16 @@ pub(crate) fn top_right_right_joint(border: BorderType, joint: Joint) -> &'stati
             | Joint::Through(Thick | QuadrantInside | QuadrantOutside),
         ) => "┳",
 
-        (QuadrantInside, _) => QUADRANT_BOTTOM_HALF,
-        (QuadrantOutside, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
+        (QuadrantInside, Joint::Out(QuadrantInside)) => "▄",
+        (QuadrantInside, Joint::AltOut(QuadrantInside)) => "▞",
+        (QuadrantInside, _) => "▄",
+
+        (QuadrantOutside, _) => "▜",
 
         (_, Joint::Manual(c)) => c,
         (_, Joint::Corner(_, _)) => "⚠",
+        (_, Joint::AltIn(_)) => "⚠",
+        (_, Joint::AltOut(_)) => "⚠",
+        (_, Joint::AltThrough(_)) => "⚠",
     }
 }

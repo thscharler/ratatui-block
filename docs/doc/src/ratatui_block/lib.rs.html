@@ -94,9 +94,68 @@
 <a href="#94" id="94">94</a>
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
 </pre></div><pre class="rust"><code><span class="attr">#![allow(dead_code)]
 
 </span><span class="kw">use </span>ratatui::widgets::BorderType;
+
+<span class="doccomment">/// A joint in a Block border.
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
+</span><span class="kw">pub struct </span>Joint {
+    <span class="comment">// regular join border
+    </span><span class="kw">pub </span>border: BorderType,
+    <span class="comment">// what side of the area.
+    </span><span class="kw">pub </span>side: JointSide,
+    <span class="comment">// what type of joint
+    </span><span class="kw">pub </span>scale: JointScale,
+    <span class="comment">// mirrored joint
+    </span><span class="kw">pub </span>mirrored: bool,
+    <span class="comment">// position for the join
+    </span><span class="kw">pub </span>pos: JointPos,
+}
+
+<span class="doccomment">/// A cross joint at the corner of a Block border.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>CrossJoint {
+    <span class="comment">// regular join border
+    </span><span class="kw">pub </span>join_border: BorderType,
+    <span class="comment">// second join border for cross joints in the corners.
+    </span><span class="kw">pub </span>join_border2: BorderType,
+    <span class="comment">// what corner
+    </span><span class="kw">pub </span>corner: JointCorner,
+}
+
+<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>JointScale {
+    <span class="doccomment">/// Inward join.
+    </span>In,
+    <span class="doccomment">/// Outward join.
+    </span>Out,
+    <span class="doccomment">/// Through join.
+    </span>Through,
+    <span class="doccomment">/// Manual join.
+    </span>Manual(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str),
+}
+
+<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>JointPos {
+    <span class="doccomment">/// Prolong the border along the main axis before start.
+    </span>ProlongStart,
+    <span class="doccomment">/// Draw a perpendicular joint at the start.
+    </span>Start,
+    <span class="doccomment">/// Draw a joint at position from start.
+    /// Position 0 and width-1 are translated to Start/End.
+    </span>Pos(u16),
+    <span class="doccomment">/// Draw a perpendicular joint at the end.
+    </span>End,
+    <span class="doccomment">/// Prolong the border along the main axis after the end.
+    </span>ProlongEnd,
+}
 
 <span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub enum </span>JointSide {
@@ -104,90 +163,43 @@
     ///
     /// Relative position to the left corner.
     /// 0 and width-1 are detected as corners.
-    </span>Top(u16),
+    </span>Top,
     <span class="doccomment">/// Join from the right side right.
     ///
     /// Relative position to the top corner.
     /// 0 and height-1 are detected as corners.
-    </span>Right(u16),
+    </span>Right,
     <span class="doccomment">/// Join from the bottom side downwards.
     ///
     /// Relative position to the left corner.
     /// 0 and width-1 are detected as corners.
-    </span>Bottom(u16),
+    </span>Bottom,
     <span class="doccomment">/// Join from the left side left.
     ///
     /// Relative position to the top corner.
     /// 0 and height-1 are detected as corners.
-    </span>Left(u16),
-
-    <span class="doccomment">/// Join top-left corner with another bottom-right corner.
-    </span>TopLeft,
-    <span class="doccomment">/// Join top-right corner with another bottom-left corner.
-    </span>TopRight,
-    <span class="doccomment">/// Join bottom-right corner with another top-left corner.
-    </span>BottomRight,
-    <span class="doccomment">/// Join bottom-left corner with another top-right corner.
-    </span>BottomLeft,
-}
-
-<span class="kw">impl </span>JointSide {
-    <span class="doccomment">/// Set the position for `Top`/`Right`/`Bottom`/`Left` variants.
-    </span><span class="kw">pub fn </span>pos(<span class="self">self</span>, pos: u16) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            JointSide::Top(<span class="kw">_</span>) =&gt; JointSide::Top(pos),
-            JointSide::Right(<span class="kw">_</span>) =&gt; JointSide::Right(pos),
-            JointSide::Bottom(<span class="kw">_</span>) =&gt; JointSide::Bottom(pos),
-            JointSide::Left(<span class="kw">_</span>) =&gt; JointSide::Left(pos),
-            v =&gt; v,
-        }
-    }
+    </span>Left,
 }
 
 <span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>Joint {
-    <span class="doccomment">/// Join on the outside.
-    </span>Out(BorderType),
-    <span class="doccomment">/// Join on the inside.
-    </span>In(BorderType),
-    <span class="doccomment">/// Join through the side.
-    </span>Through(BorderType),
-    <span class="doccomment">/// Corner/corner joints.
-    /// Might involve 2 more areas so two foreign border-types.
-    </span>Corner(BorderType, BorderType),
-    <span class="doccomment">/// Manual joint.
-    </span>Manual(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str),
+</span><span class="kw">pub enum </span>JointCorner {
+    <span class="doccomment">/// Join top-left corner with another bottom-right corner.
+    </span>TopLeftCross,
+    <span class="doccomment">/// Join top-right corner with another bottom-left corner.
+    </span>TopRightCross,
+    <span class="doccomment">/// Join bottom-right corner with another top-left corner.
+    </span>BottomRightCross,
+    <span class="doccomment">/// Join bottom-left corner with another top-right corner.
+    </span>BottomLeftCross,
 }
 
-<span class="kw">impl </span>Joint {
-    <span class="doccomment">/// Change the connected border for `Out`/`In`/`Through`.
-    </span><span class="kw">pub fn </span>border(<span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            Joint::Out(<span class="kw">_</span>) =&gt; Joint::Out(border),
-            Joint::In(<span class="kw">_</span>) =&gt; Joint::In(border),
-            Joint::Through(<span class="kw">_</span>) =&gt; Joint::Through(border),
-            Joint::Corner(v, h) =&gt; Joint::Corner(v, h),
-            Joint::Manual(c) =&gt; Joint::Manual(c),
-        }
-    }
+<span class="comment">// mod block_joint;
+// mod create_border;
+</span><span class="kw">mod </span>new_block;
+<span class="kw">mod </span>new_joint;
 
-    <span class="doccomment">/// Change the connected borders for `Corner`.
-    </span><span class="kw">pub fn </span>corner(<span class="self">self</span>, vertical: BorderType, horizontal: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            Joint::Out(b) =&gt; Joint::Out(b),
-            Joint::In(b) =&gt; Joint::In(b),
-            Joint::Through(b) =&gt; Joint::Through(b),
-            Joint::Corner(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; Joint::Corner(vertical, horizontal),
-            Joint::Manual(c) =&gt; Joint::Manual(c),
-        }
-    }
-}
-
-<span class="kw">mod </span>block_joint;
-<span class="kw">mod </span>create_border;
-<span class="kw">mod </span>new_block;
-
-<span class="kw">pub use </span>block_joint::render_joint;
-<span class="kw">pub use </span>create_border::create_border;
-<span class="kw">pub use </span>new_block::NewBlock;
+<span class="comment">// pub use block_joint::render_joint;
+// pub use create_border::create_border;
+</span><span class="kw">pub use </span>new_block::NewBlock;
+<span class="kw">pub use </span>new_joint::render_joint;
 </code></pre></div></section></main></body></html>

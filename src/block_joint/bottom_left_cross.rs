@@ -23,7 +23,11 @@ pub(crate) fn bottom_left_cross_joint(
         (Thick, Thick, _) => "╊",
         (Thick, _, _) => "╄",
 
-        (QuadrantInside, _, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
-        (QuadrantOutside, _, _) => QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
+        (QuadrantInside, QuadrantInside, QuadrantInside) => "▞",
+        (QuadrantInside, _, QuadrantInside) => "▜",
+        (QuadrantInside, QuadrantInside, _) => "▜",
+        (QuadrantInside, _, _) => "▜",
+
+        (QuadrantOutside, _, _) => "▙",
     }
 }

@@ -285,6 +285,30 @@
 <a href="#285" id="285">285</a>
 <a href="#286" id="286">286</a>
 <a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom::bottom_joint;
 <span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_left_cross::bottom_left_cross_joint;
 <span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_left_down::bottom_left_down_joint;
@@ -375,19 +399,43 @@
         <span class="comment">// sides
         </span>(
             JointSide::Top(pos),
-            Joint::In(<span class="kw">_</span>) | Joint::Out(<span class="kw">_</span>) | Joint::Through(<span class="kw">_</span>) | Joint::Manual(<span class="kw">_</span>),
+            Joint::In(<span class="kw">_</span>)
+            | Joint::Out(<span class="kw">_</span>)
+            | Joint::Through(<span class="kw">_</span>)
+            | Joint::In2(<span class="kw">_</span>)
+            | Joint::Out2(<span class="kw">_</span>)
+            | Joint::Through2(<span class="kw">_</span>)
+            | Joint::Manual(<span class="kw">_</span>),
         ) =&gt; render_top(border, pos, joint, area, buf),
         (
             JointSide::Right(pos),
-            Joint::In(<span class="kw">_</span>) | Joint::Out(<span class="kw">_</span>) | Joint::Through(<span class="kw">_</span>) | Joint::Manual(<span class="kw">_</span>),
+            Joint::In(<span class="kw">_</span>)
+            | Joint::Out(<span class="kw">_</span>)
+            | Joint::Through(<span class="kw">_</span>)
+            | Joint::In2(<span class="kw">_</span>)
+            | Joint::Out2(<span class="kw">_</span>)
+            | Joint::Through2(<span class="kw">_</span>)
+            | Joint::Manual(<span class="kw">_</span>),
         ) =&gt; render_right(border, pos, joint, area, buf),
         (
             JointSide::Bottom(pos),
-            Joint::In(<span class="kw">_</span>) | Joint::Out(<span class="kw">_</span>) | Joint::Through(<span class="kw">_</span>) | Joint::Manual(<span class="kw">_</span>),
+            Joint::In(<span class="kw">_</span>)
+            | Joint::Out(<span class="kw">_</span>)
+            | Joint::Through(<span class="kw">_</span>)
+            | Joint::In2(<span class="kw">_</span>)
+            | Joint::Out2(<span class="kw">_</span>)
+            | Joint::Through2(<span class="kw">_</span>)
+            | Joint::Manual(<span class="kw">_</span>),
         ) =&gt; render_bottom(border, pos, joint, area, buf),
         (
             JointSide::Left(pos),
-            Joint::In(<span class="kw">_</span>) | Joint::Out(<span class="kw">_</span>) | Joint::Through(<span class="kw">_</span>) | Joint::Manual(<span class="kw">_</span>),
+            Joint::In(<span class="kw">_</span>)
+            | Joint::Out(<span class="kw">_</span>)
+            | Joint::Through(<span class="kw">_</span>)
+            | Joint::In2(<span class="kw">_</span>)
+            | Joint::Out2(<span class="kw">_</span>)
+            | Joint::Through2(<span class="kw">_</span>)
+            | Joint::Manual(<span class="kw">_</span>),
         ) =&gt; render_left(border, pos, joint, area, buf),
 
         <span class="comment">// corner cases

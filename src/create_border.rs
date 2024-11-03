@@ -44,9 +44,10 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         // test above
         if test_y2 == area_y1 {
             if test_x1 == area_x2 {
-                block
-                    .joints
-                    .push((Joint::Corner(border_type, border_type), JointSide::TopRight));
+                block.joints.push((
+                    Joint::Corner(border_type, border_type),
+                    JointSide::TopRightCross,
+                ));
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block
                     .joints
@@ -54,21 +55,23 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
                 block
                     .joints
-                    .push((Joint::Out(border_type), JointSide::Left(0)));
+                    .push((Joint::Out(border_type), JointSide::Top(0)));
             }
 
             if test_x2 == area_x1 {
-                block
-                    .joints
-                    .push((Joint::Corner(border_type, border_type), JointSide::TopLeft));
+                block.joints.push((
+                    Joint::Corner(border_type, border_type),
+                    JointSide::TopLeftCross,
+                ));
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
-                block
-                    .joints
-                    .push((Joint::Out(border_type), JointSide::Top(test_x2 - area_x1)));
+                block.joints.push((
+                    Joint::AltOut(border_type),
+                    JointSide::Top(test_x2 - area_x1),
+                ));
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
                 block
                     .joints
-                    .push((Joint::Out(border_type), JointSide::Right(0)));
+                    .push((Joint::AltOut(border_type), JointSide::Top(0)));
             }
         }
 
@@ -77,7 +80,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             if test_x1 == area_x2 {
                 block.joints.push((
                     Joint::Corner(border_type, border_type),
-                    JointSide::BottomRight,
+                    JointSide::BottomRightCross,
                 ));
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push((
@@ -85,25 +88,27 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                     JointSide::Bottom(test_x1 - area_x1),
                 ))
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
-                block
-                    .joints
-                    .push((Joint::Out(border_type), JointSide::Left(area_y2 - area_y1)))
+                block.joints.push((
+                    Joint::Out(border_type),
+                    JointSide::Bottom(area_y2 - area_y1),
+                ))
             }
 
             if test_x2 == area_x1 {
                 block.joints.push((
                     Joint::Corner(border_type, border_type),
-                    JointSide::BottomLeft,
+                    JointSide::BottomLeftCross,
                 ));
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push((
-                    Joint::Out(border_type),
+                    Joint::AltOut(border_type),
                     JointSide::Bottom(test_x2 - area_x1),
                 ))
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
-                block
-                    .joints
-                    .push((Joint::Out(border_type), JointSide::Right(area_y2 - area_y1)))
+                block.joints.push((
+                    Joint::AltOut(border_type),
+                    JointSide::Bottom(area_y2 - area_y1),
+                ))
             }
         }
 
@@ -112,7 +117,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             if test_y1 == area_y2 {
                 block.joints.push((
                     Joint::Corner(border_type, border_type),
-                    JointSide::BottomLeft,
+                    JointSide::BottomLeftCross,
                 ));
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block
@@ -121,21 +126,23 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block
                     .joints
-                    .push((Joint::Out(border_type), JointSide::Top(0)))
+                    .push((Joint::Out(border_type), JointSide::Left(0)))
             }
 
             if test_y2 == area_y1 {
-                block
-                    .joints
-                    .push((Joint::Corner(border_type, border_type), JointSide::TopLeft));
+                block.joints.push((
+                    Joint::Corner(border_type, border_type),
+                    JointSide::TopLeftCross,
+                ));
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
-                block
-                    .joints
-                    .push((Joint::Out(border_type), JointSide::Left(test_y2 - area_y1)))
+                block.joints.push((
+                    Joint::AltOut(border_type),
+                    JointSide::Left(test_y2 - area_y1),
+                ))
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block
                     .joints
-                    .push((Joint::Out(border_type), JointSide::Bottom(0)))
+                    .push((Joint::AltOut(border_type), JointSide::Left(0)))
             }
         }
 
@@ -144,7 +151,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             if test_y1 == area_y2 {
                 block.joints.push((
                     Joint::Corner(border_type, border_type),
-                    JointSide::BottomRight,
+                    JointSide::BottomRightCross,
                 ));
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block
@@ -153,21 +160,23 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block
                     .joints
-                    .push((Joint::Out(border_type), JointSide::Top(area_x2 - area_x1)))
+                    .push((Joint::Out(border_type), JointSide::Right(area_x2 - area_x1)))
             }
 
             if test_y2 == area_y1 {
-                block
-                    .joints
-                    .push((Joint::Corner(border_type, border_type), JointSide::TopRight));
+                block.joints.push((
+                    Joint::Corner(border_type, border_type),
+                    JointSide::TopRightCross,
+                ));
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
-                block
-                    .joints
-                    .push((Joint::Out(border_type), JointSide::Right(test_y2 - area_y1)))
+                block.joints.push((
+                    Joint::AltOut(border_type),
+                    JointSide::Right(test_y2 - area_y1),
+                ))
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block.joints.push((
-                    Joint::Out(border_type),
-                    JointSide::Bottom(area_x2 - area_x1),
+                    Joint::AltOut(border_type),
+                    JointSide::Right(area_x2 - area_x1),
                 ))
             }
         }

@@ -6,7 +6,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::{render_joint, Joint, JointSide};
+use ratatui_block::{render_joint, Joint, JointPos, JointScale, JointSide};
 
 mod mini_salsa;
 
@@ -16,12 +16,19 @@ fn main() -> Result<(), anyhow::Error> {
     let mut data = Data {};
     let mut state = State {
         area: Default::default(),
+        restart: false,
         border: Default::default(),
-        side: JointSide::Top(0),
-        joint: Joint::Out(BorderType::Plain),
+
+        joint: Joint {
+            border: Default::default(),
+            side: JointSide::Top,
+            scale: JointScale::In,
+            mirrored: false,
+            pos: JointPos::ProlongStart,
+        },
+
         hor_neighbour: Default::default(),
         vert_neighbour: Default::default(),
-        base_joint: Joint::Out(BorderType::Plain),
     };
 
     run_ui(
@@ -38,13 +45,12 @@ struct Data {}
 struct State {
     area: Rect,
 
+    restart: bool,
     border: BorderType,
-    side: JointSide,
     joint: Joint,
 
     hor_neighbour: BorderType,
     vert_neighbour: BorderType,
-    base_joint: Joint,
 }
 
 fn repaint_buttons(
@@ -102,7 +108,7 @@ fn repaint_buttons(
         .border_style(Style::new().fg(THEME.orange[2]))
         .render(layout[1][1], buf);
 
-    render_joint(state.border, state.side, state.joint, layout[1][1], buf);
+    render_joint(state.border, state.joint, layout[1][1], buf);
 
     let mut txt_area = l0[0];
     txt_area.y += 2;
@@ -135,9 +141,15 @@ fn repaint_buttons(
 
     format!("border={:?}", state.border).render(txt_area, buf);
     txt_area.y += 1;
-    format!("joint={:?}", state.joint).render(txt_area, buf);
+    format!("joint={:?}", state.joint.border).render(txt_area, buf);
     txt_area.y += 1;
-    format!("side={:?}", state.side).render(txt_area, buf);
+    format!("side={:?}", state.joint.side).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("scale={:?}", state.joint.scale).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("pos={:?}", state.joint.pos).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("mirror={:?}", state.joint.mirrored).render(txt_area, buf);
 
     txt_area.y += 2;
     format!("hor={:?}", state.hor_neighbour).render(txt_area, buf);
@@ -174,6 +186,7 @@ fn handle_buttons(
                 BorderType::QuadrantInside => BorderType::QuadrantOutside,
                 BorderType::QuadrantOutside => BorderType::Plain,
             };
+            state.joint.border = state.hor_neighbour;
             Outcome::Changed
         }
         ct_event!(keycode press F(3)) => {
@@ -188,126 +201,93 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(4)) => {
-            state.joint = match state.joint {
-                Joint::Out(b) => {
-                    state.base_joint = Joint::In(b);
-                    Joint::In(b)
-                }
-                Joint::In(b) => {
-                    state.base_joint = Joint::Through(b);
-                    Joint::Through(b)
-                }
-                Joint::Through(b) => {
-                    state.base_joint = Joint::Out(b);
-                    Joint::Out(b)
-                }
-                Joint::Corner(v, h) => Joint::Corner(v, h),
-                Joint::Manual(_) => unimplemented!(),
+            state.joint.scale = match state.joint.scale {
+                JointScale::In => JointScale::Out,
+                JointScale::Out => JointScale::Through,
+                JointScale::Through => JointScale::In,
+                JointScale::Manual(c) => JointScale::Manual(c),
             };
             Outcome::Changed
         }
         ct_event!(keycode press F(5)) => {
-            state.side = match state.side {
-                JointSide::Top(p) => {
-                    if p >= state.area.width.saturating_sub(1) {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::TopRight
-                    } else {
-                        JointSide::Top(p + 1)
+            if state.restart && state.joint.side == JointSide::Left {
+                state.joint.side = JointSide::Top;
+            } else if state.restart {
+                state.restart = false;
+            } else {
+                match state.joint.side {
+                    JointSide::Top => {
+                        state.joint.pos = match state.joint.pos {
+                            JointPos::ProlongStart => JointPos::Start,
+                            JointPos::Start => JointPos::Pos(0),
+                            JointPos::Pos(n) => {
+                                if n < state.area.width.saturating_sub(1) {
+                                    JointPos::Pos(n + 1)
+                                } else {
+                                    JointPos::End
+                                }
+                            }
+                            JointPos::End => JointPos::ProlongEnd,
+                            JointPos::ProlongEnd => JointPos::ProlongStart,
+                        };
+                        if state.joint.pos == JointPos::ProlongStart {
+                            state.joint.side = JointSide::Right;
+                        }
                     }
-                }
-                JointSide::TopRight => {
-                    state.joint = state.base_joint.border(state.hor_neighbour);
-                    JointSide::Right(0)
-                }
-                JointSide::Right(p) => {
-                    if p >= state.area.height.saturating_sub(1) {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::BottomRight
-                    } else {
-                        JointSide::Right(p + 1)
+                    JointSide::Right => {
+                        state.joint.pos = match state.joint.pos {
+                            JointPos::ProlongStart => JointPos::Start,
+                            JointPos::Start => JointPos::Pos(0),
+                            JointPos::Pos(n) => {
+                                if n < state.area.height.saturating_sub(1) {
+                                    JointPos::Pos(n + 1)
+                                } else {
+                                    JointPos::End
+                                }
+                            }
+                            JointPos::End => JointPos::ProlongEnd,
+                            JointPos::ProlongEnd => JointPos::ProlongEnd,
+                        };
+                        if state.joint.pos == JointPos::ProlongEnd {
+                            state.joint.side = JointSide::Bottom;
+                        }
                     }
-                }
-                JointSide::BottomRight => {
-                    state.joint = state.base_joint.border(state.vert_neighbour);
-                    JointSide::Bottom(state.area.width.saturating_sub(1))
-                }
-                JointSide::Bottom(p) => {
-                    if p == 0 {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::BottomLeft
-                    } else {
-                        JointSide::Bottom(p - 1)
+                    JointSide::Bottom => {
+                        state.joint.pos = match state.joint.pos {
+                            JointPos::ProlongEnd => JointPos::End,
+                            JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
+                            JointPos::Pos(n) => {
+                                if n > 0 {
+                                    JointPos::Pos(n - 1)
+                                } else {
+                                    JointPos::Start
+                                }
+                            }
+                            JointPos::Start => JointPos::ProlongStart,
+                            JointPos::ProlongStart => JointPos::ProlongEnd,
+                        };
+                        if state.joint.pos == JointPos::ProlongEnd {
+                            state.joint.side = JointSide::Left;
+                        }
                     }
-                }
-                JointSide::BottomLeft => {
-                    state.joint = state.base_joint.border(state.hor_neighbour);
-                    JointSide::Left(state.area.height.saturating_sub(1))
-                }
-                JointSide::Left(p) => {
-                    if p == 0 {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::TopLeft
-                    } else {
-                        JointSide::Left(p - 1)
+                    JointSide::Left => {
+                        state.joint.pos = match state.joint.pos {
+                            JointPos::ProlongEnd => JointPos::End,
+                            JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
+                            JointPos::Pos(n) => {
+                                if n > 0 {
+                                    JointPos::Pos(n - 1)
+                                } else {
+                                    JointPos::Start
+                                }
+                            }
+                            JointPos::Start => JointPos::ProlongStart,
+                            JointPos::ProlongStart => {
+                                state.restart = true;
+                                JointPos::ProlongStart
+                            }
+                        };
                     }
-                }
-                JointSide::TopLeft => {
-                    state.joint = state.base_joint.border(state.vert_neighbour);
-                    JointSide::Top(0)
-                }
-            };
-            Outcome::Changed
-        }
-        ct_event!(keycode press SHIFT-F(5)) => {
-            state.side = match state.side {
-                JointSide::Top(p) => {
-                    if p == 0 {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::TopLeft
-                    } else {
-                        JointSide::Top(p - 1)
-                    }
-                }
-                JointSide::TopLeft => {
-                    state.joint = state.base_joint.border(state.hor_neighbour);
-                    JointSide::Left(0)
-                }
-                JointSide::Left(p) => {
-                    if p >= state.area.height.saturating_sub(1) {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::BottomLeft
-                    } else {
-                        JointSide::Left(p + 1)
-                    }
-                }
-                JointSide::BottomLeft => {
-                    state.joint = state.base_joint.border(state.vert_neighbour);
-                    JointSide::Bottom(0)
-                }
-                JointSide::Bottom(p) => {
-                    if p >= state.area.width.saturating_sub(1) {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::BottomRight
-                    } else {
-                        JointSide::Bottom(p + 1)
-                    }
-                }
-                JointSide::BottomRight => {
-                    state.joint = state.base_joint.border(state.hor_neighbour);
-                    JointSide::Right(state.area.height.saturating_sub(1))
-                }
-                JointSide::Right(p) => {
-                    if p == 0 {
-                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
-                        JointSide::TopRight
-                    } else {
-                        JointSide::Right(p - 1)
-                    }
-                }
-                JointSide::TopRight => {
-                    state.joint = state.base_joint.border(state.vert_neighbour);
-                    JointSide::Top(state.area.width.saturating_sub(1))
                 }
             };
             Outcome::Changed

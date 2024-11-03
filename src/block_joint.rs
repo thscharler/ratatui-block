@@ -64,7 +64,7 @@ mod top_right_up;
 /// //
 /// // Rendering is best-effort, as not all glyphs for this exist.
 /// render_joint(BorderType::Plain,
-///     JointSide::TopLeft,
+///     JointSide::TopLeftCross,
 ///     Joint::Corner(BorderType::Double, BorderType::Plain),
 ///     area, buf);
 ///
@@ -72,7 +72,7 @@ mod top_right_up;
 /// //
 /// // Rendering is best-effort, as not all glyphs for this exist.
 /// render_joint(BorderType::Plain,
-///     JointSide::TopLeft,
+///     JointSide::TopLeftCross,
 ///     Joint::Corner(BorderType::Plain,BorderType::Plain),
 ///     area, buf);
 ///
@@ -88,34 +88,62 @@ pub fn render_joint(
         // sides
         (
             JointSide::Top(pos),
-            Joint::In(_) | Joint::Out(_) | Joint::Through(_) | Joint::Manual(_),
+            Joint::In(_)
+            | Joint::Out(_)
+            | Joint::Through(_)
+            | Joint::AltIn(_)
+            | Joint::AltOut(_)
+            | Joint::AltThrough(_)
+            | Joint::Manual(_),
         ) => render_top(border, pos, joint, area, buf),
         (
             JointSide::Right(pos),
-            Joint::In(_) | Joint::Out(_) | Joint::Through(_) | Joint::Manual(_),
+            Joint::In(_)
+            | Joint::Out(_)
+            | Joint::Through(_)
+            | Joint::AltIn(_)
+            | Joint::AltOut(_)
+            | Joint::AltThrough(_)
+            | Joint::Manual(_),
         ) => render_right(border, pos, joint, area, buf),
         (
             JointSide::Bottom(pos),
-            Joint::In(_) | Joint::Out(_) | Joint::Through(_) | Joint::Manual(_),
+            Joint::In(_)
+            | Joint::Out(_)
+            | Joint::Through(_)
+            | Joint::AltIn(_)
+            | Joint::AltOut(_)
+            | Joint::AltThrough(_)
+            | Joint::Manual(_),
         ) => render_bottom(border, pos, joint, area, buf),
         (
             JointSide::Left(pos),
-            Joint::In(_) | Joint::Out(_) | Joint::Through(_) | Joint::Manual(_),
+            Joint::In(_)
+            | Joint::Out(_)
+            | Joint::Through(_)
+            | Joint::AltIn(_)
+            | Joint::AltOut(_)
+            | Joint::AltThrough(_)
+            | Joint::Manual(_),
         ) => render_left(border, pos, joint, area, buf),
 
         // corner cases
-        (JointSide::TopLeft, Joint::Corner(v, h)) => render_top_left(border, v, h, area, buf),
-        (JointSide::TopRight, Joint::Corner(v, h)) => render_top_right(border, v, h, area, buf),
-        (JointSide::BottomRight, Joint::Corner(v, h)) => {
+        (JointSide::TopLeftCross, Joint::Corner(v, h)) => render_top_left(border, v, h, area, buf),
+        (JointSide::TopRightCross, Joint::Corner(v, h)) => {
+            render_top_right(border, v, h, area, buf)
+        }
+        (JointSide::BottomRightCross, Joint::Corner(v, h)) => {
             render_bottom_right(border, v, h, area, buf)
         }
-        (JointSide::BottomLeft, Joint::Corner(v, h)) => render_bottom_left(border, v, h, area, buf),
+        (JointSide::BottomLeftCross, Joint::Corner(v, h)) => {
+            render_bottom_left(border, v, h, area, buf)
+        }
 
         // manual corner cases
-        (JointSide::TopLeft, Joint::Manual(c)) => render_top_left_manual(c, area, buf),
-        (JointSide::TopRight, Joint::Manual(c)) => render_top_right_manual(c, area, buf),
-        (JointSide::BottomRight, Joint::Manual(c)) => render_bottom_right_manual(c, area, buf),
-        (JointSide::BottomLeft, Joint::Manual(c)) => render_bottom_left_manual(c, area, buf),
+        (JointSide::TopLeftCross, Joint::Manual(c)) => render_top_left_manual(c, area, buf),
+        (JointSide::TopRightCross, Joint::Manual(c)) => render_top_right_manual(c, area, buf),
+        (JointSide::BottomRightCross, Joint::Manual(c)) => render_bottom_right_manual(c, area, buf),
+        (JointSide::BottomLeftCross, Joint::Manual(c)) => render_bottom_left_manual(c, area, buf),
 
         // impossible matches
         (JointSide::Top(_), Joint::Corner(_, _)) => {
@@ -135,11 +163,18 @@ pub fn render_joint(
             render_bottom_left_manual("⚠", area, buf);
         }
 
-        (JointSide::TopLeft, _) => render_top_left_manual("⚠", area, buf),
-        (JointSide::TopRight, _) => render_top_right_manual("⚠", area, buf),
-        (JointSide::BottomRight, _) => render_bottom_right_manual("⚠", area, buf),
-        (JointSide::BottomLeft, _) => render_bottom_left_manual("⚠", area, buf),
+        (JointSide::TopLeftCross, _) => render_top_left_manual("⚠", area, buf),
+        (JointSide::TopRightCross, _) => render_top_right_manual("⚠", area, buf),
+        (JointSide::BottomRightCross, _) => render_bottom_right_manual("⚠", area, buf),
+        (JointSide::BottomLeftCross, _) => render_bottom_left_manual("⚠", area, buf),
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Positional {
+    Begin,
+    Middle,
+    End,
 }
 
 fn render_top_left_manual(sym: &'static str, area: Rect, buf: &mut Buffer) {

@@ -17,9 +17,10 @@ fn main() -> Result<(), anyhow::Error> {
 
     let mut data = Data {};
     let mut state = State {
-        max: 0,
+        max_offset: 0,
         direction: Direction::Horizontal,
-        border: BorderType::Plain,
+        mono: false,
+        border: BorderType::QuadrantInside,
         offset: 0,
     };
 
@@ -35,11 +36,10 @@ fn main() -> Result<(), anyhow::Error> {
 struct Data {}
 
 struct State {
-    max: u16,
-
     direction: Direction,
-
+    mono: bool,
     border: BorderType,
+    max_offset: u16,
     offset: u16,
 }
 
@@ -82,19 +82,19 @@ fn repaint_buttons(
 
     let all;
     if state.direction == Direction::Horizontal {
-        state.max = layout[0][0].union(layout[4][0]).width;
+        state.max_offset = layout[0][0].union(layout[4][0]).width;
 
         let area = layout[2][2];
         let above = Rect::new(
             layout[0][1].x + state.offset,
             layout[0][1].y,
-            layout[2][2].width + 2,
+            13,
             layout[2][2].height,
         );
         let below = Rect::new(
             layout[0][3].x + state.offset,
             layout[0][3].y,
-            layout[2][2].width / 2,
+            5,
             layout[2][2].height,
         );
 
@@ -108,20 +108,20 @@ fn repaint_buttons(
         // all areas
         all = [above, area, below].iter().copied().collect::<Rc<[Rect]>>();
     } else {
-        state.max = layout[0][0].union(layout[0][4]).height;
+        state.max_offset = layout[0][0].union(layout[0][4]).height;
 
         let area = layout[2][2];
         let left = Rect::new(
             layout[1][0].x,
             layout[1][0].y + state.offset,
             layout[2][2].width,
-            layout[2][2].height + 2,
+            9,
         );
         let right = Rect::new(
             layout[3][0].x,
             layout[3][0].y + state.offset,
             layout[2][2].width,
-            layout[2][2].height / 2,
+            4,
         );
 
         Block::bordered()
@@ -138,9 +138,13 @@ fn repaint_buttons(
     // new block
     let bbb = create_border(all.clone(), 1, state.border);
     debug!("new block {:#?}", bbb);
-    bbb.block
-        .border_style(Style::new().fg(THEME.orange[2]))
-        .render(all[1], buf);
+    if state.mono {
+        bbb.block.render(all[1], buf);
+    } else {
+        bbb.block
+            .border_style(Style::new().fg(THEME.orange[2]))
+            .render(all[1], buf);
+    }
     for (j, js) in bbb.joints {
         render_joint(state.border, js, j, all[1], buf);
     }
@@ -170,6 +174,10 @@ fn repaint_buttons(
         .render(txt_area, buf);
     txt_area.y += 1;
     "Shift+F5: reduce position"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F6: monochrome"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 2;
@@ -211,7 +219,7 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(5)) => {
-            if state.offset < state.max {
+            if state.offset < state.max_offset {
                 state.offset += 1;
             }
             Outcome::Changed
@@ -220,6 +228,10 @@ fn handle_buttons(
             if state.offset > 0 {
                 state.offset -= 1;
             }
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(6)) => {
+            state.mono = !state.mono;
             Outcome::Changed
         }
         _ => Outcome::Continue,

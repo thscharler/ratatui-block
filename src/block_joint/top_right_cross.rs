@@ -1,7 +1,9 @@
+use crate::Joint;
 use ratatui::symbols::border::{
     QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT, QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
 };
 use ratatui::widgets::BorderType;
+use ratatui::widgets::BorderType::QuadrantInside;
 
 pub(crate) fn top_right_cross_joint(
     border: BorderType,
@@ -23,7 +25,11 @@ pub(crate) fn top_right_cross_joint(
         (Thick, Thick, _) => "╉",
         (Thick, _, _) => "╅",
 
-        (QuadrantInside, _, _) => QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
-        (QuadrantOutside, _, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
+        (QuadrantInside, QuadrantInside, QuadrantInside) => "▞",
+        (QuadrantInside, _, QuadrantInside) => "▛",
+        (QuadrantInside, QuadrantInside, _) => "▙",
+        (QuadrantInside, _, _) => "▙",
+
+        (QuadrantOutside, _, _) => "▜",
     }
 }
