@@ -125,8 +125,8 @@ impl Joint {
 ///     Joint::Out(BorderType::Plain),
 ///     area, buf);
 ///
-/// // Render a double joint to a double area above and a
-/// // plain area to the left.
+/// // Render a two-way joint to a `Double` area above and a
+/// // `Plain` area to the left.
 /// //
 /// // Rendering is best-effort, as not all glyphs for this exist.
 /// render_joint(BorderType::Plain,
