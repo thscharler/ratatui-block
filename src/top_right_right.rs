@@ -1,15 +1,11 @@
 use crate::block_joint::Joint;
-use ratatui::symbols::border::{
-    QUADRANT_BOTTOM_HALF, QUADRANT_BOTTOM_RIGHT, QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
-    QUADRANT_TOP_RIGHT,
-};
+use ratatui::symbols::border::{QUADRANT_BOTTOM_HALF, QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT};
 use ratatui::widgets::BorderType;
-use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 
-pub(crate) fn top_right_right_joint(border: BorderType, kind: Joint) -> &'static str {
+pub(crate) fn top_right_right_joint(border: BorderType, joint: Joint) -> &'static str {
     use ratatui::widgets::BorderType::*;
 
-    match (border, kind) {
+    match (border, joint) {
         (Plain | Rounded, Joint::In(_)) => "┐",
         (
             Plain | Rounded,
@@ -36,5 +32,6 @@ pub(crate) fn top_right_right_joint(border: BorderType, kind: Joint) -> &'static
         (QuadrantOutside, _) => QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT,
 
         (_, Joint::Manual(c)) => c,
+        (_, Joint::Corner(_, _)) => "⚠",
     }
 }

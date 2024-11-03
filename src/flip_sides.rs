@@ -3,7 +3,7 @@ use ratatui::widgets::BorderType;
 
 // Switch between top/bottom, left/right
 // The sides are mirrored.
-pub(crate) fn flip_sides(border: BorderType, kind: Joint) -> (BorderType, Joint) {
+pub(crate) fn flip_sides(border: BorderType, joint: Joint) -> (BorderType, Joint) {
     use ratatui::widgets::BorderType::*;
 
     (
@@ -15,11 +15,12 @@ pub(crate) fn flip_sides(border: BorderType, kind: Joint) -> (BorderType, Joint)
             QuadrantInside => QuadrantOutside,
             QuadrantOutside => QuadrantInside,
         },
-        match kind {
+        match joint {
             Joint::Out(v) => Joint::In(v),
             Joint::In(v) => Joint::Out(v),
             Joint::Through(v) => Joint::Through(v),
             Joint::Manual(v) => Joint::Manual(v),
+            Joint::Corner(v, h) => Joint::Corner(v, h),
         },
     )
 }

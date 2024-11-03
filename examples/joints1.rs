@@ -1,12 +1,12 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
-use rat_event::{ct_event, ConsumedEvent, HandleEvent, Outcome};
+use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Rect, Spacing};
 use ratatui::prelude::Widget;
-use ratatui::style::Style;
+use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::block_joint::{render_joint, Joint, JointPosition, JointSide};
+use ratatui_block::block_joint::{render_joint, Joint, JointSide};
 
 mod mini_salsa;
 
@@ -17,10 +17,11 @@ fn main() -> Result<(), anyhow::Error> {
     let mut state = State {
         area: Default::default(),
         border: Default::default(),
-        side: JointSide::Top,
-        pos: JointPosition::FromStart(0),
+        side: JointSide::Top(0),
         joint: Joint::Out(BorderType::Plain),
-        join_border: Default::default(),
+        hor_neighbour: Default::default(),
+        vert_neighbour: Default::default(),
+        base_joint: Joint::Out(BorderType::Plain),
     };
 
     run_ui(
@@ -39,10 +40,11 @@ struct State {
 
     border: BorderType,
     side: JointSide,
-    pos: JointPosition,
     joint: Joint,
 
-    join_border: BorderType,
+    hor_neighbour: BorderType,
+    vert_neighbour: BorderType,
+    base_joint: Joint,
 }
 
 fn repaint_buttons(
@@ -63,9 +65,9 @@ fn repaint_buttons(
     let layout = layout_grid::<3, 3>(
         l0[1],
         Layout::horizontal([
-            Constraint::Length(15),
+            Constraint::Length(10),
             Constraint::Fill(1),
-            Constraint::Length(15),
+            Constraint::Length(10),
         ])
         .spacing(Spacing::Overlap(1)),
         Layout::vertical([
@@ -82,9 +84,14 @@ fn repaint_buttons(
 
     for a in 0..3 {
         for b in 0..3 {
-            if a != 1 || b != 1 {
+            if a != 1 && b == 1 {
                 Block::bordered()
-                    .border_type(state.join_border)
+                    .border_type(state.hor_neighbour)
+                    .render(layout[a][b], buf);
+            }
+            if a == 1 && b != 1 {
+                Block::bordered()
+                    .border_type(state.vert_neighbour)
                     .render(layout[a][b], buf);
             }
         }
@@ -95,29 +102,47 @@ fn repaint_buttons(
         .border_style(Style::new().fg(THEME.orange[2]))
         .render(layout[1][1], buf);
 
-    render_joint(
-        state.border,
-        state.side,
-        state.pos,
-        state.joint,
-        layout[1][1],
-        buf,
-    );
+    render_joint(state.border, state.side, state.joint, layout[1][1], buf);
 
     let mut txt_area = l0[0];
     txt_area.y += 2;
     txt_area.height = 1;
 
-    format!("{:?}", state.border).render(txt_area, buf);
+    "F1: main border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
     txt_area.y += 1;
-    format!("{:?}", state.joint).render(txt_area, buf);
+    "F2: horizontal neighbours"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
     txt_area.y += 1;
-    format!("{:?}", state.side).render(txt_area, buf);
+    "F3: vertical neighbours"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
     txt_area.y += 1;
-    format!("{:?}", state.pos).render(txt_area, buf);
+    "F4: joint type"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F5: advance position"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "Shift+F5: reduce position"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 2;
+
+    format!("border={:?}", state.border).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("joint={:?}", state.joint).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("side={:?}", state.side).render(txt_area, buf);
 
     txt_area.y += 2;
-    format!("{:?}", state.join_border).render(txt_area, buf);
+    format!("hor={:?}", state.hor_neighbour).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("vert={:?}", state.vert_neighbour).render(txt_area, buf);
 
     Ok(())
 }
@@ -141,7 +166,7 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(2)) => {
-            state.join_border = match state.join_border {
+            state.hor_neighbour = match state.hor_neighbour {
                 BorderType::Plain => BorderType::Rounded,
                 BorderType::Rounded => BorderType::Double,
                 BorderType::Double => BorderType::Thick,
@@ -149,116 +174,140 @@ fn handle_buttons(
                 BorderType::QuadrantInside => BorderType::QuadrantOutside,
                 BorderType::QuadrantOutside => BorderType::Plain,
             };
-
-            state.joint = match state.joint {
-                Joint::Out(_) => Joint::Out(state.join_border),
-                Joint::In(_) => Joint::In(state.join_border),
-                Joint::Through(_) => Joint::Through(state.join_border),
-                Joint::Manual(_) => unimplemented!(),
-            };
             Outcome::Changed
         }
         ct_event!(keycode press F(3)) => {
-            state.joint = match state.joint {
-                Joint::Out(_) => Joint::In(state.join_border),
-                Joint::In(_) => Joint::Through(state.join_border),
-                Joint::Through(_) => Joint::Out(state.join_border),
-                Joint::Manual(_) => unimplemented!(),
+            state.vert_neighbour = match state.vert_neighbour {
+                BorderType::Plain => BorderType::Rounded,
+                BorderType::Rounded => BorderType::Double,
+                BorderType::Double => BorderType::Thick,
+                BorderType::Thick => BorderType::QuadrantInside,
+                BorderType::QuadrantInside => BorderType::QuadrantOutside,
+                BorderType::QuadrantOutside => BorderType::Plain,
             };
             Outcome::Changed
         }
         ct_event!(keycode press F(4)) => {
-            state.pos = match state.pos {
-                JointPosition::FromStart(p) => {
-                    let pos = match state.side {
-                        JointSide::Top => {
-                            if p >= state.area.width.saturating_sub(1) {
-                                state.side = JointSide::Right;
-                                0
-                            } else {
-                                p + 1
-                            }
-                        }
-                        JointSide::Right => {
-                            if p >= state.area.height.saturating_sub(1) {
-                                state.side = JointSide::Bottom;
-                                state.area.width.saturating_sub(1)
-                            } else {
-                                p + 1
-                            }
-                        }
-                        JointSide::Bottom => {
-                            if p == 0 {
-                                state.side = JointSide::Left;
-                                state.area.height.saturating_sub(1)
-                            } else {
-                                p - 1
-                            }
-                        }
-                        JointSide::Left => {
-                            if p == 0 {
-                                state.side = JointSide::Top;
-                                0
-                            } else {
-                                p - 1
-                            }
-                        }
-                    };
-                    JointPosition::FromStart(pos)
+            state.joint = match state.joint {
+                Joint::Out(b) => {
+                    state.base_joint = Joint::In(b);
+                    Joint::In(b)
                 }
-                JointPosition::FromEnd(_) => {
-                    unimplemented!()
+                Joint::In(b) => {
+                    state.base_joint = Joint::Through(b);
+                    Joint::Through(b)
                 }
-                JointPosition::AtPos(_) => {
-                    unimplemented!()
+                Joint::Through(b) => {
+                    state.base_joint = Joint::Out(b);
+                    Joint::Out(b)
+                }
+                Joint::Corner(v, h) => Joint::Corner(v, h),
+                Joint::Manual(_) => unimplemented!(),
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(5)) => {
+            state.side = match state.side {
+                JointSide::Top(p) => {
+                    if p >= state.area.width.saturating_sub(1) {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::TopRight
+                    } else {
+                        JointSide::Top(p + 1)
+                    }
+                }
+                JointSide::TopRight => {
+                    state.joint = state.base_joint.border(state.hor_neighbour);
+                    JointSide::Right(0)
+                }
+                JointSide::Right(p) => {
+                    if p >= state.area.height.saturating_sub(1) {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::BottomRight
+                    } else {
+                        JointSide::Right(p + 1)
+                    }
+                }
+                JointSide::BottomRight => {
+                    state.joint = state.base_joint.border(state.vert_neighbour);
+                    JointSide::Bottom(state.area.width.saturating_sub(1))
+                }
+                JointSide::Bottom(p) => {
+                    if p == 0 {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::BottomLeft
+                    } else {
+                        JointSide::Bottom(p - 1)
+                    }
+                }
+                JointSide::BottomLeft => {
+                    state.joint = state.base_joint.border(state.hor_neighbour);
+                    JointSide::Left(state.area.height.saturating_sub(1))
+                }
+                JointSide::Left(p) => {
+                    if p == 0 {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::TopLeft
+                    } else {
+                        JointSide::Left(p - 1)
+                    }
+                }
+                JointSide::TopLeft => {
+                    state.joint = state.base_joint.border(state.vert_neighbour);
+                    JointSide::Top(0)
                 }
             };
             Outcome::Changed
         }
-        ct_event!(keycode press SHIFT-F(4)) => {
-            state.pos = match state.pos {
-                JointPosition::FromStart(p) => {
-                    let pos = match state.side {
-                        JointSide::Top => {
-                            if p == 0 {
-                                state.side = JointSide::Left;
-                                0
-                            } else {
-                                p - 1
-                            }
-                        }
-                        JointSide::Left => {
-                            if p >= state.area.height.saturating_sub(1) {
-                                state.side = JointSide::Bottom;
-                                0
-                            } else {
-                                p + 1
-                            }
-                        }
-                        JointSide::Bottom => {
-                            if p >= state.area.width.saturating_sub(1) {
-                                state.side = JointSide::Right;
-                                state.area.height.saturating_sub(1)
-                            } else {
-                                p + 1
-                            }
-                        }
-                        JointSide::Right => {
-                            if p == 0 {
-                                state.side = JointSide::Top;
-                                state.area.width.saturating_sub(1)
-                            } else {
-                                p - 1
-                            }
-                        }
-                    };
-                    JointPosition::FromStart(pos)
+        ct_event!(keycode press SHIFT-F(5)) => {
+            state.side = match state.side {
+                JointSide::Top(p) => {
+                    if p == 0 {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::TopLeft
+                    } else {
+                        JointSide::Top(p - 1)
+                    }
                 }
-                JointPosition::FromEnd(_) => {
-                    unimplemented!()
+                JointSide::TopLeft => {
+                    state.joint = state.base_joint.border(state.hor_neighbour);
+                    JointSide::Left(0)
                 }
-                JointPosition::AtPos(_) => {
-                    unimplemented!()
+                JointSide::Left(p) => {
+                    if p >= state.area.height.saturating_sub(1) {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::BottomLeft
+                    } else {
+                        JointSide::Left(p + 1)
+                    }
+                }
+                JointSide::BottomLeft => {
+                    state.joint = state.base_joint.border(state.vert_neighbour);
+                    JointSide::Bottom(0)
+                }
+                JointSide::Bottom(p) => {
+                    if p >= state.area.width.saturating_sub(1) {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::BottomRight
+                    } else {
+                        JointSide::Bottom(p + 1)
+                    }
+                }
+                JointSide::BottomRight => {
+                    state.joint = state.base_joint.border(state.hor_neighbour);
+                    JointSide::Right(state.area.height.saturating_sub(1))
+                }
+                JointSide::Right(p) => {
+                    if p == 0 {
+                        state.joint = Joint::Corner(state.vert_neighbour, state.hor_neighbour);
+                        JointSide::TopRight
+                    } else {
+                        JointSide::Right(p - 1)
+                    }
+                }
+                JointSide::TopRight => {
+                    state.joint = state.base_joint.border(state.vert_neighbour);
+                    JointSide::Top(state.area.width.saturating_sub(1))
                 }
             };
             Outcome::Changed

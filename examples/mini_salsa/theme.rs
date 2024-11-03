@@ -1,7 +1,4 @@
-use ratatui::layout::Alignment;
-use ratatui::style::{Color, Style, Stylize};
-use ratatui::widgets::Block;
-use std::time::Duration;
+use ratatui::style::{Color, Style};
 
 #[derive(Debug, Default, Clone)]
 pub struct Scheme {
@@ -137,6 +134,10 @@ impl Scheme {
     /// Selection style
     pub fn select(&self) -> Style {
         self.style(self.secondary[1])
+    }
+
+    pub fn secondary_text(&self) -> Style {
+        Style::new().fg(self.secondary[1])
     }
 
     /// Text field style.

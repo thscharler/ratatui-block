@@ -1,14 +1,14 @@
 use crate::block_joint::Joint;
-use ratatui::symbols::block::FULL;
 use ratatui::symbols::border::{
-    QUADRANT_BOTTOM_HALF, QUADRANT_TOP_HALF, QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
+    QUADRANT_TOP_HALF, QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
+    QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT,
 };
 use ratatui::widgets::BorderType;
 
-pub(crate) fn top_joint(border: BorderType, kind: Joint) -> &'static str {
+pub(crate) fn top_joint(border: BorderType, joint: Joint) -> &'static str {
     use ratatui::widgets::BorderType::*;
 
-    match (border, kind) {
+    match (border, joint) {
         (Plain | Rounded, Joint::In(Plain | Rounded)) => "┬",
         (Plain | Rounded, Joint::In(Double)) => "╥",
         (Plain | Rounded, Joint::In(Thick)) => "┰",
@@ -49,8 +49,12 @@ pub(crate) fn top_joint(border: BorderType, kind: Joint) -> &'static str {
         (Thick, Joint::Through(QuadrantInside | QuadrantOutside)) => "╋",
 
         (QuadrantInside, _) => QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
+        (QuadrantOutside, Joint::In(_) | Joint::Through(_)) => {
+            QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT
+        }
         (QuadrantOutside, _) => QUADRANT_TOP_HALF,
 
         (_, Joint::Manual(c)) => c,
+        (_, Joint::Corner(_, _)) => "⚠",
     }
 }
