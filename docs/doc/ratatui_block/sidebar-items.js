@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["block_joint"]};
+window.SIDEBAR_ITEMS = {"enum":["Joint","JointSide"],"fn":["create_border","render_joint"],"struct":["NewBlock"]};

@@ -285,176 +285,44 @@
 <a href="#285" id="285">285</a>
 <a href="#286" id="286">286</a>
 <a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::bottom::bottom_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_left_cross::bottom_left_cross_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_left_down::bottom_left_down_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_left_left::bottom_left_left_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_right_cross::bottom_right_cross_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_right_down::bottom_right_down_joint;
-<span class="kw">use </span><span class="kw">crate</span>::bottom_right_right::bottom_right_right_joint;
-<span class="kw">use </span><span class="kw">crate</span>::left::left_joint;
-<span class="kw">use </span><span class="kw">crate</span>::right::right_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top::top_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_left_cross::top_left_cross_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_left_left::top_left_left_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_left_up::top_left_up_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_right_cross::top_right_cross_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_right_right::top_right_right_joint;
-<span class="kw">use </span><span class="kw">crate</span>::top_right_up::top_right_up_joint;
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom::bottom_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_left_cross::bottom_left_cross_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_left_down::bottom_left_down_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_left_left::bottom_left_left_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_right_cross::bottom_right_cross_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_right_down::bottom_right_down_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::bottom_right_right::bottom_right_right_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::left::left_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::right::right_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top::top_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_left_cross::top_left_cross_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_left_left::top_left_left_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_left_up::top_left_up_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_right_cross::top_right_cross_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_right_right::top_right_right_joint;
+<span class="kw">use </span><span class="kw">crate</span>::block_joint::top_right_up::top_right_up_joint;
+<span class="kw">use crate</span>::{Joint, JointSide};
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::widgets::BorderType;
-
-<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>JointSide {
-    <span class="doccomment">/// Join from the top side upwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
-    </span>Top(u16),
-    <span class="doccomment">/// Join from the right side right.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
-    </span>Right(u16),
-    <span class="doccomment">/// Join from the bottom side downwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
-    </span>Bottom(u16),
-    <span class="doccomment">/// Join from the left side left.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
-    </span>Left(u16),
-
-    <span class="doccomment">/// Join top-left corner with another bottom-right corner.
-    </span>TopLeft,
-    <span class="doccomment">/// Join top-right corner with another bottom-left corner.
-    </span>TopRight,
-    <span class="doccomment">/// Join bottom-right corner with another top-left corner.
-    </span>BottomRight,
-    <span class="doccomment">/// Join bottom-left corner with another top-right corner.
-    </span>BottomLeft,
-}
-
-<span class="kw">impl </span>JointSide {
-    <span class="doccomment">/// Set the position for `Top`/`Right`/`Bottom`/`Left` variants.
-    </span><span class="kw">pub fn </span>pos(<span class="self">self</span>, pos: u16) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            JointSide::Top(<span class="kw">_</span>) =&gt; JointSide::Top(pos),
-            JointSide::Right(<span class="kw">_</span>) =&gt; JointSide::Right(pos),
-            JointSide::Bottom(<span class="kw">_</span>) =&gt; JointSide::Bottom(pos),
-            JointSide::Left(<span class="kw">_</span>) =&gt; JointSide::Left(pos),
-            v =&gt; v,
-        }
-    }
-}
-
-<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>Joint {
-    <span class="doccomment">/// Join on the outside.
-    </span>Out(BorderType),
-    <span class="doccomment">/// Join on the inside.
-    </span>In(BorderType),
-    <span class="doccomment">/// Join through the side.
-    </span>Through(BorderType),
-    <span class="doccomment">/// Corner/corner joints.
-    /// Might involve 2 more areas so two foreign border-types.
-    </span>Corner(BorderType, BorderType),
-    <span class="doccomment">/// Manual joint.
-    </span>Manual(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str),
-}
-
-<span class="kw">impl </span>Joint {
-    <span class="doccomment">/// Change the connected border for `Out`/`In`/`Through`.
-    </span><span class="kw">pub fn </span>border(<span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            Joint::Out(<span class="kw">_</span>) =&gt; Joint::Out(border),
-            Joint::In(<span class="kw">_</span>) =&gt; Joint::In(border),
-            Joint::Through(<span class="kw">_</span>) =&gt; Joint::Through(border),
-            Joint::Corner(v, h) =&gt; Joint::Corner(v, h),
-            Joint::Manual(c) =&gt; Joint::Manual(c),
-        }
-    }
-
-    <span class="doccomment">/// Change the connected borders for `Corner`.
-    </span><span class="kw">pub fn </span>corner(<span class="self">self</span>, vertical: BorderType, horizontal: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            Joint::Out(b) =&gt; Joint::Out(b),
-            Joint::In(b) =&gt; Joint::In(b),
-            Joint::Through(b) =&gt; Joint::Through(b),
-            Joint::Corner(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; Joint::Corner(vertical, horizontal),
-            Joint::Manual(c) =&gt; Joint::Manual(c),
-        }
-    }
-}
+<span class="kw">mod </span>bottom;
+<span class="kw">mod </span>bottom_left_cross;
+<span class="kw">mod </span>bottom_left_down;
+<span class="kw">mod </span>bottom_left_left;
+<span class="kw">mod </span>bottom_right_cross;
+<span class="kw">mod </span>bottom_right_down;
+<span class="kw">mod </span>bottom_right_right;
+<span class="kw">mod </span>flip_sides;
+<span class="kw">mod </span>joint_pos;
+<span class="kw">mod </span>left;
+<span class="kw">mod </span>right;
+<span class="kw">mod </span>top;
+<span class="kw">mod </span>top_left_cross;
+<span class="kw">mod </span>top_left_left;
+<span class="kw">mod </span>top_left_up;
+<span class="kw">mod </span>top_right_cross;
+<span class="kw">mod </span>top_right_right;
+<span class="kw">mod </span>top_right_up;
 
 <span class="doccomment">/// Render joints at some side of the area.
 ///
@@ -467,7 +335,7 @@
 /// # use ratatui::buffer::Buffer;
 /// # use ratatui::layout::Rect;
 /// # use ratatui::widgets::BorderType;
-/// # use ratatui_block::block_joint::{render_joint, Joint, JointSide};
+/// # use ratatui_block::{render_joint, Joint, JointSide};
 /// #
 /// # let mut buf = &amp;mut Buffer::default();
 /// # let area = Rect::default();

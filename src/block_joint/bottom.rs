@@ -1,6 +1,6 @@
+use crate::block_joint::flip_sides::flip_sides;
+use crate::block_joint::top::top_joint;
 use crate::block_joint::Joint;
-use crate::flip_sides::flip_sides;
-use crate::top::top_joint;
 use ratatui::symbols::border::{
     QUADRANT_BOTTOM_HALF, QUADRANT_TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT,
     QUADRANT_TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT,

@@ -6,7 +6,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::block_joint::{render_joint, Joint, JointSide};
+use ratatui_block::{render_joint, Joint, JointSide};
 
 mod mini_salsa;
 

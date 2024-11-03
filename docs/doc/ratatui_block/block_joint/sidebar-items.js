@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Joint","JointSide"],"fn":["render_joint"]};
