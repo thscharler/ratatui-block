@@ -2,7 +2,7 @@
 //! New-type for Block.
 //!
 use crate::Joint;
-use ratatui::widgets::{Block, BorderType};
+use ratatui::widgets::Block;
 
 /// Block extensions.
 #[derive(Debug, Default, Clone)]
