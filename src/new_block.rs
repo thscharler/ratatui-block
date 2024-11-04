@@ -2,7 +2,7 @@
 //! New-type for Block.
 //!
 use crate::Joint;
-use ratatui::widgets::Block;
+use ratatui::widgets::{Block, BorderType};
 
 /// Block extensions.
 #[derive(Debug, Default, Clone)]
@@ -20,7 +20,7 @@ pub struct NewBlock<'a> {
     /// Thick border has a lot of glyphs, and Quadrants are surprisingly tricky.
     /// They are not fully covered yet.
     ///
-    // pub border_type: BorderType,
+    pub border_type: BorderType,
 
     /// List of joints.
     pub joints: Vec<Joint>,

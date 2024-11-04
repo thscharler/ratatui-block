@@ -272,6 +272,7 @@
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{Joint, JointMark, JointPos, JointSide, NewBlock};
 <span class="kw">use </span>ratatui::layout::Rect;
 <span class="kw">use </span>ratatui::widgets::{Block, BorderType};
@@ -306,7 +307,8 @@
 
     <span class="kw">let </span><span class="kw-2">mut </span>block = NewBlock {
         block: Block::bordered().border_type(border_type),
-        joints: <span class="macro">vec!</span>[],
+        border_type, <span class="comment">// todo
+        </span>joints: <span class="macro">vec!</span>[],
     };
 
     <span class="kw">for </span>test <span class="kw">in </span>layout.iter() {

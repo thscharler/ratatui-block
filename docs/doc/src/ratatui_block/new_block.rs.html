@@ -29,7 +29,7 @@
 //! New-type for Block.
 //!
 </span><span class="kw">use </span><span class="kw">crate</span>::Joint;
-<span class="kw">use </span>ratatui::widgets::Block;
+<span class="kw">use </span>ratatui::widgets::{Block, BorderType};
 
 <span class="doccomment">/// Block extensions.
 </span><span class="attr">#[derive(Debug, Default, Clone)]
@@ -47,9 +47,9 @@
     /// Thick border has a lot of glyphs, and Quadrants are surprisingly tricky.
     /// They are not fully covered yet.
     ///
-    </span><span class="comment">// pub border_type: BorderType,
+    </span><span class="kw">pub </span>border_type: BorderType,
 
-    </span><span class="doccomment">/// List of joints.
+    <span class="doccomment">/// List of joints.
     </span><span class="kw">pub </span>joints: Vec&lt;Joint&gt;,
 }
 </code></pre></div></section></main></body></html>

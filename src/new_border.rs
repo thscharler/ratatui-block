@@ -32,6 +32,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
 
     let mut block = NewBlock {
         block: Block::bordered().border_type(border_type),
+        border_type, // todo
         joints: vec![],
     };
 
