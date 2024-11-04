@@ -94,9 +94,11 @@ pub enum JointCorner {
 // mod block_joint;
 // mod create_border;
 mod new_block;
+mod new_border;
 mod new_joint;
 
 // pub use block_joint::render_joint;
 // pub use create_border::create_border;
 pub use new_block::NewBlock;
+pub use new_border::create_border;
 pub use new_joint::render_joint;

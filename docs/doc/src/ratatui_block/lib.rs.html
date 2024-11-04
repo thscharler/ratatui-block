@@ -100,6 +100,8 @@
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
 </pre></div><pre class="rust"><code><span class="attr">#![allow(dead_code)]
 
 </span><span class="kw">use </span>ratatui::widgets::BorderType;
@@ -196,10 +198,12 @@
 <span class="comment">// mod block_joint;
 // mod create_border;
 </span><span class="kw">mod </span>new_block;
+<span class="kw">mod </span>new_border;
 <span class="kw">mod </span>new_joint;
 
 <span class="comment">// pub use block_joint::render_joint;
 // pub use create_border::create_border;
 </span><span class="kw">pub use </span>new_block::NewBlock;
+<span class="kw">pub use </span>new_border::create_border;
 <span class="kw">pub use </span>new_joint::render_joint;
 </code></pre></div></section></main></body></html>

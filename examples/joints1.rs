@@ -16,19 +16,18 @@ fn main() -> Result<(), anyhow::Error> {
     let mut data = Data {};
     let mut state = State {
         area: Default::default(),
-        restart: false,
         border: BorderType::QuadrantInside,
 
         joint: Joint {
-            border: BorderType::Plain,
+            border: BorderType::QuadrantInside,
             side: JointSide::Top,
             scale: JointScale::Out,
             mirrored: false,
             pos: JointPos::ProlongStart,
         },
 
-        hor_neighbour: Default::default(),
-        vert_neighbour: Default::default(),
+        hor_neighbour: BorderType::QuadrantInside,
+        vert_neighbour: BorderType::QuadrantInside,
     };
 
     run_ui(
@@ -45,7 +44,6 @@ struct Data {}
 struct State {
     area: Rect,
 
-    restart: bool,
     border: BorderType,
     joint: Joint,
 
@@ -88,17 +86,29 @@ fn repaint_buttons(
 
     buf.set_style(area, THEME.deepblue(0));
 
-    for a in 0..3 {
-        for b in 0..3 {
-            if a != 1 && b == 1 {
-                Block::bordered()
-                    .border_type(state.hor_neighbour)
-                    .render(layout[a][b], buf);
+    if !state.joint.mirrored {
+        for a in 0..3 {
+            for b in 0..3 {
+                if a != 1 && b == 1 {
+                    Block::bordered()
+                        .border_type(state.hor_neighbour)
+                        .render(layout[a][b], buf);
+                }
+                if a == 1 && b != 1 {
+                    Block::bordered()
+                        .border_type(state.vert_neighbour)
+                        .render(layout[a][b], buf);
+                }
             }
-            if a == 1 && b != 1 {
-                Block::bordered()
-                    .border_type(state.vert_neighbour)
-                    .render(layout[a][b], buf);
+        }
+    } else {
+        for a in 0..3 {
+            for b in 0..3 {
+                if (a == 0 || a == 2) && (b == 0 || b == 2) {
+                    Block::bordered()
+                        .border_type(state.hor_neighbour)
+                        .render(layout[a][b], buf);
+                }
             }
         }
     }
@@ -137,15 +147,19 @@ fn repaint_buttons(
     "Shift+F5: reduce position"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
+    txt_area.y += 1;
+    "F6: mirror"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
     txt_area.y += 2;
 
     format!("border={:?}", state.border).render(txt_area, buf);
     txt_area.y += 1;
     format!("joint={:?}", state.joint.border).render(txt_area, buf);
     txt_area.y += 1;
-    format!("side={:?}", state.joint.side).render(txt_area, buf);
-    txt_area.y += 1;
     format!("scale={:?}", state.joint.scale).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("side={:?}", state.joint.side).render(txt_area, buf);
     txt_area.y += 1;
     format!("pos={:?}", state.joint.pos).render(txt_area, buf);
     txt_area.y += 1;
@@ -214,9 +228,9 @@ fn handle_buttons(
                 JointSide::Top => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
-                            if n < state.area.width.saturating_sub(1) {
+                            if n < state.area.width.saturating_sub(2) {
                                 JointPos::Pos(n + 1)
                             } else {
                                 JointPos::End
@@ -232,9 +246,9 @@ fn handle_buttons(
                 JointSide::Right => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
-                            if n < state.area.height.saturating_sub(1) {
+                            if n < state.area.height.saturating_sub(2) {
                                 JointPos::Pos(n + 1)
                             } else {
                                 JointPos::End
@@ -250,9 +264,9 @@ fn handle_buttons(
                 JointSide::Bottom => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
+                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
                         JointPos::Pos(n) => {
-                            if n > 0 {
+                            if n > 1 {
                                 JointPos::Pos(n - 1)
                             } else {
                                 JointPos::Start
@@ -268,9 +282,9 @@ fn handle_buttons(
                 JointSide::Left => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
+                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
                         JointPos::Pos(n) => {
-                            if n > 0 {
+                            if n > 1 {
                                 JointPos::Pos(n - 1)
                             } else {
                                 JointPos::Start
@@ -291,9 +305,9 @@ fn handle_buttons(
                 JointSide::Top => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(1)),
+                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
                         JointPos::Pos(n) => {
-                            if n > 0 {
+                            if n > 1 {
                                 JointPos::Pos(n - 1)
                             } else {
                                 JointPos::Start
@@ -309,9 +323,9 @@ fn handle_buttons(
                 JointSide::Left => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
-                            if n < state.area.height.saturating_sub(1) {
+                            if n < state.area.height.saturating_sub(2) {
                                 JointPos::Pos(n + 1)
                             } else {
                                 JointPos::End
@@ -327,9 +341,9 @@ fn handle_buttons(
                 JointSide::Bottom => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(0),
+                        JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
-                            if n < state.area.width.saturating_sub(1) {
+                            if n < state.area.width.saturating_sub(2) {
                                 JointPos::Pos(n + 1)
                             } else {
                                 JointPos::End
@@ -345,9 +359,9 @@ fn handle_buttons(
                 JointSide::Right => {
                     state.joint.pos = match state.joint.pos {
                         JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(1)),
+                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
                         JointPos::Pos(n) => {
-                            if n > 0 {
+                            if n > 1 {
                                 JointPos::Pos(n - 1)
                             } else {
                                 JointPos::Start
@@ -359,11 +373,12 @@ fn handle_buttons(
                             JointPos::ProlongEnd
                         }
                     };
-                    if state.joint.pos == JointPos::ProlongEnd {
-                        state.joint.side = JointSide::Bottom;
-                    }
                 }
             };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(6)) => {
+            state.joint.mirrored = !state.joint.mirrored;
             Outcome::Changed
         }
         _ => Outcome::Continue,

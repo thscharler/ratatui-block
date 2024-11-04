@@ -1,8 +1,9 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
+use crossterm::style::Stylize;
 use log::debug;
 use rat_event::{ct_event, Outcome};
-use ratatui::layout::{Constraint, Direction, Layout, Rect, Spacing};
+use ratatui::layout::{Constraint, Direction, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
@@ -22,10 +23,13 @@ fn main() -> Result<(), anyhow::Error> {
         mono: false,
         border: BorderType::QuadrantInside,
         offset: 0,
+        joint_area: Default::default(),
+        joint_idx: 0,
+        joint_max: 0,
     };
 
     run_ui(
-        "╒═╤═╛",
+        "╒═╤═╛2",
         handle_buttons,
         repaint_buttons,
         &mut data,
@@ -41,6 +45,10 @@ struct State {
     border: BorderType,
     max_offset: u16,
     offset: u16,
+
+    joint_area: Rect,
+    joint_idx: usize,
+    joint_max: usize,
 }
 
 fn repaint_buttons(
@@ -137,7 +145,6 @@ fn repaint_buttons(
 
     // new block
     let bbb = create_border(all.clone(), 1, state.border);
-    debug!("new block {:#?}", bbb);
     if state.mono {
         bbb.block.render(all[1], buf);
     } else {
@@ -145,8 +152,29 @@ fn repaint_buttons(
             .border_style(Style::new().fg(THEME.orange[2]))
             .render(all[1], buf);
     }
-    for (j, js) in bbb.joints {
-        render_joint(state.border, js, j, all[1], buf);
+    for joint in bbb.joints.iter().cloned() {
+        render_joint(state.border, joint, all[1], buf);
+    }
+
+    state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 7, l0[0].width, 7);
+    state.joint_max = bbb.joints.len();
+    buf.set_style(state.joint_area, THEME.cyan(1));
+
+    if let Some(joint) = bbb.joints.get(state.joint_idx) {
+        let mut area = state.joint_area;
+        area.height = 1;
+        format!("#{:?} of {:?}", state.joint_idx + 1, bbb.joints.len()).render(area, buf);
+        area.y += 1;
+        format!("{:?}", joint.border).render(area, buf);
+        area.y += 1;
+        format!("{:?}", joint.scale).render(area, buf);
+        area.y += 1;
+        format!("{:?}", joint.side).render(area, buf);
+        area.y += 1;
+        format!("{:?}", joint.pos).render(area, buf);
+        area.y += 1;
+        format!("{:?}", joint.mirrored).render(area, buf);
+        area.y += 1;
     }
 
     let mut txt_area = l0[0];
@@ -156,28 +184,16 @@ fn repaint_buttons(
     "F1: border"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "F2: horizontal neighbours"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "F3: vertical neighbours"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
+    txt_area.y += 1;
     "F4: direction"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
-    "F5: advance position"
+    "Left/Right: position"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
-    "Shift+F5: reduce position"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F6: monochrome"
+    "F8: monochrome"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 2;
@@ -218,22 +234,61 @@ fn handle_buttons(
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(5)) => {
+        ct_event!(keycode press Right) if state.direction == Direction::Horizontal => {
             if state.offset < state.max_offset {
                 state.offset += 1;
             }
             Outcome::Changed
         }
-        ct_event!(keycode press SHIFT-F(5)) => {
+        ct_event!(keycode press Left) if state.direction == Direction::Horizontal => {
             if state.offset > 0 {
                 state.offset -= 1;
             }
             Outcome::Changed
         }
-        ct_event!(keycode press F(6)) => {
+        ct_event!(keycode press Down) if state.direction == Direction::Vertical => {
+            if state.offset < state.max_offset {
+                state.offset += 1;
+            }
+            Outcome::Changed
+        }
+        ct_event!(keycode press Up) if state.direction == Direction::Vertical => {
+            if state.offset > 0 {
+                state.offset -= 1;
+            }
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(8)) => {
             state.mono = !state.mono;
             Outcome::Changed
         }
+
+        ct_event!(scroll down for x, y) if state.joint_area.contains(Position::new(*x, *y)) => {
+            state.joint_idx = (state.joint_idx + 1).clamp(0, state.joint_max.saturating_sub(1));
+            Outcome::Changed
+        }
+        ct_event!(scroll up for x, y) if state.joint_area.contains(Position::new(*x, *y)) => {
+            state.joint_idx = state.joint_idx.saturating_sub(1);
+            Outcome::Changed
+        }
+
+        ct_event!(keycode press Down) if state.direction == Direction::Horizontal => {
+            state.joint_idx = (state.joint_idx + 1).clamp(0, state.joint_max.saturating_sub(1));
+            Outcome::Changed
+        }
+        ct_event!(keycode press Up) => {
+            state.joint_idx = state.joint_idx.saturating_sub(1);
+            Outcome::Changed
+        }
+        ct_event!(keycode press Right) if state.direction == Direction::Vertical => {
+            state.joint_idx = (state.joint_idx + 1).clamp(0, state.joint_max.saturating_sub(1));
+            Outcome::Changed
+        }
+        ct_event!(keycode press Left) if state.direction == Direction::Vertical => {
+            state.joint_idx = state.joint_idx.saturating_sub(1);
+            Outcome::Changed
+        }
+
         _ => Outcome::Continue,
     };
 
