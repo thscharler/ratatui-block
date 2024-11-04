@@ -23,7 +23,7 @@ use std::rc::Rc;
 ///         avoided by creating the relevant subset before calling
 ///         the fn.
 ///
-pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> NewBlock<'static> {
+pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlock<'static> {
     let area = layout[n];
     let area_x1 = area.x;
     let area_y1 = area.y;
@@ -31,8 +31,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
     let area_y2 = area.bottom().saturating_sub(1);
 
     let mut block = NewBlock {
-        block: Block::bordered().border_type(border_type),
-        border_type, // todo
+        block: Block::bordered().border_type(border),
+        border_type: border,
         joints: vec![],
     };
 
@@ -46,15 +46,17 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         if test_y2 == area_y1 {
             if test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: false,
-                    pos: JointPos::EndCross(border_type),
+                    pos: JointPos::CrossEnd(border),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -62,7 +64,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -72,15 +75,17 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
 
             if test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: false,
-                    pos: JointPos::StartCross(border_type),
+                    pos: JointPos::CrossStart(border),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -88,7 +93,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -101,15 +107,17 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         if test_y1 == area_y2 {
             if test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: false,
-                    pos: JointPos::EndCross(border_type),
+                    pos: JointPos::CrossEnd(border),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -117,7 +125,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -127,15 +136,17 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
 
             if test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: false,
-                    pos: JointPos::StartCross(border_type),
+                    pos: JointPos::CrossStart(border),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -143,7 +154,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -166,7 +178,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 // });
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -174,7 +187,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -194,7 +208,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 // });
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -202,7 +217,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -225,7 +241,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 // });
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -233,7 +250,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: false,
@@ -253,7 +271,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 // });
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: true,
@@ -261,7 +280,8 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 });
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: true,

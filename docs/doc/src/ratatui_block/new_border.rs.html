@@ -273,6 +273,26 @@
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
 <a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{Joint, JointMark, JointPos, JointSide, NewBlock};
 <span class="kw">use </span>ratatui::layout::Rect;
 <span class="kw">use </span>ratatui::widgets::{Block, BorderType};
@@ -298,7 +318,7 @@
 ///         avoided by creating the relevant subset before calling
 ///         the fn.
 ///
-</span><span class="kw">pub fn </span>create_border(layout: Rc&lt;[Rect]&gt;, n: usize, border_type: BorderType) -&gt; NewBlock&lt;<span class="lifetime">'static</span>&gt; {
+</span><span class="kw">pub fn </span>create_border(layout: Rc&lt;[Rect]&gt;, n: usize, border: BorderType) -&gt; NewBlock&lt;<span class="lifetime">'static</span>&gt; {
     <span class="kw">let </span>area = layout[n];
     <span class="kw">let </span>area_x1 = area.x;
     <span class="kw">let </span>area_y1 = area.y;
@@ -306,9 +326,9 @@
     <span class="kw">let </span>area_y2 = area.bottom().saturating_sub(<span class="number">1</span>);
 
     <span class="kw">let </span><span class="kw-2">mut </span>block = NewBlock {
-        block: Block::bordered().border_type(border_type),
-        border_type, <span class="comment">// todo
-        </span>joints: <span class="macro">vec!</span>[],
+        block: Block::bordered().border_type(border),
+        border_type: border,
+        joints: <span class="macro">vec!</span>[],
     };
 
     <span class="kw">for </span>test <span class="kw">in </span>layout.iter() {
@@ -321,15 +341,17 @@
         </span><span class="kw">if </span>test_y2 == area_y1 {
             <span class="kw">if </span>test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
-                    pos: JointPos::EndCross(border_type),
+                    pos: JointPos::CrossEnd(border),
                 });
             } <span class="kw">else if </span>test_x1 &gt;= area_x1 &amp;&amp; test_x1 &lt;= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -337,7 +359,8 @@
                 });
             } <span class="kw">else if </span>test_x1 &lt; area_x1 &amp;&amp; test_x2 &gt; area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -347,15 +370,17 @@
 
             <span class="kw">if </span>test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
-                    pos: JointPos::StartCross(border_type),
+                    pos: JointPos::CrossStart(border),
                 });
             } <span class="kw">else if </span>test_x2 &gt;= area_x1 &amp;&amp; test_x2 &lt;= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -363,7 +388,8 @@
                 });
             } <span class="kw">else if </span>test_x2 &gt; area_x2 &amp;&amp; test_x1 &lt; area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Top,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -376,15 +402,17 @@
         </span><span class="kw">if </span>test_y1 == area_y2 {
             <span class="kw">if </span>test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
-                    pos: JointPos::EndCross(border_type),
+                    pos: JointPos::CrossEnd(border),
                 });
             } <span class="kw">else if </span>test_x1 &gt;= area_x1 &amp;&amp; test_x1 &lt;= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -392,7 +420,8 @@
                 });
             } <span class="kw">else if </span>test_x1 &lt; area_x1 &amp;&amp; test_x2 &gt; area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -402,15 +431,17 @@
 
             <span class="kw">if </span>test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
-                    pos: JointPos::StartCross(border_type),
+                    pos: JointPos::CrossStart(border),
                 });
             } <span class="kw">else if </span>test_x2 &gt;= area_x1 &amp;&amp; test_x2 &lt;= area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -418,7 +449,8 @@
                 });
             } <span class="kw">else if </span>test_x2 &gt; area_x2 &amp;&amp; test_x1 &lt; area_x2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Bottom,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -441,7 +473,8 @@
                 // });
             </span>} <span class="kw">else if </span>test_y1 &gt;= area_y1 &amp;&amp; test_y1 &lt;= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -449,7 +482,8 @@
                 });
             } <span class="kw">else if </span>test_y1 &lt; area_y1 &amp;&amp; test_y2 &gt; area_y1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -469,7 +503,8 @@
                 // });
             </span>} <span class="kw">else if </span>test_y2 &gt;= area_y1 &amp;&amp; test_y2 &lt;= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -477,7 +512,8 @@
                 });
             } <span class="kw">else if </span>test_y2 &gt; area_y2 &amp;&amp; test_y1 &lt; area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Left,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -500,7 +536,8 @@
                 // });
             </span>} <span class="kw">else if </span>test_y1 &gt;= area_y1 &amp;&amp; test_y1 &lt;= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -508,7 +545,8 @@
                 });
             } <span class="kw">else if </span>test_y1 &lt; area_y1 &amp;&amp; test_y2 &gt; area_y1 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">false</span>,
@@ -528,7 +566,8 @@
                 // });
             </span>} <span class="kw">else if </span>test_y2 &gt;= area_y1 &amp;&amp; test_y2 &lt;= area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,
@@ -536,7 +575,8 @@
                 });
             } <span class="kw">else if </span>test_y2 &gt; area_y2 &amp;&amp; test_y1 &lt; area_y2 {
                 block.joints.push(Joint {
-                    border: border_type,
+                    own_border: border,
+                    other_border: border,
                     side: JointSide::Right,
                     mark: JointMark::Out,
                     mirrored: <span class="bool-val">true</span>,

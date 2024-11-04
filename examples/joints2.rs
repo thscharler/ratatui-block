@@ -150,8 +150,8 @@ fn repaint_buttons(
             .border_style(Style::new().fg(THEME.orange[2]))
             .render(all[1], buf);
     }
-    for joint in bbb.joints.iter().cloned() {
-        render_joint(state.border, joint, all[1], buf);
+    for joint in bbb.joints.iter() {
+        render_joint(joint, all[1], buf);
     }
 
     state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 7, l0[0].width, 7);
@@ -163,15 +163,15 @@ fn repaint_buttons(
         area.height = 1;
         format!("#{:?} of {:?}", state.joint_idx + 1, bbb.joints.len()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.border).render(area, buf);
+        format!("{:?}", joint.get_border()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.mark).render(area, buf);
+        format!("{:?}", joint.get_mark()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.side).render(area, buf);
+        format!("{:?}", joint.get_side()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.pos).render(area, buf);
+        format!("{:?}", joint.get_joint_pos()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.mirrored).render(area, buf);
+        format!("{:?}", joint.is_mirrored()).render(area, buf);
         area.y += 1;
     }
 
