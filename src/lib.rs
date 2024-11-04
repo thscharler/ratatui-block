@@ -5,31 +5,23 @@ use ratatui::widgets::BorderType;
 /// A joint in a Block border.
 #[derive(Debug, Clone, Copy)]
 pub struct Joint {
-    // regular join border
+    /// The border type to join with.
+    /// This is the border for areas outward of the side.
     pub border: BorderType,
-    // what side of the area.
+    /// Side of the area.
     pub side: JointSide,
-    // what type of joint
-    pub scale: JointScale,
-    // mirrored joint
+    /// Joint mark.
+    pub mark: JointMark,
+    /// Mirrored joint. This is needed for QuadrantInside and QuadrantOutside.
+    /// Those have mirrored glyphs on each side.
     pub mirrored: bool,
-    // position for the join
+    /// Position for the join.
     pub pos: JointPos,
 }
 
-/// A cross joint at the corner of a Block border.
-#[derive(Debug, Clone)]
-pub struct CrossJoint {
-    // regular join border
-    pub join_border: BorderType,
-    // second join border for cross joints in the corners.
-    pub join_border2: BorderType,
-    // what corner
-    pub corner: JointCorner,
-}
-
+/// Marktype for the joints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum JointScale {
+pub enum JointMark {
     /// Inward join.
     In,
     /// Outward join.
@@ -40,8 +32,12 @@ pub enum JointScale {
     Manual(&'static str),
 }
 
+/// Position of the joints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum JointPos {
+    /// Draw a cross joint at the start.
+    /// The border type is for an area onwards the direction of the side.
+    StartCross(BorderType),
     /// Prolong the border along the main axis before start.
     ProlongStart,
     /// Draw a perpendicular joint at the start.
@@ -53,8 +49,12 @@ pub enum JointPos {
     End,
     /// Prolong the border along the main axis after the end.
     ProlongEnd,
+    /// Draw a cross joint at the end.
+    /// The border type is for an area onwards the direction of the side.
+    EndCross(BorderType),
 }
 
+/// Sides for the joints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum JointSide {
     /// Join from the top side upwards.
@@ -77,18 +77,6 @@ pub enum JointSide {
     /// Relative position to the top corner.
     /// 0 and height-1 are detected as corners.
     Left,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum JointCorner {
-    /// Join top-left corner with another bottom-right corner.
-    TopLeftCross,
-    /// Join top-right corner with another bottom-left corner.
-    TopRightCross,
-    /// Join bottom-right corner with another top-left corner.
-    BottomRightCross,
-    /// Join bottom-left corner with another top-right corner.
-    BottomLeftCross,
 }
 
 // mod block_joint;

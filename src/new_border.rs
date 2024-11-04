@@ -1,8 +1,28 @@
-use crate::{CrossJoint, Joint, JointCorner, JointPos, JointScale, JointSide, NewBlock};
+use crate::{Joint, JointMark, JointPos, JointSide, NewBlock};
 use ratatui::layout::Rect;
 use ratatui::widgets::{Block, BorderType};
 use std::rc::Rc;
 
+/// Create one border for the given layout.
+///
+/// __Assumptions__
+///
+/// * All areas are rendered using the same border_type.
+///
+///         This is just for simplification of the code here.
+///         Might be lifted in a future version, or with a parallel impl.
+///
+/// * The requested area n is the last one that will be rendered.
+///
+///         This might render a few borders doubly, but this way
+///         the actual order of rendering becomes mote.
+///
+/// * The requested area will connect to all adjacent areas.
+///
+///         This is a necessary constraint, and can be easily
+///         avoided by creating the relevant subset before calling
+///         the fn.
+///
 pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> NewBlock<'static> {
     let area = layout[n];
     let area_x1 = area.x;
@@ -13,7 +33,6 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
     let mut block = NewBlock {
         block: Block::bordered().border_type(border_type),
         joints: vec![],
-        cross: vec![],
     };
 
     for test in layout.iter() {
@@ -25,16 +44,18 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         // test above
         if test_y2 == area_y1 {
             if test_x1 == area_x2 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::TopRightCross,
+                block.joints.push(Joint {
+                    border: border_type,
+                    side: JointSide::Top,
+                    mark: JointMark::Out,
+                    mirrored: false,
+                    pos: JointPos::EndCross(border_type),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Top,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::Pos(test_x1 - area_x1),
                 });
@@ -42,23 +63,25 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Top,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::ProlongStart,
                 });
             }
 
             if test_x2 == area_x1 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::TopLeftCross,
+                block.joints.push(Joint {
+                    border: border_type,
+                    side: JointSide::Top,
+                    mark: JointMark::Out,
+                    mirrored: false,
+                    pos: JointPos::StartCross(border_type),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Top,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::Pos(test_x2 - area_x1),
                 });
@@ -66,7 +89,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Top,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::ProlongEnd,
                 });
@@ -76,16 +99,18 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         // test below
         if test_y1 == area_y2 {
             if test_x1 == area_x2 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::BottomRightCross,
+                block.joints.push(Joint {
+                    border: border_type,
+                    side: JointSide::Bottom,
+                    mark: JointMark::Out,
+                    mirrored: false,
+                    pos: JointPos::EndCross(border_type),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Bottom,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::Pos(test_x1 - area_x1),
                 });
@@ -93,23 +118,25 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Bottom,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::ProlongStart,
                 });
             }
 
             if test_x2 == area_x1 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::BottomLeftCross,
+                block.joints.push(Joint {
+                    border: border_type,
+                    side: JointSide::Bottom,
+                    mark: JointMark::Out,
+                    mirrored: false,
+                    pos: JointPos::StartCross(border_type),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Bottom,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::Pos(test_x2 - area_x1),
                 });
@@ -117,7 +144,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Bottom,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::ProlongEnd,
                 });
@@ -127,16 +154,20 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         // test left
         if test_x2 == area_x1 {
             if test_y1 == area_y2 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::BottomLeftCross,
-                });
+                // already added as Bottom/StartCross
+
+                // block.joints.push(Joint {
+                //     border: border_type,
+                //     side: JointSide::Left,
+                //     mark: JointMark::Out,
+                //     mirrored: false,
+                //     pos: JointPos::EndCross(border_type),
+                // });
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Left,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::Pos(test_y1 - area_y1),
                 });
@@ -144,23 +175,27 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Left,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::ProlongStart,
                 });
             }
 
             if test_y2 == area_y1 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::TopLeftCross,
-                });
+                // already added as Top/StartCross
+
+                // block.joints.push(Joint {
+                //     border: border_type,
+                //     side: JointSide::Left,
+                //     mark: JointMark::Out,
+                //     mirrored: false,
+                //     pos: JointPos::StartCross(border_type),
+                // });
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Left,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::Pos(test_y2 - area_y1),
                 });
@@ -168,7 +203,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Left,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::ProlongEnd,
                 });
@@ -178,16 +213,20 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
         // test right
         if test_x1 == area_x2 {
             if test_y1 == area_y2 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::BottomRightCross,
-                });
+                // already added as Bottom/EndCross
+
+                // block.joints.push(Joint {
+                //     border: border_type,
+                //     side: JointSide::Right,
+                //     mark: JointMark::Out,
+                //     mirrored: false,
+                //     pos: JointPos::EndCross(border_type),
+                // });
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Right,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::Pos(test_y1 - area_y1),
                 });
@@ -195,23 +234,27 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Right,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: false,
                     pos: JointPos::ProlongStart,
                 });
             }
 
             if test_y2 == area_y1 {
-                block.cross.push(CrossJoint {
-                    join_border: border_type,
-                    join_border2: border_type,
-                    corner: JointCorner::TopRightCross,
-                });
+                // already added as Top/EndCross
+
+                // block.joints.push(Joint {
+                //     border: border_type,
+                //     side: JointSide::Right,
+                //     mark: JointMark::Out,
+                //     mirrored: false,
+                //     pos: JointPos::StartCross(border_type),
+                // });
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Right,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::Pos(test_y2 - area_y1),
                 });
@@ -219,7 +262,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border_type: BorderType) -> N
                 block.joints.push(Joint {
                     border: border_type,
                     side: JointSide::Right,
-                    scale: JointScale::Out,
+                    mark: JointMark::Out,
                     mirrored: true,
                     pos: JointPos::ProlongEnd,
                 });

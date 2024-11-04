@@ -6,7 +6,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::{render_joint, Joint, JointPos, JointScale, JointSide};
+use ratatui_block::{render_joint, Joint, JointMark, JointPos, JointSide};
 
 mod mini_salsa;
 
@@ -21,7 +21,7 @@ fn main() -> Result<(), anyhow::Error> {
         joint: Joint {
             border: BorderType::QuadrantInside,
             side: JointSide::Top,
-            scale: JointScale::Out,
+            mark: JointMark::Out,
             mirrored: false,
             pos: JointPos::ProlongStart,
         },
@@ -157,7 +157,7 @@ fn repaint_buttons(
     txt_area.y += 1;
     format!("joint={:?}", state.joint.border).render(txt_area, buf);
     txt_area.y += 1;
-    format!("scale={:?}", state.joint.scale).render(txt_area, buf);
+    format!("scale={:?}", state.joint.mark).render(txt_area, buf);
     txt_area.y += 1;
     format!("side={:?}", state.joint.side).render(txt_area, buf);
     txt_area.y += 1;
@@ -215,11 +215,11 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(4)) => {
-            state.joint.scale = match state.joint.scale {
-                JointScale::In => JointScale::Out,
-                JointScale::Out => JointScale::Through,
-                JointScale::Through => JointScale::In,
-                JointScale::Manual(c) => JointScale::Manual(c),
+            state.joint.mark = match state.joint.mark {
+                JointMark::In => JointMark::Out,
+                JointMark::Out => JointMark::Through,
+                JointMark::Through => JointMark::In,
+                JointMark::Manual(c) => JointMark::Manual(c),
             };
             Outcome::Changed
         }

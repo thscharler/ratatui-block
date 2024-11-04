@@ -1,15 +1,13 @@
-use crate::JointScale::Out;
-use crate::JointSide::{Left, Top};
-use crate::{Joint, JointPos, JointScale, JointSide};
+use crate::{Joint, JointMark, JointPos, JointSide};
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::widgets::BorderType;
-use ratatui::widgets::BorderType::QuadrantInside;
 
 pub fn render_joint(border: BorderType, mut joint: Joint, area: Rect, buf: &mut Buffer) {
     // normalize before finding the glyph
     let n_pos = match joint.side {
         JointSide::Top | JointSide::Bottom => match joint.pos {
+            JointPos::StartCross(_) => 0,
             JointPos::ProlongStart => 0,
             JointPos::Start => 0,
             JointPos::Pos(n) => {
@@ -22,8 +20,10 @@ pub fn render_joint(border: BorderType, mut joint: Joint, area: Rect, buf: &mut 
             }
             JointPos::End => area.width - 1,
             JointPos::ProlongEnd => area.width - 1,
+            JointPos::EndCross(_) => area.width - 1,
         },
         JointSide::Right | JointSide::Left => match joint.pos {
+            JointPos::StartCross(_) => 0,
             JointPos::ProlongStart => 0,
             JointPos::Start => 0,
             JointPos::Pos(n) => {
@@ -36,6 +36,7 @@ pub fn render_joint(border: BorderType, mut joint: Joint, area: Rect, buf: &mut 
             }
             JointPos::End => area.height - 1,
             JointPos::ProlongEnd => area.height - 1,
+            JointPos::EndCross(_) => area.height - 1,
         },
     };
 
@@ -80,11 +81,19 @@ pub fn render_joint(border: BorderType, mut joint: Joint, area: Rect, buf: &mut 
 
 fn plain_joint(joint: Joint) -> &'static str {
     use BorderType::*;
+    use JointMark::*;
     use JointPos::*;
-    use JointScale::*;
     use JointSide::*;
 
-    match (joint.scale, joint.side, joint.pos, joint.border) {
+    match (joint.mark, joint.side, joint.pos, joint.border) {
+        (Out, Top, StartCross(_), Plain) => "┼",
+        (Out, Top, StartCross(_), Rounded) => "┼",
+        (Out, Top, StartCross(_), Double) => "┼",
+        (Out, Top, StartCross(Thick), Thick) => "╃",
+        (Out, Top, StartCross(_), Thick) => "╀",
+        (Out, Top, StartCross(Thick), _) => "┽",
+        (Out, Top, StartCross(_), QuadrantInside) => "┼",
+        (Out, Top, StartCross(_), QuadrantOutside) => "┼",
         (Out, Top, ProlongStart, Plain) => "┬",
         (Out, Top, ProlongStart, Rounded) => "┬",
         (Out, Top, ProlongStart, Double) => "┬",
@@ -115,7 +124,16 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Out, Top, ProlongEnd, Thick) => "┮",
         (Out, Top, ProlongEnd, QuadrantInside) => "┬",
         (Out, Top, ProlongEnd, QuadrantOutside) => "┬",
+        (Out, Top, EndCross(_), Plain) => "┼",
+        (Out, Top, EndCross(_), Rounded) => "┼",
+        (Out, Top, EndCross(_), Double) => "┼",
+        (Out, Top, EndCross(Thick), Thick) => "╄",
+        (Out, Top, EndCross(_), Thick) => "╀",
+        (Out, Top, EndCross(Thick), _) => "┾",
+        (Out, Top, EndCross(_), QuadrantInside) => "┼",
+        (Out, Top, EndCross(_), QuadrantOutside) => "┼",
 
+        (Out, Right, StartCross(_), _) => "X",
         (Out, Right, ProlongStart, Plain) => "┤",
         (Out, Right, ProlongStart, Rounded) => "┤",
         (Out, Right, ProlongStart, Double) => "┤",
@@ -146,7 +164,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Out, Right, ProlongEnd, Thick) => "┧",
         (Out, Right, ProlongEnd, QuadrantInside) => "┤",
         (Out, Right, ProlongEnd, QuadrantOutside) => "┤",
+        (Out, Right, EndCross(_), _) => "X",
 
+        (Out, Bottom, StartCross(_), _) => "X",
         (Out, Bottom, ProlongStart, Plain) => "┴",
         (Out, Bottom, ProlongStart, Rounded) => "┴",
         (Out, Bottom, ProlongStart, Double) => "┴",
@@ -177,7 +197,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Out, Bottom, ProlongEnd, Thick) => "┶",
         (Out, Bottom, ProlongEnd, QuadrantInside) => "┴",
         (Out, Bottom, ProlongEnd, QuadrantOutside) => "┴",
+        (Out, Bottom, EndCross(_), _) => "X",
 
+        (Out, Left, StartCross(_), _) => "X",
         (Out, Left, ProlongStart, Plain) => "├",
         (Out, Left, ProlongStart, Rounded) => "├",
         (Out, Left, ProlongStart, Double) => "├",
@@ -208,8 +230,10 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Out, Left, ProlongEnd, Thick) => "┟",
         (Out, Left, ProlongEnd, QuadrantInside) => "├",
         (Out, Left, ProlongEnd, QuadrantOutside) => "├",
+        (Out, Left, EndCross(_), _) => "X",
 
         // -------------------------------------------------
+        (In, Top, StartCross(_), _) => "X",
         (In, Top, ProlongStart, Plain) => "┌",
         (In, Top, ProlongStart, Rounded) => "┌",
         (In, Top, ProlongStart, Double) => "┌",
@@ -240,7 +264,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (In, Top, ProlongEnd, Thick) => "┐",
         (In, Top, ProlongEnd, QuadrantInside) => "┐",
         (In, Top, ProlongEnd, QuadrantOutside) => "┐",
+        (In, Top, EndCross(_), _) => "X",
 
+        (In, Right, StartCross(_), _) => "X",
         (In, Right, ProlongStart, Plain) => "┐",
         (In, Right, ProlongStart, Rounded) => "┐",
         (In, Right, ProlongStart, Double) => "┐",
@@ -271,7 +297,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (In, Right, ProlongEnd, Thick) => "┘",
         (In, Right, ProlongEnd, QuadrantInside) => "┘",
         (In, Right, ProlongEnd, QuadrantOutside) => "┘",
+        (In, Right, EndCross(_), _) => "X",
 
+        (In, Bottom, StartCross(_), _) => "X",
         (In, Bottom, ProlongStart, Plain) => "└",
         (In, Bottom, ProlongStart, Rounded) => "└",
         (In, Bottom, ProlongStart, Double) => "└",
@@ -302,7 +330,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (In, Bottom, ProlongEnd, Thick) => "┘",
         (In, Bottom, ProlongEnd, QuadrantInside) => "┘",
         (In, Bottom, ProlongEnd, QuadrantOutside) => "┘",
+        (In, Bottom, EndCross(_), _) => "X",
 
+        (In, Left, StartCross(_), _) => "X",
         (In, Left, ProlongStart, Plain) => "┌",
         (In, Left, ProlongStart, Rounded) => "┌",
         (In, Left, ProlongStart, Double) => "┌",
@@ -333,8 +363,10 @@ fn plain_joint(joint: Joint) -> &'static str {
         (In, Left, ProlongEnd, Thick) => "└",
         (In, Left, ProlongEnd, QuadrantInside) => "└",
         (In, Left, ProlongEnd, QuadrantOutside) => "└",
+        (In, Left, EndCross(_), _) => "X",
 
         // ----------------------------------------------
+        (Through, Top, StartCross(_), _) => "X",
         (Through, Top, ProlongStart, Plain) => "┌",
         (Through, Top, ProlongStart, Rounded) => "┌",
         (Through, Top, ProlongStart, Double) => "┌",
@@ -365,7 +397,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Through, Top, ProlongEnd, Thick) => "┐",
         (Through, Top, ProlongEnd, QuadrantInside) => "┐",
         (Through, Top, ProlongEnd, QuadrantOutside) => "┐",
+        (Through, Top, EndCross(_), _) => "X",
 
+        (Through, Right, StartCross(_), _) => "X",
         (Through, Right, ProlongStart, Plain) => "┐",
         (Through, Right, ProlongStart, Rounded) => "┐",
         (Through, Right, ProlongStart, Double) => "┐",
@@ -396,7 +430,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Through, Right, ProlongEnd, Thick) => "┘",
         (Through, Right, ProlongEnd, QuadrantInside) => "┘",
         (Through, Right, ProlongEnd, QuadrantOutside) => "┘",
+        (Through, Right, EndCross(_), _) => "X",
 
+        (Through, Bottom, StartCross(_), _) => "X",
         (Through, Bottom, ProlongStart, Plain) => "└",
         (Through, Bottom, ProlongStart, Rounded) => "└",
         (Through, Bottom, ProlongStart, Double) => "└",
@@ -427,7 +463,9 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Through, Bottom, ProlongEnd, Thick) => "┘",
         (Through, Bottom, ProlongEnd, QuadrantInside) => "┘",
         (Through, Bottom, ProlongEnd, QuadrantOutside) => "┘",
+        (Through, Bottom, EndCross(_), _) => "X",
 
+        (Through, Left, StartCross(_), _) => "X",
         (Through, Left, ProlongStart, Plain) => "┌",
         (Through, Left, ProlongStart, Rounded) => "┌",
         (Through, Left, ProlongStart, Double) => "┌",
@@ -458,6 +496,7 @@ fn plain_joint(joint: Joint) -> &'static str {
         (Through, Left, ProlongEnd, Thick) => "└",
         (Through, Left, ProlongEnd, QuadrantInside) => "└",
         (Through, Left, ProlongEnd, QuadrantOutside) => "└",
+        (Through, Left, EndCross(_), _) => "X",
 
         (Manual(cc), _, _, _) => cc,
     }
@@ -465,11 +504,12 @@ fn plain_joint(joint: Joint) -> &'static str {
 
 fn double_joint(joint: Joint) -> &'static str {
     use BorderType::*;
+    use JointMark::*;
     use JointPos::*;
-    use JointScale::*;
     use JointSide::*;
 
-    match (joint.scale, joint.side, joint.pos, joint.border) {
+    match (joint.mark, joint.side, joint.pos, joint.border) {
+        (Out, Top, StartCross(_), _) => "X",
         (Out, Top, ProlongStart, Plain) => "╦",
         (Out, Top, ProlongStart, Rounded) => "╦",
         (Out, Top, ProlongStart, Double) => "╦",
@@ -500,7 +540,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Out, Top, ProlongEnd, Thick) => "╦",
         (Out, Top, ProlongEnd, QuadrantInside) => "╦",
         (Out, Top, ProlongEnd, QuadrantOutside) => "╦",
+        (Out, Top, EndCross(_), _) => "X",
 
+        (Out, Right, StartCross(_), _) => "X",
         (Out, Right, ProlongStart, Plain) => "╣",
         (Out, Right, ProlongStart, Rounded) => "╣",
         (Out, Right, ProlongStart, Double) => "╣",
@@ -531,7 +573,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Out, Right, ProlongEnd, Thick) => "╣",
         (Out, Right, ProlongEnd, QuadrantInside) => "╣",
         (Out, Right, ProlongEnd, QuadrantOutside) => "╣",
+        (Out, Right, EndCross(_), _) => "X",
 
+        (Out, Bottom, StartCross(_), _) => "X",
         (Out, Bottom, ProlongStart, Plain) => "╩",
         (Out, Bottom, ProlongStart, Rounded) => "╩",
         (Out, Bottom, ProlongStart, Double) => "╩",
@@ -562,7 +606,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Out, Bottom, ProlongEnd, Thick) => "╩",
         (Out, Bottom, ProlongEnd, QuadrantInside) => "╩",
         (Out, Bottom, ProlongEnd, QuadrantOutside) => "╩",
+        (Out, Bottom, EndCross(_), _) => "X",
 
+        (Out, Left, StartCross(_), _) => "X",
         (Out, Left, ProlongStart, Plain) => "╠",
         (Out, Left, ProlongStart, Rounded) => "╠",
         (Out, Left, ProlongStart, Double) => "╠",
@@ -593,8 +639,10 @@ fn double_joint(joint: Joint) -> &'static str {
         (Out, Left, ProlongEnd, Thick) => "╠",
         (Out, Left, ProlongEnd, QuadrantInside) => "╠",
         (Out, Left, ProlongEnd, QuadrantOutside) => "╠",
+        (Out, Left, EndCross(_), _) => "X",
 
         // ----------------------------------------------
+        (In, Top, StartCross(_), _) => "X",
         (In, Top, ProlongStart, Plain) => "╔",
         (In, Top, ProlongStart, Rounded) => "╔",
         (In, Top, ProlongStart, Double) => "╔",
@@ -625,7 +673,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (In, Top, ProlongEnd, Thick) => "╗",
         (In, Top, ProlongEnd, QuadrantInside) => "╗",
         (In, Top, ProlongEnd, QuadrantOutside) => "╗",
+        (In, Top, EndCross(_), _) => "X",
 
+        (In, Right, StartCross(_), _) => "X",
         (In, Right, ProlongStart, Plain) => "╗",
         (In, Right, ProlongStart, Rounded) => "╗",
         (In, Right, ProlongStart, Double) => "╗",
@@ -656,7 +706,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (In, Right, ProlongEnd, Thick) => "╝",
         (In, Right, ProlongEnd, QuadrantInside) => "╝",
         (In, Right, ProlongEnd, QuadrantOutside) => "╝",
+        (In, Right, EndCross(_), _) => "X",
 
+        (In, Bottom, StartCross(_), _) => "X",
         (In, Bottom, ProlongStart, Plain) => "╚",
         (In, Bottom, ProlongStart, Rounded) => "╚",
         (In, Bottom, ProlongStart, Double) => "╚",
@@ -687,7 +739,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (In, Bottom, ProlongEnd, Thick) => "╝",
         (In, Bottom, ProlongEnd, QuadrantInside) => "╝",
         (In, Bottom, ProlongEnd, QuadrantOutside) => "╝",
+        (In, Bottom, EndCross(_), _) => "X",
 
+        (In, Left, StartCross(_), _) => "X",
         (In, Left, ProlongStart, Plain) => "╔",
         (In, Left, ProlongStart, Rounded) => "╔",
         (In, Left, ProlongStart, Double) => "╔",
@@ -718,8 +772,10 @@ fn double_joint(joint: Joint) -> &'static str {
         (In, Left, ProlongEnd, Thick) => "╚",
         (In, Left, ProlongEnd, QuadrantInside) => "╚",
         (In, Left, ProlongEnd, QuadrantOutside) => "╚",
+        (In, Left, EndCross(_), _) => "X",
 
         // ----------------------------------------------
+        (Through, Top, StartCross(_), _) => "X",
         (Through, Top, ProlongStart, Plain) => "╔",
         (Through, Top, ProlongStart, Rounded) => "╔",
         (Through, Top, ProlongStart, Double) => "╔",
@@ -750,7 +806,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Through, Top, ProlongEnd, Thick) => "╗",
         (Through, Top, ProlongEnd, QuadrantInside) => "╗",
         (Through, Top, ProlongEnd, QuadrantOutside) => "╗",
+        (Through, Top, EndCross(_), _) => "X",
 
+        (Through, Right, StartCross(_), _) => "X",
         (Through, Right, ProlongStart, Plain) => "╗",
         (Through, Right, ProlongStart, Rounded) => "╗",
         (Through, Right, ProlongStart, Double) => "╗",
@@ -781,7 +839,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Through, Right, ProlongEnd, Thick) => "╝",
         (Through, Right, ProlongEnd, QuadrantInside) => "╝",
         (Through, Right, ProlongEnd, QuadrantOutside) => "╝",
+        (Through, Right, EndCross(_), _) => "X",
 
+        (Through, Bottom, StartCross(_), _) => "X",
         (Through, Bottom, ProlongStart, Plain) => "╚",
         (Through, Bottom, ProlongStart, Rounded) => "╚",
         (Through, Bottom, ProlongStart, Double) => "╚",
@@ -812,7 +872,9 @@ fn double_joint(joint: Joint) -> &'static str {
         (Through, Bottom, ProlongEnd, Thick) => "╝",
         (Through, Bottom, ProlongEnd, QuadrantInside) => "╝",
         (Through, Bottom, ProlongEnd, QuadrantOutside) => "╝",
+        (Through, Bottom, EndCross(_), _) => "X",
 
+        (Through, Left, StartCross(_), _) => "X",
         (Through, Left, ProlongStart, Plain) => "╔",
         (Through, Left, ProlongStart, Rounded) => "╔",
         (Through, Left, ProlongStart, Double) => "╔",
@@ -843,6 +905,7 @@ fn double_joint(joint: Joint) -> &'static str {
         (Through, Left, ProlongEnd, Thick) => "╚",
         (Through, Left, ProlongEnd, QuadrantInside) => "╚",
         (Through, Left, ProlongEnd, QuadrantOutside) => "╚",
+        (Through, Left, EndCross(_), _) => "X",
 
         (Manual(cc), _, _, _) => cc,
     }
@@ -850,11 +913,12 @@ fn double_joint(joint: Joint) -> &'static str {
 
 fn thick_joint(joint: Joint) -> &'static str {
     use BorderType::*;
+    use JointMark::*;
     use JointPos::*;
-    use JointScale::*;
     use JointSide::*;
 
-    match (joint.scale, joint.side, joint.pos, joint.border) {
+    match (joint.mark, joint.side, joint.pos, joint.border) {
+        (Out, Top, StartCross(_), _) => "X",
         (Out, Top, ProlongStart, Plain) => "┲",
         (Out, Top, ProlongStart, Rounded) => "┲",
         (Out, Top, ProlongStart, Double) => "┳",
@@ -885,7 +949,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Out, Top, ProlongEnd, Thick) => "┳",
         (Out, Top, ProlongEnd, QuadrantInside) => "┳",
         (Out, Top, ProlongEnd, QuadrantOutside) => "┳",
+        (Out, Top, EndCross(_), _) => "X",
 
+        (Out, Right, StartCross(_), _) => "X",
         (Out, Right, ProlongStart, Plain) => "┪",
         (Out, Right, ProlongStart, Rounded) => "┪",
         (Out, Right, ProlongStart, Double) => "┫",
@@ -916,7 +982,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Out, Right, ProlongEnd, Thick) => "┫",
         (Out, Right, ProlongEnd, QuadrantInside) => "┫",
         (Out, Right, ProlongEnd, QuadrantOutside) => "┫",
+        (Out, Right, EndCross(_), _) => "X",
 
+        (Out, Bottom, StartCross(_), _) => "X",
         (Out, Bottom, ProlongStart, Plain) => "┺",
         (Out, Bottom, ProlongStart, Rounded) => "┺",
         (Out, Bottom, ProlongStart, Double) => "┻",
@@ -947,7 +1015,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Out, Bottom, ProlongEnd, Thick) => "┻",
         (Out, Bottom, ProlongEnd, QuadrantInside) => "┻",
         (Out, Bottom, ProlongEnd, QuadrantOutside) => "┻",
+        (Out, Bottom, EndCross(_), _) => "X",
 
+        (Out, Left, StartCross(_), _) => "X",
         (Out, Left, ProlongStart, Plain) => "┢",
         (Out, Left, ProlongStart, Rounded) => "┢",
         (Out, Left, ProlongStart, Double) => "┣",
@@ -978,8 +1048,10 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Out, Left, ProlongEnd, Thick) => "┣",
         (Out, Left, ProlongEnd, QuadrantInside) => "┣",
         (Out, Left, ProlongEnd, QuadrantOutside) => "┣",
+        (Out, Left, EndCross(_), _) => "X",
 
         // ----------------------------------------------
+        (In, Top, StartCross(_), _) => "X",
         (In, Top, ProlongStart, Plain) => "┏",
         (In, Top, ProlongStart, Rounded) => "┏",
         (In, Top, ProlongStart, Double) => "┏",
@@ -1010,7 +1082,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (In, Top, ProlongEnd, Thick) => "┓",
         (In, Top, ProlongEnd, QuadrantInside) => "┓",
         (In, Top, ProlongEnd, QuadrantOutside) => "┓",
+        (In, Top, EndCross(_), _) => "X",
 
+        (In, Right, StartCross(_), _) => "X",
         (In, Right, ProlongStart, Plain) => "┓",
         (In, Right, ProlongStart, Rounded) => "┓",
         (In, Right, ProlongStart, Double) => "┓",
@@ -1041,7 +1115,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (In, Right, ProlongEnd, Thick) => "┛",
         (In, Right, ProlongEnd, QuadrantInside) => "┛",
         (In, Right, ProlongEnd, QuadrantOutside) => "┛",
+        (In, Right, EndCross(_), _) => "X",
 
+        (In, Bottom, StartCross(_), _) => "X",
         (In, Bottom, ProlongStart, Plain) => "┗",
         (In, Bottom, ProlongStart, Rounded) => "┗",
         (In, Bottom, ProlongStart, Double) => "┗",
@@ -1072,7 +1148,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (In, Bottom, ProlongEnd, Thick) => "┛",
         (In, Bottom, ProlongEnd, QuadrantInside) => "┛",
         (In, Bottom, ProlongEnd, QuadrantOutside) => "┛",
+        (In, Bottom, EndCross(_), _) => "X",
 
+        (In, Left, StartCross(_), _) => "X",
         (In, Left, ProlongStart, Plain) => "┏",
         (In, Left, ProlongStart, Rounded) => "┏",
         (In, Left, ProlongStart, Double) => "┏",
@@ -1103,8 +1181,10 @@ fn thick_joint(joint: Joint) -> &'static str {
         (In, Left, ProlongEnd, Thick) => "┗",
         (In, Left, ProlongEnd, QuadrantInside) => "┗",
         (In, Left, ProlongEnd, QuadrantOutside) => "┗",
+        (In, Left, EndCross(_), _) => "X",
 
         // ----------------------------------------------
+        (Through, Top, StartCross(_), _) => "X",
         (Through, Top, ProlongStart, Plain) => "┏",
         (Through, Top, ProlongStart, Rounded) => "┏",
         (Through, Top, ProlongStart, Double) => "┏",
@@ -1135,7 +1215,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Through, Top, ProlongEnd, Thick) => "┓",
         (Through, Top, ProlongEnd, QuadrantInside) => "┓",
         (Through, Top, ProlongEnd, QuadrantOutside) => "┓",
+        (Through, Top, EndCross(_), _) => "X",
 
+        (Through, Right, StartCross(_), _) => "X",
         (Through, Right, ProlongStart, Plain) => "┓",
         (Through, Right, ProlongStart, Rounded) => "┓",
         (Through, Right, ProlongStart, Double) => "┓",
@@ -1166,7 +1248,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Through, Right, ProlongEnd, Thick) => "┛",
         (Through, Right, ProlongEnd, QuadrantInside) => "┛",
         (Through, Right, ProlongEnd, QuadrantOutside) => "┛",
+        (Through, Right, EndCross(_), _) => "X",
 
+        (Through, Bottom, StartCross(_), _) => "X",
         (Through, Bottom, ProlongStart, Plain) => "┗",
         (Through, Bottom, ProlongStart, Rounded) => "┗",
         (Through, Bottom, ProlongStart, Double) => "┗",
@@ -1197,7 +1281,9 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Through, Bottom, ProlongEnd, Thick) => "┛",
         (Through, Bottom, ProlongEnd, QuadrantInside) => "┛",
         (Through, Bottom, ProlongEnd, QuadrantOutside) => "┛",
+        (Through, Bottom, EndCross(_), _) => "X",
 
+        (Through, Left, StartCross(_), _) => "X",
         (Through, Left, ProlongStart, Plain) => "┏",
         (Through, Left, ProlongStart, Rounded) => "┏",
         (Through, Left, ProlongStart, Double) => "┏",
@@ -1228,6 +1314,7 @@ fn thick_joint(joint: Joint) -> &'static str {
         (Through, Left, ProlongEnd, Thick) => "┗",
         (Through, Left, ProlongEnd, QuadrantInside) => "┗",
         (Through, Left, ProlongEnd, QuadrantOutside) => "┗",
+        (Through, Left, EndCross(_), _) => "X",
 
         (Manual(cc), _, _, _) => cc,
     }
@@ -1235,17 +1322,18 @@ fn thick_joint(joint: Joint) -> &'static str {
 
 fn quad_inside_joint(joint: Joint) -> &'static str {
     use BorderType::*;
+    use JointMark::*;
     use JointPos::*;
-    use JointScale::*;
     use JointSide::*;
 
     match (
-        joint.scale,
+        joint.mark,
         joint.side,
         joint.pos,
         joint.mirrored,
         joint.border,
     ) {
+        (Out, Top, StartCross(_), _, _) => "X",
         (Out, Top, ProlongStart, false, _) => "▚",
         (Out, Top, ProlongStart, true, _) => "▄",
         (Out, Top, Start, false, _) => "▐",
@@ -1258,7 +1346,9 @@ fn quad_inside_joint(joint: Joint) -> &'static str {
         (Out, Top, End, true, _) => "▌",
         (Out, Top, ProlongEnd, false, _) => "▄",
         (Out, Top, ProlongEnd, true, _) => "▞",
+        (Out, Top, EndCross(_), _, _) => "X",
 
+        (Out, Right, StartCross(_), _, _) => "X",
         (Out, Right, ProlongStart, false, _) => "▞",
         (Out, Right, ProlongStart, true, _) => "▌",
         (Out, Right, Start, false, _) => "▄",
@@ -1271,7 +1361,9 @@ fn quad_inside_joint(joint: Joint) -> &'static str {
         (Out, Right, End, true, _) => "▀",
         (Out, Right, ProlongEnd, false, _) => "▌",
         (Out, Right, ProlongEnd, true, _) => "▚",
+        (Out, Right, EndCross(_), _, _) => "X",
 
+        (Out, Bottom, StartCross(_), _, _) => "X",
         (Out, Bottom, ProlongStart, false, _) => "▞",
         (Out, Bottom, ProlongStart, true, _) => "▀",
         (Out, Bottom, Start, false, _) => "▐",
@@ -1284,7 +1376,9 @@ fn quad_inside_joint(joint: Joint) -> &'static str {
         (Out, Bottom, End, true, _) => "▌",
         (Out, Bottom, ProlongEnd, false, _) => "▀",
         (Out, Bottom, ProlongEnd, true, _) => "▚",
+        (Out, Bottom, EndCross(_), _, _) => "X",
 
+        (Out, Left, StartCross(_), _, _) => "X",
         (Out, Left, ProlongStart, false, _) => "▚",
         (Out, Left, ProlongStart, true, _) => "▐",
         (Out, Left, Start, false, _) => "▄",
@@ -1297,56 +1391,73 @@ fn quad_inside_joint(joint: Joint) -> &'static str {
         (Out, Left, End, true, _) => "▀",
         (Out, Left, ProlongEnd, false, _) => "▐",
         (Out, Left, ProlongEnd, true, _) => "▞",
+        (Out, Left, EndCross(_), _, _) => "X",
 
         // ----------------------------------------------
+        (In, Top, StartCross(_), _, _) => "X",
         (In, Top, ProlongStart, _, _) => "┌",
         (In, Top, Start, _, _) => "┌",
         (In, Top, Pos(_), _, _) => "┬",
         (In, Top, End, _, _) => "┐",
         (In, Top, ProlongEnd, _, _) => "┐",
+        (In, Top, EndCross(_), _, _) => "X",
 
+        (In, Right, StartCross(_), _, _) => "X",
         (In, Right, ProlongStart, _, _) => "┐",
         (In, Right, Start, _, _) => "┐",
         (In, Right, Pos(_), _, _) => "┤",
         (In, Right, End, _, _) => "┘",
         (In, Right, ProlongEnd, _, _) => "┘",
+        (In, Right, EndCross(_), _, _) => "X",
 
+        (In, Bottom, StartCross(_), _, _) => "X",
         (In, Bottom, ProlongStart, _, _) => "└",
         (In, Bottom, Start, _, _) => "└",
         (In, Bottom, Pos(_), _, _) => "┴",
         (In, Bottom, End, _, _) => "┘",
         (In, Bottom, ProlongEnd, _, _) => "┘",
+        (In, Bottom, EndCross(_), _, _) => "X",
 
+        (In, Left, StartCross(_), _, _) => "X",
         (In, Left, ProlongStart, _, _) => "┌",
         (In, Left, Start, _, _) => "┌",
         (In, Left, Pos(_), _, _) => "├",
         (In, Left, End, _, _) => "└",
         (In, Left, ProlongEnd, _, _) => "└",
+        (In, Left, EndCross(_), _, _) => "X",
 
         // ----------------------------------------------
+        (Through, Top, StartCross(_), _, _) => "X",
         (Through, Top, ProlongStart, _, _) => "┌",
         (Through, Top, Start, _, _) => "┌",
         (Through, Top, Pos(_), _, _) => "┼",
         (Through, Top, End, _, _) => "┐",
         (Through, Top, ProlongEnd, _, _) => "┐",
+        (Through, Top, EndCross(_), _, _) => "X",
 
+        (Through, Right, StartCross(_), _, _) => "X",
         (Through, Right, ProlongStart, _, _) => "┐",
         (Through, Right, Start, _, _) => "┐",
         (Through, Right, Pos(_), _, _) => "┼",
         (Through, Right, End, _, _) => "┘",
         (Through, Right, ProlongEnd, _, _) => "┘",
+        (Through, Right, EndCross(_), _, _) => "X",
 
+        (Through, Bottom, StartCross(_), _, _) => "X",
         (Through, Bottom, ProlongStart, _, _) => "└",
         (Through, Bottom, Start, _, _) => "└",
         (Through, Bottom, Pos(_), _, _) => "┼",
         (Through, Bottom, End, _, _) => "┘",
         (Through, Bottom, ProlongEnd, _, _) => "┘",
+        (Through, Bottom, EndCross(_), _, _) => "X",
 
+        (Through, Left, StartCross(_), _, _) => "X",
         (Through, Left, ProlongStart, _, _) => "┌",
         (Through, Left, Start, _, _) => "┌",
         (Through, Left, Pos(_), _, _) => "┼",
         (Through, Left, End, _, _) => "└",
         (Through, Left, ProlongEnd, _, _) => "└",
+        (Through, Left, EndCross(_), _, _) => "X",
 
         (Manual(cc), _, _, _, _) => cc,
     }

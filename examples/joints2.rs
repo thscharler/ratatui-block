@@ -1,7 +1,5 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
-use crossterm::style::Stylize;
-use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Direction, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
@@ -167,7 +165,7 @@ fn repaint_buttons(
         area.y += 1;
         format!("{:?}", joint.border).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.scale).render(area, buf);
+        format!("{:?}", joint.mark).render(area, buf);
         area.y += 1;
         format!("{:?}", joint.side).render(area, buf);
         area.y += 1;
