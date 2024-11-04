@@ -16,18 +16,19 @@ fn main() -> Result<(), anyhow::Error> {
     let mut data = Data {};
     let mut state = State {
         area: Default::default(),
-        border: BorderType::QuadrantInside,
+        border: BorderType::Plain,
 
         joint: Joint {
-            border: BorderType::QuadrantInside,
+            border: BorderType::Plain,
             side: JointSide::Top,
             mark: JointMark::Out,
             mirrored: false,
-            pos: JointPos::ProlongStart,
+            pos: JointPos::StartCross(BorderType::Plain),
         },
 
-        hor_neighbour: BorderType::QuadrantInside,
-        vert_neighbour: BorderType::QuadrantInside,
+        mono: false,
+        hor_neighbour: BorderType::Plain,
+        vert_neighbour: BorderType::Plain,
     };
 
     run_ui(
@@ -46,6 +47,7 @@ struct State {
 
     border: BorderType,
     joint: Joint,
+    mono: bool,
 
     hor_neighbour: BorderType,
     vert_neighbour: BorderType,
@@ -113,62 +115,68 @@ fn repaint_buttons(
         }
     }
 
-    Block::bordered()
-        .border_type(state.border)
-        .border_style(Style::new().fg(THEME.orange[2]))
-        .render(layout[1][1], buf);
+    if state.mono {
+        Block::bordered()
+            .border_type(state.border)
+            .render(layout[1][1], buf);
+    } else {
+        Block::bordered()
+            .border_type(state.border)
+            .border_style(Style::new().fg(THEME.orange[2]))
+            .render(layout[1][1], buf);
+    }
 
     render_joint(state.border, state.joint, layout[1][1], buf);
 
-    let mut txt_area = l0[0];
-    txt_area.y += 2;
-    txt_area.height = 1;
-
-    "F1: main border"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F2: horizontal neighbours"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F3: vertical neighbours"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F4: joint type"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F5: advance position"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "Shift+F5: reduce position"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F6: mirror"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 2;
-
-    format!("border={:?}", state.border).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("joint={:?}", state.joint.border).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("scale={:?}", state.joint.mark).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("side={:?}", state.joint.side).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("pos={:?}", state.joint.pos).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("mirror={:?}", state.joint.mirrored).render(txt_area, buf);
-
-    txt_area.y += 2;
-    format!("hor={:?}", state.hor_neighbour).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("vert={:?}", state.vert_neighbour).render(txt_area, buf);
+    // let mut txt_area = l0[0];
+    // txt_area.y += 2;
+    // txt_area.height = 1;
+    //
+    // "F1: main border"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "F2: horizontal neighbours"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "F3: vertical neighbours"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "F4: joint type"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "Left/Right: position"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "F6: mirror"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 1;
+    // "F8: mono"
+    //     .set_style(THEME.secondary_text())
+    //     .render(txt_area, buf);
+    // txt_area.y += 2;
+    //
+    // format!("border={:?}", state.border).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("joint={:?}", state.joint.border).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("scale={:?}", state.joint.mark).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("side={:?}", state.joint.side).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("pos={:?}", state.joint.pos).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("mirror={:?}", state.joint.mirrored).render(txt_area, buf);
+    //
+    // txt_area.y += 2;
+    // format!("hor={:?}", state.hor_neighbour).render(txt_area, buf);
+    // txt_area.y += 1;
+    // format!("vert={:?}", state.vert_neighbour).render(txt_area, buf);
 
     Ok(())
 }
@@ -223,10 +231,11 @@ fn handle_buttons(
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(5)) => {
+        ct_event!(keycode press Right) => {
             match state.joint.side {
                 JointSide::Top => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::StartCross(_) => JointPos::ProlongStart,
                         JointPos::ProlongStart => JointPos::Start,
                         JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
@@ -237,14 +246,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => {
+                        JointPos::ProlongEnd => JointPos::EndCross(state.vert_neighbour),
+                        JointPos::EndCross(_) => {
                             state.joint.side = JointSide::Right;
-                            JointPos::ProlongStart
+                            JointPos::StartCross(state.hor_neighbour)
                         }
                     };
                 }
                 JointSide::Right => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::StartCross(_) => JointPos::ProlongStart,
                         JointPos::ProlongStart => JointPos::Start,
                         JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
@@ -255,14 +266,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => {
+                        JointPos::ProlongEnd => JointPos::EndCross(state.hor_neighbour),
+                        JointPos::EndCross(_) => {
                             state.joint.side = JointSide::Bottom;
-                            JointPos::ProlongEnd
+                            JointPos::EndCross(state.vert_neighbour)
                         }
                     };
                 }
                 JointSide::Bottom => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::EndCross(_) => JointPos::ProlongEnd,
                         JointPos::ProlongEnd => JointPos::End,
                         JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
                         JointPos::Pos(n) => {
@@ -273,14 +286,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => {
+                        JointPos::ProlongStart => JointPos::StartCross(state.vert_neighbour),
+                        JointPos::StartCross(_) => {
                             state.joint.side = JointSide::Left;
-                            JointPos::ProlongEnd
+                            JointPos::EndCross(state.hor_neighbour)
                         }
                     };
                 }
                 JointSide::Left => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::EndCross(_) => JointPos::ProlongEnd,
                         JointPos::ProlongEnd => JointPos::End,
                         JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
                         JointPos::Pos(n) => {
@@ -291,19 +306,21 @@ fn handle_buttons(
                             }
                         }
                         JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => {
+                        JointPos::ProlongStart => JointPos::StartCross(state.hor_neighbour),
+                        JointPos::StartCross(_) => {
                             state.joint.side = JointSide::Top;
-                            JointPos::ProlongStart
+                            JointPos::StartCross(state.vert_neighbour)
                         }
                     };
                 }
             };
             Outcome::Changed
         }
-        ct_event!(keycode press SHIFT-F(5)) => {
+        ct_event!(keycode press Left) => {
             match state.joint.side {
                 JointSide::Top => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::EndCross(_) => JointPos::ProlongEnd,
                         JointPos::ProlongEnd => JointPos::End,
                         JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
                         JointPos::Pos(n) => {
@@ -314,14 +331,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => {
+                        JointPos::ProlongStart => JointPos::StartCross(state.vert_neighbour),
+                        JointPos::StartCross(_) => {
                             state.joint.side = JointSide::Left;
-                            JointPos::ProlongStart
+                            JointPos::StartCross(state.hor_neighbour)
                         }
                     };
                 }
                 JointSide::Left => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::StartCross(_) => JointPos::ProlongStart,
                         JointPos::ProlongStart => JointPos::Start,
                         JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
@@ -332,14 +351,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => {
+                        JointPos::ProlongEnd => JointPos::EndCross(state.hor_neighbour),
+                        JointPos::EndCross(_) => {
                             state.joint.side = JointSide::Bottom;
-                            JointPos::ProlongStart
+                            JointPos::StartCross(state.vert_neighbour)
                         }
                     };
                 }
                 JointSide::Bottom => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::StartCross(_) => JointPos::ProlongStart,
                         JointPos::ProlongStart => JointPos::Start,
                         JointPos::Start => JointPos::Pos(1),
                         JointPos::Pos(n) => {
@@ -350,14 +371,16 @@ fn handle_buttons(
                             }
                         }
                         JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => {
+                        JointPos::ProlongEnd => JointPos::EndCross(state.vert_neighbour),
+                        JointPos::EndCross(_) => {
                             state.joint.side = JointSide::Right;
-                            JointPos::ProlongEnd
+                            JointPos::EndCross(state.hor_neighbour)
                         }
                     };
                 }
                 JointSide::Right => {
                     state.joint.pos = match state.joint.pos {
+                        JointPos::EndCross(_) => JointPos::ProlongEnd,
                         JointPos::ProlongEnd => JointPos::End,
                         JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
                         JointPos::Pos(n) => {
@@ -368,9 +391,10 @@ fn handle_buttons(
                             }
                         }
                         JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => {
+                        JointPos::ProlongStart => JointPos::StartCross(state.hor_neighbour),
+                        JointPos::StartCross(_) => {
                             state.joint.side = JointSide::Top;
-                            JointPos::ProlongEnd
+                            JointPos::EndCross(state.vert_neighbour)
                         }
                     };
                 }
@@ -379,6 +403,10 @@ fn handle_buttons(
         }
         ct_event!(keycode press F(6)) => {
             state.joint.mirrored = !state.joint.mirrored;
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(8)) => {
+            state.mono = !state.mono;
             Outcome::Changed
         }
         _ => Outcome::Continue,

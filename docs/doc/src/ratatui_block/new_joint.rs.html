@@ -1462,6 +1462,7 @@
 <a href="#1462" id="1462">1462</a>
 <a href="#1463" id="1463">1463</a>
 <a href="#1464" id="1464">1464</a>
+<a href="#1465" id="1465">1465</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{Joint, JointMark, JointPos, JointSide};
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
@@ -2797,7 +2798,7 @@
         joint.mirrored,
         joint.border,
     ) {
-        (Out, Top, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Top, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
         (Out, Top, ProlongStart, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
         (Out, Top, ProlongStart, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
         (Out, Top, Start, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
@@ -2810,9 +2811,9 @@
         (Out, Top, End, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
         (Out, Top, ProlongEnd, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
         (Out, Top, ProlongEnd, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
-        (Out, Top, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Top, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
 
-        (Out, Right, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Right, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
         (Out, Right, ProlongStart, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
         (Out, Right, ProlongStart, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
         (Out, Right, Start, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
@@ -2825,9 +2826,9 @@
         (Out, Right, End, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
         (Out, Right, ProlongEnd, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
         (Out, Right, ProlongEnd, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
-        (Out, Right, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Right, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
 
-        (Out, Bottom, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Bottom, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
         (Out, Bottom, ProlongStart, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
         (Out, Bottom, ProlongStart, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
         (Out, Bottom, Start, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
@@ -2840,9 +2841,9 @@
         (Out, Bottom, End, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
         (Out, Bottom, ProlongEnd, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
         (Out, Bottom, ProlongEnd, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
-        (Out, Bottom, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Bottom, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
 
-        (Out, Left, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Left, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
         (Out, Left, ProlongStart, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▚"</span>,
         (Out, Left, ProlongStart, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
         (Out, Left, Start, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
@@ -2855,9 +2856,10 @@
         (Out, Left, End, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
         (Out, Left, ProlongEnd, <span class="bool-val">false</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
         (Out, Left, ProlongEnd, <span class="bool-val">true</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
-        (Out, Left, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+        (Out, Left, EndCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▞"</span>,
 
         <span class="comment">// ----------------------------------------------
+
         </span>(In, Top, StartCross(<span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
         (In, Top, ProlongStart, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"┌"</span>,
         (In, Top, Start, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"┌"</span>,
