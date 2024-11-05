@@ -20,7 +20,7 @@ pub struct Joint {
     /// Those have mirrored glyphs on each side.
     pub(crate) mirrored: bool,
     /// Position for the join.
-    pub(crate) pos: JointPos,
+    pub(crate) pos: JointPosition,
 }
 
 /// Marktype for the joints.
@@ -39,7 +39,7 @@ pub enum JointMark {
 
 /// Position of the joints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum JointPos {
+pub enum JointPosition {
     /// Draw a cross joint at the start.
     /// The border type is for an area onwards the direction of the side.
     CrossStart(BorderType),
@@ -97,7 +97,7 @@ pub use new_border::create_border;
 pub use new_joint::render_joint;
 
 impl Joint {
-    pub fn new(side: JointSide, pos: JointPos) -> Self {
+    pub fn new(side: JointSide, pos: JointPosition) -> Self {
         Self {
             own_border: Default::default(),
             other_border: Default::default(),
@@ -173,47 +173,47 @@ impl Joint {
         self.mirrored
     }
 
-    pub fn joint_pos(mut self, pos: JointPos) -> Self {
+    pub fn joint_pos(mut self, pos: JointPosition) -> Self {
         self.pos = pos;
         self
     }
 
-    pub fn get_joint_pos(&self) -> JointPos {
+    pub fn get_joint_pos(&self) -> JointPosition {
         self.pos
     }
 
     pub fn cross_start(mut self, extending_border: BorderType) -> Self {
-        self.pos = JointPos::CrossStart(extending_border);
+        self.pos = JointPosition::CrossStart(extending_border);
         self
     }
 
     pub fn prolong_start(mut self) -> Self {
-        self.pos = JointPos::ProlongStart;
+        self.pos = JointPosition::ProlongStart;
         self
     }
 
     pub fn start(mut self) -> Self {
-        self.pos = JointPos::Start;
+        self.pos = JointPosition::Start;
         self
     }
 
     pub fn pos(mut self, pos: u16) -> Self {
-        self.pos = JointPos::Pos(pos);
+        self.pos = JointPosition::Pos(pos);
         self
     }
 
     pub fn end(mut self) -> Self {
-        self.pos = JointPos::End;
+        self.pos = JointPosition::End;
         self
     }
 
     pub fn prolong_end(mut self) -> Self {
-        self.pos = JointPos::ProlongEnd;
+        self.pos = JointPosition::ProlongEnd;
         self
     }
 
     pub fn cross_end(mut self, extending_border: BorderType) -> Self {
-        self.pos = JointPos::CrossEnd(extending_border);
+        self.pos = JointPosition::CrossEnd(extending_border);
         self
     }
 
@@ -223,10 +223,10 @@ impl Joint {
     pub fn locate(&self, area: Rect) -> Option<u16> {
         match self.side {
             JointSide::Top | JointSide::Bottom => match self.pos {
-                JointPos::CrossStart(_) => Some(0),
-                JointPos::ProlongStart => Some(0),
-                JointPos::Start => Some(0),
-                JointPos::Pos(n) => {
+                JointPosition::CrossStart(_) => Some(0),
+                JointPosition::ProlongStart => Some(0),
+                JointPosition::Start => Some(0),
+                JointPosition::Pos(n) => {
                     if n == 0 {
                         Some(n)
                     } else if n < area.width - 1 {
@@ -237,15 +237,15 @@ impl Joint {
                         None
                     }
                 }
-                JointPos::End => Some(area.width - 1),
-                JointPos::ProlongEnd => Some(area.width - 1),
-                JointPos::CrossEnd(_) => Some(area.width - 1),
+                JointPosition::End => Some(area.width - 1),
+                JointPosition::ProlongEnd => Some(area.width - 1),
+                JointPosition::CrossEnd(_) => Some(area.width - 1),
             },
             JointSide::Right | JointSide::Left => match self.pos {
-                JointPos::CrossStart(_) => Some(0),
-                JointPos::ProlongStart => Some(0),
-                JointPos::Start => Some(0),
-                JointPos::Pos(n) => {
+                JointPosition::CrossStart(_) => Some(0),
+                JointPosition::ProlongStart => Some(0),
+                JointPosition::Start => Some(0),
+                JointPosition::Pos(n) => {
                     if n == 0 {
                         Some(n)
                     } else if n < area.height - 1 {
@@ -256,9 +256,9 @@ impl Joint {
                         None
                     }
                 }
-                JointPos::End => Some(area.height - 1),
-                JointPos::ProlongEnd => Some(area.height - 1),
-                JointPos::CrossEnd(_) => Some(area.height - 1),
+                JointPosition::End => Some(area.height - 1),
+                JointPosition::ProlongEnd => Some(area.height - 1),
+                JointPosition::CrossEnd(_) => Some(area.height - 1),
             },
         }
     }
@@ -269,15 +269,15 @@ impl Joint {
     fn normalized(&self, area: Rect) -> Joint {
         match self.side {
             JointSide::Top | JointSide::Bottom => match self.pos {
-                JointPos::Pos(n) => {
+                JointPosition::Pos(n) => {
                     if n == 0 {
                         Self {
-                            pos: JointPos::Start,
+                            pos: JointPosition::Start,
                             ..*self
                         }
                     } else if n == area.width - 1 {
                         Self {
-                            pos: JointPos::End,
+                            pos: JointPosition::End,
                             ..*self
                         }
                     } else {
@@ -287,15 +287,15 @@ impl Joint {
                 _ => *self,
             },
             JointSide::Right | JointSide::Left => match self.pos {
-                JointPos::Pos(n) => {
+                JointPosition::Pos(n) => {
                     if n == 0 {
                         Self {
-                            pos: JointPos::Start,
+                            pos: JointPosition::Start,
                             ..*self
                         }
                     } else if n == area.height - 1 {
                         Self {
-                            pos: JointPos::End,
+                            pos: JointPosition::End,
                             ..*self
                         }
                     } else {

@@ -1,6 +1,6 @@
 use crate::JointMark::{Out, Through};
 use crate::JointSide::{Bottom, Left, Right, Top};
-use crate::{Joint, JointMark, JointPos, JointSide};
+use crate::{Joint, JointMark, JointPosition, JointSide};
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::widgets::BorderType;
@@ -56,7 +56,7 @@ pub fn render_joint(joint: &Joint, area: Rect, buf: &mut Buffer) {
 fn plain_joint(joint: Joint) -> &'static str {
     use BorderType::*;
     use JointMark::*;
-    use JointPos::*;
+    use JointPosition::*;
     use JointSide::*;
 
     match (joint.mark, joint.side, joint.pos, joint.other_border) {
@@ -437,7 +437,7 @@ fn plain_joint(joint: Joint) -> &'static str {
 fn double_joint(joint: Joint) -> &'static str {
     use BorderType::*;
     use JointMark::*;
-    use JointPos::*;
+    use JointPosition::*;
     use JointSide::*;
 
     match (joint.mark, joint.side, joint.pos, joint.other_border) {
@@ -594,7 +594,7 @@ fn double_joint(joint: Joint) -> &'static str {
 fn thick_joint(joint: Joint) -> &'static str {
     use BorderType::*;
     use JointMark::*;
-    use JointPos::*;
+    use JointPosition::*;
     use JointSide::*;
 
     match (joint.mark, joint.side, joint.pos, joint.other_border) {
@@ -935,7 +935,7 @@ fn thick_joint(joint: Joint) -> &'static str {
 fn quad_inside_joint(joint: Joint) -> &'static str {
     use BorderType::*;
     use JointMark::*;
-    use JointPos::*;
+    use JointPosition::*;
     use JointSide::*;
 
     match (

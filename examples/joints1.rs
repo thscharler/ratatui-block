@@ -6,7 +6,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::{render_joint, Joint, JointMark, JointPos, JointSide};
+use ratatui_block::{render_joint, Joint, JointMark, JointPosition, JointSide};
 
 mod mini_salsa;
 
@@ -21,7 +21,7 @@ fn main() -> Result<(), anyhow::Error> {
         hor_neighbour: BorderType::Plain,
         vert_neighbour: BorderType::Plain,
 
-        joint: Joint::new(JointSide::Top, JointPos::CrossStart(BorderType::Plain)),
+        joint: Joint::new(JointSide::Top, JointPosition::CrossStart(BorderType::Plain)),
 
         mono: false,
     };
@@ -232,84 +232,92 @@ fn handle_buttons(
             match state.joint.get_side() {
                 JointSide::Top => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossStart(_) => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(1),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => JointPosition::Start,
+                        JointPosition::Start => JointPosition::Pos(1),
+                        JointPosition::Pos(n) => {
                             if n < state.area.width.saturating_sub(2) {
-                                JointPos::Pos(n + 1)
+                                JointPosition::Pos(n + 1)
                             } else {
-                                JointPos::End
+                                JointPosition::End
                             }
                         }
-                        JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::CrossEnd(state.vert_neighbour),
-                        JointPos::CrossEnd(_) => {
+                        JointPosition::End => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.vert_neighbour),
+                        JointPosition::CrossEnd(_) => {
                             state.joint = state.joint.side(JointSide::Right);
-                            JointPos::CrossStart(state.hor_neighbour)
+                            JointPosition::CrossStart(state.hor_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Right => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossStart(_) => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(1),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => JointPosition::Start,
+                        JointPosition::Start => JointPosition::Pos(1),
+                        JointPosition::Pos(n) => {
                             if n < state.area.height.saturating_sub(2) {
-                                JointPos::Pos(n + 1)
+                                JointPosition::Pos(n + 1)
                             } else {
-                                JointPos::End
+                                JointPosition::End
                             }
                         }
-                        JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::CrossEnd(state.hor_neighbour),
-                        JointPos::CrossEnd(_) => {
+                        JointPosition::End => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.hor_neighbour),
+                        JointPosition::CrossEnd(_) => {
                             state.joint = state.joint.side(JointSide::Bottom);
-                            JointPos::CrossEnd(state.vert_neighbour)
+                            JointPosition::CrossEnd(state.vert_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Bottom => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossEnd(_) => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::End,
+                        JointPosition::End => {
+                            JointPosition::Pos(state.area.width.saturating_sub(2))
+                        }
+                        JointPosition::Pos(n) => {
                             if n > 1 {
-                                JointPos::Pos(n - 1)
+                                JointPosition::Pos(n - 1)
                             } else {
-                                JointPos::Start
+                                JointPosition::Start
                             }
                         }
-                        JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::CrossStart(state.vert_neighbour),
-                        JointPos::CrossStart(_) => {
+                        JointPosition::Start => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => {
+                            JointPosition::CrossStart(state.vert_neighbour)
+                        }
+                        JointPosition::CrossStart(_) => {
                             state.joint = state.joint.side(JointSide::Left);
-                            JointPos::CrossEnd(state.hor_neighbour)
+                            JointPosition::CrossEnd(state.hor_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Left => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossEnd(_) => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::End,
+                        JointPosition::End => {
+                            JointPosition::Pos(state.area.height.saturating_sub(2))
+                        }
+                        JointPosition::Pos(n) => {
                             if n > 1 {
-                                JointPos::Pos(n - 1)
+                                JointPosition::Pos(n - 1)
                             } else {
-                                JointPos::Start
+                                JointPosition::Start
                             }
                         }
-                        JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::CrossStart(state.hor_neighbour),
-                        JointPos::CrossStart(_) => {
+                        JointPosition::Start => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => {
+                            JointPosition::CrossStart(state.hor_neighbour)
+                        }
+                        JointPosition::CrossStart(_) => {
                             state.joint = state.joint.side(JointSide::Top);
-                            JointPos::CrossStart(state.vert_neighbour)
+                            JointPosition::CrossStart(state.vert_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
@@ -321,84 +329,92 @@ fn handle_buttons(
             match state.joint.get_side() {
                 JointSide::Top => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossEnd(_) => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.width.saturating_sub(2)),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::End,
+                        JointPosition::End => {
+                            JointPosition::Pos(state.area.width.saturating_sub(2))
+                        }
+                        JointPosition::Pos(n) => {
                             if n > 1 {
-                                JointPos::Pos(n - 1)
+                                JointPosition::Pos(n - 1)
                             } else {
-                                JointPos::Start
+                                JointPosition::Start
                             }
                         }
-                        JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::CrossStart(state.vert_neighbour),
-                        JointPos::CrossStart(_) => {
+                        JointPosition::Start => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => {
+                            JointPosition::CrossStart(state.vert_neighbour)
+                        }
+                        JointPosition::CrossStart(_) => {
                             state.joint = state.joint.side(JointSide::Left);
-                            JointPos::CrossStart(state.hor_neighbour)
+                            JointPosition::CrossStart(state.hor_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Left => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossStart(_) => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(1),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => JointPosition::Start,
+                        JointPosition::Start => JointPosition::Pos(1),
+                        JointPosition::Pos(n) => {
                             if n < state.area.height.saturating_sub(2) {
-                                JointPos::Pos(n + 1)
+                                JointPosition::Pos(n + 1)
                             } else {
-                                JointPos::End
+                                JointPosition::End
                             }
                         }
-                        JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::CrossEnd(state.hor_neighbour),
-                        JointPos::CrossEnd(_) => {
+                        JointPosition::End => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.hor_neighbour),
+                        JointPosition::CrossEnd(_) => {
                             state.joint = state.joint.side(JointSide::Bottom);
-                            JointPos::CrossStart(state.vert_neighbour)
+                            JointPosition::CrossStart(state.vert_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Bottom => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossStart(_) => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::Start,
-                        JointPos::Start => JointPos::Pos(1),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => JointPosition::Start,
+                        JointPosition::Start => JointPosition::Pos(1),
+                        JointPosition::Pos(n) => {
                             if n < state.area.width.saturating_sub(2) {
-                                JointPos::Pos(n + 1)
+                                JointPosition::Pos(n + 1)
                             } else {
-                                JointPos::End
+                                JointPosition::End
                             }
                         }
-                        JointPos::End => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::CrossEnd(state.vert_neighbour),
-                        JointPos::CrossEnd(_) => {
+                        JointPosition::End => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.vert_neighbour),
+                        JointPosition::CrossEnd(_) => {
                             state.joint = state.joint.side(JointSide::Right);
-                            JointPos::CrossEnd(state.hor_neighbour)
+                            JointPosition::CrossEnd(state.hor_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
                 }
                 JointSide::Right => {
                     let next = match state.joint.get_joint_pos() {
-                        JointPos::CrossEnd(_) => JointPos::ProlongEnd,
-                        JointPos::ProlongEnd => JointPos::End,
-                        JointPos::End => JointPos::Pos(state.area.height.saturating_sub(2)),
-                        JointPos::Pos(n) => {
+                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
+                        JointPosition::ProlongEnd => JointPosition::End,
+                        JointPosition::End => {
+                            JointPosition::Pos(state.area.height.saturating_sub(2))
+                        }
+                        JointPosition::Pos(n) => {
                             if n > 1 {
-                                JointPos::Pos(n - 1)
+                                JointPosition::Pos(n - 1)
                             } else {
-                                JointPos::Start
+                                JointPosition::Start
                             }
                         }
-                        JointPos::Start => JointPos::ProlongStart,
-                        JointPos::ProlongStart => JointPos::CrossStart(state.hor_neighbour),
-                        JointPos::CrossStart(_) => {
+                        JointPosition::Start => JointPosition::ProlongStart,
+                        JointPosition::ProlongStart => {
+                            JointPosition::CrossStart(state.hor_neighbour)
+                        }
+                        JointPosition::CrossStart(_) => {
                             state.joint = state.joint.side(JointSide::Top);
-                            JointPos::CrossEnd(state.vert_neighbour)
+                            JointPosition::CrossEnd(state.vert_neighbour)
                         }
                     };
                     state.joint = state.joint.joint_pos(next);
