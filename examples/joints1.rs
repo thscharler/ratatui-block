@@ -6,7 +6,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::{render_joint, Joint, JointMark, JointPosition, JointSide};
+use ratatui_block::{render_joint, Joint, JointKind, JointPosition, JointSide};
 
 mod mini_salsa;
 
@@ -221,10 +221,10 @@ fn handle_buttons(
         }
         ct_event!(keycode press F(4)) => {
             state.joint = state.joint.mark(match state.joint.get_mark() {
-                JointMark::In => JointMark::Out,
-                JointMark::Out => JointMark::Through,
-                JointMark::Through => JointMark::In,
-                JointMark::Manual(c) => JointMark::Manual(c),
+                JointKind::Inward => JointKind::Outward,
+                JointKind::Outward => JointKind::Through,
+                JointKind::Through => JointKind::Inward,
+                JointKind::Manual(c) => JointKind::Manual(c),
             });
             Outcome::Changed
         }

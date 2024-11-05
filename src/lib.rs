@@ -4,18 +4,17 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::widgets::{BorderType, Widget};
 
-/// A joint in a Block border.
+/// A joint connection as part of a Block.
 #[derive(Debug, Clone, Copy)]
 pub struct Joint {
-    /// The main border to be decorated.
+    /// The border of the Block that should be amended.
     pub(crate) own_border: BorderType,
-    /// The border type to join with.
-    /// This is the border for areas outward of the side.
+    /// The second/other Border that will be connected.
     pub(crate) other_border: BorderType,
-    /// Side of the area.
+    /// Which side of the area.
     pub(crate) side: JointSide,
     /// Joint mark.
-    pub(crate) mark: JointMark,
+    pub(crate) mark: JointKind,
     /// Mirrored joint. This is needed for QuadrantInside and QuadrantOutside.
     /// Those have mirrored glyphs on each side.
     pub(crate) mirrored: bool,
@@ -23,14 +22,14 @@ pub struct Joint {
     pub(crate) pos: JointPosition,
 }
 
-/// Marktype for the joints.
+/// What kind of connection is needed; includes manual ones.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub enum JointMark {
+pub enum JointKind {
     /// Outward join.
     #[default]
-    Out,
+    Outward,
     /// Inward join.
-    In,
+    Inward,
     /// Through join.
     Through,
     /// Manual join.
@@ -40,47 +39,43 @@ pub enum JointMark {
 /// Position of the joints.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum JointPosition {
-    /// Draw a cross joint at the start.
-    /// The border type is for an area onwards the direction of the side.
+    /// Draw a cross joint at the start of the side.
+    ///
+    /// The border type here is the border in the direction
+    /// of the side line.
+    ///
+    /// The border perpendicular to the side is Joint::other_side.
     CrossStart(BorderType),
-    /// Prolong the border along the main axis before start.
+    /// Prolong the border along the side before start.
     ProlongStart,
     /// Draw a perpendicular joint at the start.
     Start,
-    /// Draw a joint at position from start.
-    /// Position 0 and width-1 are translated to Start/End.
+    /// Draw a perpendicular joint at some position from start.
+    /// Position 0 and width-1 are auto-converted to Start/End.
     Pos(u16),
     /// Draw a perpendicular joint at the end.
     End,
-    /// Prolong the border along the main axis after the end.
+    /// Prolong the border along the side after the end.
     ProlongEnd,
     /// Draw a cross joint at the end.
-    /// The border type is for an area onwards the direction of the side.
+    ///
+    /// The border type here is the border in the direction
+    /// of the side line.
+    ///
+    /// The border perpendicular to the side is Joint::other_side.
     CrossEnd(BorderType),
 }
 
-/// Sides for the joints.
+/// Names for the sides of an area.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum JointSide {
-    /// Join from the top side upwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
+    /// Joint along the top side.
     Top,
-    /// Join from the right side right.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
+    /// Joint along the right side.
     Right,
-    /// Join from the bottom side downwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
+    /// Joint along bottom side.
     Bottom,
-    /// Join from the left side left.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
+    /// Joint along the left side.
     Left,
 }
 
@@ -135,32 +130,32 @@ impl Joint {
         self.side
     }
 
-    pub fn mark(mut self, mark: JointMark) -> Self {
+    pub fn mark(mut self, mark: JointKind) -> Self {
         self.mark = mark;
         self
     }
 
-    pub fn get_mark(&self) -> JointMark {
+    pub fn get_mark(&self) -> JointKind {
         self.mark
     }
 
     pub fn outward(mut self) -> Self {
-        self.mark = JointMark::Out;
+        self.mark = JointKind::Outward;
         self
     }
 
     pub fn inward(mut self) -> Self {
-        self.mark = JointMark::In;
+        self.mark = JointKind::Inward;
         self
     }
 
     pub fn through(mut self) -> Self {
-        self.mark = JointMark::Through;
+        self.mark = JointKind::Through;
         self
     }
 
     pub fn manual(mut self, mark: &'static str) -> Self {
-        self.mark = JointMark::Manual(mark);
+        self.mark = JointKind::Manual(mark);
         self
     }
 

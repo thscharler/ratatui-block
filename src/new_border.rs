@@ -1,4 +1,4 @@
-use crate::{Joint, JointMark, JointPosition, JointSide, NewBlock};
+use crate::{Joint, JointKind, JointPosition, JointSide, NewBlock};
 use ratatui::layout::Rect;
 use ratatui::widgets::{Block, BorderType};
 use std::rc::Rc;
@@ -49,7 +49,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::CrossEnd(border),
                 });
@@ -58,7 +58,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_x1 - area_x1),
                 });
@@ -67,7 +67,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -78,7 +78,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::CrossStart(border),
                 });
@@ -87,7 +87,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_x2 - area_x1),
                 });
@@ -96,7 +96,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Top,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
@@ -114,7 +114,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::CrossEnd(border),
                 });
@@ -123,7 +123,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_x1 - area_x1),
                 });
@@ -132,7 +132,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -143,7 +143,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::CrossStart(border),
                 });
@@ -152,7 +152,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_x2 - area_x1),
                 });
@@ -161,7 +161,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Bottom,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
@@ -181,7 +181,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Left,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_y1 - area_y1),
                 });
@@ -190,7 +190,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Left,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -203,7 +203,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Left,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_y2 - area_y1),
                 });
@@ -212,7 +212,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Left,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
@@ -232,7 +232,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Right,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_y1 - area_y1),
                 });
@@ -241,7 +241,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Right,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -254,7 +254,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Right,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_y2 - area_y1),
                 });
@@ -263,7 +263,7 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                     own_border: border,
                     other_border: border,
                     side: JointSide::Right,
-                    mark: JointMark::Out,
+                    mark: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
