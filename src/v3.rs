@@ -1,5 +1,13 @@
 use ratatui::widgets::BorderType;
 
+/// Experimental AreaBorder.
+#[derive(Debug, Clone)]
+pub struct AreaBorder {
+    /// Area border described as glyphs.
+    /// The second value is a repeat.
+    pub glyphs: Vec<(BorderGlyph, u16)>,
+}
+
 /// Denotes one glyph used to render a block.
 #[derive(Debug, Clone, Copy)]
 pub struct BorderGlyph {
@@ -74,7 +82,11 @@ pub enum Position {
     /// Draw a 90° inward joint at some position.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    AngleInward(u16),
+    AngleInwardStart(u16),
+    /// Draw a 90° inward joint at some position.
+    ///
+    /// Position 0 and width-1 are auto-converted to Start/End.
+    AngleInwardEnd(u16),
     /// Draw a cross joint at some position.
     ///
     /// The border type here is the border at 90° to the inward.

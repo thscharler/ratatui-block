@@ -1,18 +1,25 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
+use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Direction, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::{create_border, render_joint};
+use ratatui_block::v3::{BorderGlyph, Side};
+use ratatui_block::{create_border, render_joint, v3};
 use std::rc::Rc;
 
 mod mini_salsa;
 
 fn main() -> Result<(), anyhow::Error> {
     setup_logging()?;
+
+    debug!("BorderGlyph {}", size_of::<BorderGlyph>());
+    debug!("Side {}", size_of::<Side>());
+    debug!("Position {}", size_of::<v3::Position>());
+    debug!("BorderType {}", size_of::<BorderType>());
 
     let mut data = Data {};
     let mut state = State {
@@ -132,11 +139,9 @@ fn repaint_buttons(
             4,
         );
 
+        Block::bordered().border_type(state.other).render(left, buf);
         Block::bordered()
-            .border_type(state.border)
-            .render(left, buf);
-        Block::bordered()
-            .border_type(state.border)
+            .border_type(state.other)
             .render(right, buf);
 
         // all areas
