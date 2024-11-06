@@ -879,7 +879,7 @@
                 Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
                     .border(border)
                     .other(border)
-                    .manual(<span class="string">"█"</span>),
+                    .kind(JointKind::Manual(<span class="string">"█"</span>)),
             );
         } <span class="kw">else if </span>x == area_x2 {
             <span class="comment">// block.joints.push(
@@ -936,7 +936,7 @@
                 Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
                     .border(border)
                     .other(border)
-                    .manual(<span class="string">"█"</span>),
+                    .kind(JointKind::Manual(<span class="string">"█"</span>)),
             );
         } <span class="kw">else if </span>x == area_x2 {
             <span class="comment">// block.joints.push(
@@ -988,7 +988,7 @@
                 Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
                     .border(border)
                     .other(border)
-                    .manual(<span class="string">"█"</span>),
+                    .kind(JointKind::Manual(<span class="string">"█"</span>)),
             );
         } <span class="kw">else if </span>x == area_y2 {
             <span class="comment">// block.joints.push(
@@ -1040,7 +1040,7 @@
                 Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
                     .border(border)
                     .other(border)
-                    .manual(<span class="string">"█"</span>),
+                    .kind(JointKind::Manual(<span class="string">"█"</span>)),
             );
         } <span class="kw">else if </span>x == area_y2 {
             <span class="comment">// block.joints.push(

@@ -1067,16 +1067,10 @@
 <a href="#1067" id="1067">1067</a>
 <a href="#1068" id="1068">1068</a>
 <a href="#1069" id="1069">1069</a>
-<a href="#1070" id="1070">1070</a>
-<a href="#1071" id="1071">1071</a>
-<a href="#1072" id="1072">1072</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::JointKind::Outward;
-<span class="kw">use </span><span class="kw">crate</span>::JointSide::Top;
-<span class="kw">use crate</span>::{Joint, JointKind, JointPosition, JointSide};
+</pre></div><pre class="rust"><code><span class="kw">use crate</span>::{Joint, JointKind, JointPosition, JointSide};
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::widgets::BorderType;
-<span class="kw">use </span>ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 
 <span class="kw">pub fn </span>render_joint(joint: <span class="kw-2">&amp;</span>Joint, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer) {
     <span class="comment">// normalize before finding the glyph

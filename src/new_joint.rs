@@ -1,10 +1,7 @@
-use crate::JointKind::Outward;
-use crate::JointSide::Top;
 use crate::{Joint, JointKind, JointPosition, JointSide};
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::widgets::BorderType;
-use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 
 pub fn render_joint(joint: &Joint, area: Rect, buf: &mut Buffer) {
     // normalize before finding the glyph

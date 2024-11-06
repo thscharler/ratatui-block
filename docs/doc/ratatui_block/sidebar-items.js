@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["JointKind","JointPosition","JointSide"],"fn":["create_border","render_joint"],"struct":["Joint","NewBlock"]};
+window.SIDEBAR_ITEMS = {"enum":["JointKind","JointPosition","JointSide"],"fn":["create_border","render_joint"],"mod":["v3"],"struct":["Joint","NewBlock"]};
