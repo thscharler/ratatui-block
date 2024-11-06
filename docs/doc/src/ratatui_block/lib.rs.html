@@ -265,99 +265,38 @@
 <a href="#265" id="265">265</a>
 <a href="#266" id="266">266</a>
 <a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
-<a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
 </pre></div><pre class="rust"><code><span class="attr">#![allow(dead_code)]
 
 </span><span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::Rect;
 <span class="kw">use </span>ratatui::widgets::{BorderType, Widget};
 
-<span class="doccomment">/// A joint in a Block border.
+<span class="doccomment">/// A joint connection as part of a Block.
 </span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>Joint {
-    <span class="doccomment">/// The main border to be decorated.
+    <span class="doccomment">/// The border of the Block that should be amended.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) own_border: BorderType,
-    <span class="doccomment">/// The border type to join with.
-    /// This is the border for areas outward of the side.
+    <span class="doccomment">/// The second/other Border that will be connected.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) other_border: BorderType,
-    <span class="doccomment">/// Side of the area.
+    <span class="doccomment">/// Which side of the area.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) side: JointSide,
     <span class="doccomment">/// Joint mark.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) mark: JointMark,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) kind: JointKind,
     <span class="doccomment">/// Mirrored joint. This is needed for QuadrantInside and QuadrantOutside.
     /// Those have mirrored glyphs on each side.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) mirrored: bool,
     <span class="doccomment">/// Position for the join.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) pos: JointPos,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) pos: JointPosition,
 }
 
-<span class="doccomment">/// Marktype for the joints.
+<span class="doccomment">/// What kind of connection is needed; includes manual ones.
 </span><span class="attr">#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>JointMark {
+</span><span class="kw">pub enum </span>JointKind {
     <span class="doccomment">/// Outward join.
     </span><span class="attr">#[default]
-    </span>Out,
+    </span>Outward,
     <span class="doccomment">/// Inward join.
-    </span>In,
+    </span>Inward,
     <span class="doccomment">/// Through join.
     </span>Through,
     <span class="doccomment">/// Manual join.
@@ -366,48 +305,44 @@
 
 <span class="doccomment">/// Position of the joints.
 </span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>JointPos {
-    <span class="doccomment">/// Draw a cross joint at the start.
-    /// The border type is for an area onwards the direction of the side.
+</span><span class="kw">pub enum </span>JointPosition {
+    <span class="doccomment">/// Draw a cross joint at the start of the side.
+    ///
+    /// The border type here is the border in the direction
+    /// of the side line.
+    ///
+    /// The border perpendicular to the side is Joint::other_side.
     </span>CrossStart(BorderType),
-    <span class="doccomment">/// Prolong the border along the main axis before start.
+    <span class="doccomment">/// Prolong the border along the side before start.
     </span>ProlongStart,
     <span class="doccomment">/// Draw a perpendicular joint at the start.
     </span>Start,
-    <span class="doccomment">/// Draw a joint at position from start.
-    /// Position 0 and width-1 are translated to Start/End.
+    <span class="doccomment">/// Draw a perpendicular joint at some position from start.
+    /// Position 0 and width-1 are auto-converted to Start/End.
     </span>Pos(u16),
     <span class="doccomment">/// Draw a perpendicular joint at the end.
     </span>End,
-    <span class="doccomment">/// Prolong the border along the main axis after the end.
+    <span class="doccomment">/// Prolong the border along the side after the end.
     </span>ProlongEnd,
     <span class="doccomment">/// Draw a cross joint at the end.
-    /// The border type is for an area onwards the direction of the side.
+    ///
+    /// The border type here is the border in the direction
+    /// of the side line.
+    ///
+    /// The border perpendicular to the side is Joint::other_side.
     </span>CrossEnd(BorderType),
 }
 
-<span class="doccomment">/// Sides for the joints.
+<span class="doccomment">/// Names for the sides of an area.
 </span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub enum </span>JointSide {
-    <span class="doccomment">/// Join from the top side upwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
+    <span class="doccomment">/// Joint along the top side.
     </span>Top,
-    <span class="doccomment">/// Join from the right side right.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
+    <span class="doccomment">/// Joint along the right side.
     </span>Right,
-    <span class="doccomment">/// Join from the bottom side downwards.
-    ///
-    /// Relative position to the left corner.
-    /// 0 and width-1 are detected as corners.
+    <span class="doccomment">/// Joint along bottom side.
     </span>Bottom,
-    <span class="doccomment">/// Join from the left side left.
-    ///
-    /// Relative position to the top corner.
-    /// 0 and height-1 are detected as corners.
+    <span class="doccomment">/// Joint along the left side.
     </span>Left,
 }
 
@@ -424,12 +359,12 @@
 <span class="kw">pub use </span>new_joint::render_joint;
 
 <span class="kw">impl </span>Joint {
-    <span class="kw">pub fn </span>new(side: JointSide, pos: JointPos) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>new(side: JointSide, pos: JointPosition) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             own_border: Default::default(),
             other_border: Default::default(),
             side,
-            mark: Default::default(),
+            kind: Default::default(),
             mirrored: <span class="bool-val">false</span>,
             pos,
         }
@@ -462,34 +397,14 @@
         <span class="self">self</span>.side
     }
 
-    <span class="kw">pub fn </span>mark(<span class="kw-2">mut </span><span class="self">self</span>, mark: JointMark) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.mark = mark;
+    <span class="kw">pub fn </span>kind(<span class="kw-2">mut </span><span class="self">self</span>, kind: JointKind) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.kind = kind;
         <span class="self">self
     </span>}
 
-    <span class="kw">pub fn </span>get_mark(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; JointMark {
-        <span class="self">self</span>.mark
+    <span class="kw">pub fn </span>get_kind(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; JointKind {
+        <span class="self">self</span>.kind
     }
-
-    <span class="kw">pub fn </span>outward(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.mark = JointMark::Out;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>inward(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.mark = JointMark::In;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>through(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.mark = JointMark::Through;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>manual(<span class="kw-2">mut </span><span class="self">self</span>, mark: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.mark = JointMark::Manual(mark);
-        <span class="self">self
-    </span>}
 
     <span class="kw">pub fn </span>mirrored(<span class="kw-2">mut </span><span class="self">self</span>, mirrored: bool) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.mirrored = mirrored;
@@ -500,49 +415,14 @@
         <span class="self">self</span>.mirrored
     }
 
-    <span class="kw">pub fn </span>joint_pos(<span class="kw-2">mut </span><span class="self">self</span>, pos: JointPos) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>position(<span class="kw-2">mut </span><span class="self">self</span>, pos: JointPosition) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.pos = pos;
         <span class="self">self
     </span>}
 
-    <span class="kw">pub fn </span>get_joint_pos(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; JointPos {
+    <span class="kw">pub fn </span>get_position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; JointPosition {
         <span class="self">self</span>.pos
     }
-
-    <span class="kw">pub fn </span>cross_start(<span class="kw-2">mut </span><span class="self">self</span>, extending_border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::CrossStart(extending_border);
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>prolong_start(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::ProlongStart;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>start(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::Start;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>pos(<span class="kw-2">mut </span><span class="self">self</span>, pos: u16) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::Pos(pos);
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>end(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::End;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>prolong_end(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::ProlongEnd;
-        <span class="self">self
-    </span>}
-
-    <span class="kw">pub fn </span>cross_end(<span class="kw-2">mut </span><span class="self">self</span>, extending_border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.pos = JointPos::CrossEnd(extending_border);
-        <span class="self">self
-    </span>}
 
     <span class="doccomment">/// Get the location of the mark respective to the given area.
     /// Out of bounds marks return None.
@@ -550,10 +430,10 @@
     </span><span class="kw">pub fn </span>locate(<span class="kw-2">&amp;</span><span class="self">self</span>, area: Rect) -&gt; <span class="prelude-ty">Option</span>&lt;u16&gt; {
         <span class="kw">match </span><span class="self">self</span>.side {
             JointSide::Top | JointSide::Bottom =&gt; <span class="kw">match </span><span class="self">self</span>.pos {
-                JointPos::CrossStart(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::ProlongStart =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::Start =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::Pos(n) =&gt; {
+                JointPosition::CrossStart(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::ProlongStart =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::Start =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::Pos(n) =&gt; {
                     <span class="kw">if </span>n == <span class="number">0 </span>{
                         <span class="prelude-val">Some</span>(n)
                     } <span class="kw">else if </span>n &lt; area.width - <span class="number">1 </span>{
@@ -564,15 +444,15 @@
                         <span class="prelude-val">None
                     </span>}
                 }
-                JointPos::End =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
-                JointPos::ProlongEnd =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
-                JointPos::CrossEnd(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
+                JointPosition::End =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
+                JointPosition::ProlongEnd =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
+                JointPosition::CrossEnd(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(area.width - <span class="number">1</span>),
             },
             JointSide::Right | JointSide::Left =&gt; <span class="kw">match </span><span class="self">self</span>.pos {
-                JointPos::CrossStart(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::ProlongStart =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::Start =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
-                JointPos::Pos(n) =&gt; {
+                JointPosition::CrossStart(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::ProlongStart =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::Start =&gt; <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                JointPosition::Pos(n) =&gt; {
                     <span class="kw">if </span>n == <span class="number">0 </span>{
                         <span class="prelude-val">Some</span>(n)
                     } <span class="kw">else if </span>n &lt; area.height - <span class="number">1 </span>{
@@ -583,9 +463,9 @@
                         <span class="prelude-val">None
                     </span>}
                 }
-                JointPos::End =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
-                JointPos::ProlongEnd =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
-                JointPos::CrossEnd(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
+                JointPosition::End =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
+                JointPosition::ProlongEnd =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
+                JointPosition::CrossEnd(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(area.height - <span class="number">1</span>),
             },
         }
     }
@@ -593,18 +473,18 @@
     <span class="comment">// Normalize respective to area.
     // Replaces Pos(n) with Start/End if matching.
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>normalized(<span class="kw-2">&amp;</span><span class="self">self</span>, area: Rect) -&gt; Joint {
+    </span><span class="kw">pub fn </span>normalized(<span class="kw-2">&amp;</span><span class="self">self</span>, area: Rect) -&gt; Joint {
         <span class="kw">match </span><span class="self">self</span>.side {
             JointSide::Top | JointSide::Bottom =&gt; <span class="kw">match </span><span class="self">self</span>.pos {
-                JointPos::Pos(n) =&gt; {
+                JointPosition::Pos(n) =&gt; {
                     <span class="kw">if </span>n == <span class="number">0 </span>{
                         <span class="self">Self </span>{
-                            pos: JointPos::Start,
+                            pos: JointPosition::Start,
                             ..<span class="kw-2">*</span><span class="self">self
                         </span>}
                     } <span class="kw">else if </span>n == area.width - <span class="number">1 </span>{
                         <span class="self">Self </span>{
-                            pos: JointPos::End,
+                            pos: JointPosition::End,
                             ..<span class="kw-2">*</span><span class="self">self
                         </span>}
                     } <span class="kw">else </span>{
@@ -614,15 +494,15 @@
                 <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self</span>,
             },
             JointSide::Right | JointSide::Left =&gt; <span class="kw">match </span><span class="self">self</span>.pos {
-                JointPos::Pos(n) =&gt; {
+                JointPosition::Pos(n) =&gt; {
                     <span class="kw">if </span>n == <span class="number">0 </span>{
                         <span class="self">Self </span>{
-                            pos: JointPos::Start,
+                            pos: JointPosition::Start,
                             ..<span class="kw-2">*</span><span class="self">self
                         </span>}
                     } <span class="kw">else if </span>n == area.height - <span class="number">1 </span>{
                         <span class="self">Self </span>{
-                            pos: JointPos::End,
+                            pos: JointPosition::End,
                             ..<span class="kw-2">*</span><span class="self">self
                         </span>}
                     } <span class="kw">else </span>{

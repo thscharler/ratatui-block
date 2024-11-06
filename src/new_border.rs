@@ -1,7 +1,6 @@
 use crate::{Joint, JointKind, JointPosition, JointSide, NewBlock};
 use ratatui::layout::Rect;
 use ratatui::widgets::{Block, BorderType};
-use std::rc::Rc;
 
 /// Create one border for the given layout.
 ///
@@ -23,7 +22,8 @@ use std::rc::Rc;
 ///         avoided by creating the relevant subset before calling
 ///         the fn.
 ///
-pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlock<'static> {
+pub fn create_border(layout: &[Rect], borders: &[BorderType], n: usize) -> NewBlock<'static> {
+    let own_border = borders[n];
     let area = layout[n];
     let area_x1 = area.x;
     let area_y1 = area.y;
@@ -31,12 +31,14 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
     let area_y2 = area.bottom().saturating_sub(1);
 
     let mut block = NewBlock {
-        block: Block::bordered().border_type(border),
-        border_type: border,
+        block: Block::bordered().border_type(own_border),
+        border_type: own_border,
         joints: vec![],
     };
 
-    for test in layout.iter() {
+    for (i, test) in layout.iter().enumerate() {
+        let other_border = borders[i];
+
         let test_x1 = test.x;
         let test_y1 = test.y;
         let test_x2 = test.right().saturating_sub(1);
@@ -46,28 +48,28 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
         if test_y2 == area_y1 {
             if test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
-                    pos: JointPosition::CrossEnd(border),
+                    pos: JointPosition::CrossEnd(other_border),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_x1 - area_x1),
                 });
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -75,35 +77,42 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
 
             if test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
-                    pos: JointPosition::CrossStart(border),
+                    pos: JointPosition::CrossStart(other_border),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_x2 - area_x1),
                 });
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Top,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
             }
 
-            if border == BorderType::QuadrantInside {
-                add_top_quadrant_inside(test_x1, test_x2, area_x1, area_x2, border, &mut block);
+            if other_border == BorderType::QuadrantInside {
+                add_top_quadrant_inside(
+                    test_x1,
+                    test_x2,
+                    area_x1,
+                    area_x2,
+                    other_border,
+                    &mut block,
+                );
             }
         }
 
@@ -111,28 +120,28 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
         if test_y1 == area_y2 {
             if test_x1 == area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
-                    pos: JointPosition::CrossEnd(border),
+                    pos: JointPosition::CrossEnd(other_border),
                 });
             } else if test_x1 >= area_x1 && test_x1 <= area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_x1 - area_x1),
                 });
             } else if test_x1 < area_x1 && test_x2 > area_x1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -140,35 +149,42 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
 
             if test_x2 == area_x1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
-                    pos: JointPosition::CrossStart(border),
+                    pos: JointPosition::CrossStart(other_border),
                 });
             } else if test_x2 >= area_x1 && test_x2 <= area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_x2 - area_x1),
                 });
             } else if test_x2 > area_x2 && test_x1 < area_x2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Bottom,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
             }
 
-            if border == BorderType::QuadrantInside {
-                add_bottom_quadrant_inside(test_x1, test_x2, area_x1, area_x2, border, &mut block);
+            if other_border == BorderType::QuadrantInside {
+                add_bottom_quadrant_inside(
+                    test_x1,
+                    test_x2,
+                    area_x1,
+                    area_x2,
+                    other_border,
+                    &mut block,
+                );
             }
         }
 
@@ -178,19 +194,19 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                 // already added as Bottom/StartCross
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Left,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_y1 - area_y1),
                 });
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Left,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -200,26 +216,33 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                 // already added as Top/StartCross
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Left,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_y2 - area_y1),
                 });
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Left,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
             }
 
-            if border == BorderType::QuadrantInside {
-                add_left_quadrant_inside(test_y1, test_y2, area_y1, area_y2, border, &mut block);
+            if other_border == BorderType::QuadrantInside {
+                add_left_quadrant_inside(
+                    test_y1,
+                    test_y2,
+                    area_y1,
+                    area_y2,
+                    other_border,
+                    &mut block,
+                );
             }
         }
 
@@ -229,19 +252,19 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                 // already added as Bottom/EndCross
             } else if test_y1 >= area_y1 && test_y1 <= area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Right,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::Pos(test_y1 - area_y1),
                 });
             } else if test_y1 < area_y1 && test_y2 > area_y1 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Right,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: false,
                     pos: JointPosition::ProlongStart,
                 });
@@ -251,26 +274,33 @@ pub fn create_border(layout: Rc<[Rect]>, n: usize, border: BorderType) -> NewBlo
                 // already added as Top/EndCross
             } else if test_y2 >= area_y1 && test_y2 <= area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Right,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::Pos(test_y2 - area_y1),
                 });
             } else if test_y2 > area_y2 && test_y1 < area_y2 {
                 block.joints.push(Joint {
-                    own_border: border,
-                    other_border: border,
+                    own_border,
+                    other_border,
                     side: JointSide::Right,
-                    mark: JointKind::Outward,
+                    kind: JointKind::Outward,
                     mirrored: true,
                     pos: JointPosition::ProlongEnd,
                 });
             }
 
-            if border == BorderType::QuadrantInside {
-                add_right_quadrant_inside(test_y1, test_y2, area_y1, area_y2, border, &mut block);
+            if other_border == BorderType::QuadrantInside {
+                add_right_quadrant_inside(
+                    test_y1,
+                    test_y2,
+                    area_y1,
+                    area_y2,
+                    other_border,
+                    &mut block,
+                );
             }
         }
     }
@@ -287,50 +317,50 @@ fn add_top_quadrant_inside(
     block: &mut NewBlock,
 ) {
     if test_x1 == area_x1 {
-        block.joints.push(
-            Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▐"),
-        )
+        // block.joints.push(
+        //     Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▐"),
+        // )
     } else if test_x1 > area_x1 && test_x2 < area_x2 {
-        block.joints.push(
-            Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▟"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▟"),
+        // );
     } else if test_x1 == area_x2 {
-        block.joints.push(
-            Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▞"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Top, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▞"),
+        // );
     }
 
     for x in test_x1 + 1..test_x2 {
         if x == area_x1 {
-            block.joints.push(
-                Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
-                    .border(border)
-                    .other(border)
-                    .manual("▜"),
-            )
+            // block.joints.push(
+            //     Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▜"),
+            // )
         } else if x > area_x1 && x < area_x2 {
             block.joints.push(
                 Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
                     .border(border)
                     .other(border)
-                    .manual("█"),
+                    .kind(JointKind::Manual("█")),
             );
         } else if x == area_x2 {
-            block.joints.push(
-                Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
-                    .border(border)
-                    .other(border)
-                    .manual("▛"),
-            );
+            // block.joints.push(
+            //     Joint::new(JointSide::Top, JointPosition::Pos(x - area_x1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▛"),
+            // );
         }
     }
 }
@@ -344,50 +374,50 @@ fn add_bottom_quadrant_inside(
     block: &mut NewBlock,
 ) {
     if test_x1 == area_x1 {
-        block.joints.push(
-            Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▐"),
-        )
+        // block.joints.push(
+        //     Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▐"),
+        // )
     } else if test_x1 > area_x1 && test_x2 < area_x2 {
-        block.joints.push(
-            Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▜"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▜"),
+        // );
     } else if test_x1 == area_x2 {
-        block.joints.push(
-            Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
-                .border(border)
-                .other(border)
-                .manual("▚"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Bottom, JointPosition::Pos(test_x1 - area_x1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▚"),
+        // );
     }
 
     for x in test_x1 + 1..test_x2 {
         if x == area_x1 {
-            block.joints.push(
-                Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
-                    .border(border)
-                    .other(border)
-                    .manual("▟"),
-            )
+            // block.joints.push(
+            //     Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▟"),
+            // )
         } else if x > area_x1 && x < area_x2 {
             block.joints.push(
                 Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
                     .border(border)
                     .other(border)
-                    .manual("█"),
+                    .kind(JointKind::Manual("█")),
             );
         } else if x == area_x2 {
-            block.joints.push(
-                Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
-                    .border(border)
-                    .other(border)
-                    .manual("▙"),
-            );
+            // block.joints.push(
+            //     Joint::new(JointSide::Bottom, JointPosition::Pos(x - area_x1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▙"),
+            // );
         }
     }
 }
@@ -401,45 +431,45 @@ fn add_left_quadrant_inside(
     block: &mut NewBlock,
 ) {
     if test_y1 == area_y1 {
-        block.joints.push(
-            Joint::new(JointSide::Left, JointPosition::Pos(test_y1 - area_y1))
-                .border(border)
-                .other(border)
-                .manual("▄"),
-        )
+        // block.joints.push(
+        //     Joint::new(JointSide::Left, JointPosition::Pos(test_y1 - area_y1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▄"),
+        // )
     } else if test_y1 > area_y1 && test_y2 < area_y2 {
         // no special handling necessary.
     } else if test_y1 == area_y2 {
-        block.joints.push(
-            Joint::new(JointSide::Left, JointPosition::Pos(test_y1 - area_y1))
-                .border(border)
-                .other(border)
-                .manual("▞"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Left, JointPosition::Pos(test_y1 - area_y1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▞"),
+        // );
     }
 
     for x in test_y1 + 1..test_y2 {
         if x == area_y1 {
-            block.joints.push(
-                Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
-                    .border(border)
-                    .other(border)
-                    .manual("▙"),
-            )
+            // block.joints.push(
+            //     Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▙"),
+            // )
         } else if x > area_y1 && x < area_y2 {
             block.joints.push(
                 Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
                     .border(border)
                     .other(border)
-                    .manual("█"),
+                    .kind(JointKind::Manual("█")),
             );
         } else if x == area_y2 {
-            block.joints.push(
-                Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
-                    .border(border)
-                    .other(border)
-                    .manual("▛"),
-            );
+            // block.joints.push(
+            //     Joint::new(JointSide::Left, JointPosition::Pos(x - area_y1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▛"),
+            // );
         }
     }
 }
@@ -453,45 +483,45 @@ fn add_right_quadrant_inside(
     block: &mut NewBlock,
 ) {
     if test_y1 == area_y1 {
-        block.joints.push(
-            Joint::new(JointSide::Right, JointPosition::Pos(test_y1 - area_y1))
-                .border(border)
-                .other(border)
-                .manual("▄"),
-        )
+        // block.joints.push(
+        //     Joint::new(JointSide::Right, JointPosition::Pos(test_y1 - area_y1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▄"),
+        // )
     } else if test_y1 > area_y1 && test_y2 < area_y2 {
         // no special handling necessary.
     } else if test_y1 == area_y2 {
-        block.joints.push(
-            Joint::new(JointSide::Right, JointPosition::Pos(test_y1 - area_y1))
-                .border(border)
-                .other(border)
-                .manual("▚"),
-        );
+        // block.joints.push(
+        //     Joint::new(JointSide::Right, JointPosition::Pos(test_y1 - area_y1))
+        //         .border(border)
+        //         .other(border)
+        //         .manual("▚"),
+        // );
     }
 
     for x in test_y1 + 1..test_y2 {
         if x == area_y1 {
-            block.joints.push(
-                Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
-                    .border(border)
-                    .other(border)
-                    .manual("▟"),
-            )
+            // block.joints.push(
+            //     Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▟"),
+            // )
         } else if x > area_y1 && x < area_y2 {
             block.joints.push(
                 Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
                     .border(border)
                     .other(border)
-                    .manual("█"),
+                    .kind(JointKind::Manual("█")),
             );
         } else if x == area_y2 {
-            block.joints.push(
-                Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
-                    .border(border)
-                    .other(border)
-                    .manual("▜"),
-            );
+            // block.joints.push(
+            //     Joint::new(JointSide::Right, JointPosition::Pos(x - area_y1))
+            //         .border(border)
+            //         .other(border)
+            //         .manual("▜"),
+            // );
         }
     }
 }

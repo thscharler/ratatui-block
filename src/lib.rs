@@ -14,7 +14,7 @@ pub struct Joint {
     /// Which side of the area.
     pub(crate) side: JointSide,
     /// Joint mark.
-    pub(crate) mark: JointKind,
+    pub(crate) kind: JointKind,
     /// Mirrored joint. This is needed for QuadrantInside and QuadrantOutside.
     /// Those have mirrored glyphs on each side.
     pub(crate) mirrored: bool,
@@ -97,7 +97,7 @@ impl Joint {
             own_border: Default::default(),
             other_border: Default::default(),
             side,
-            mark: Default::default(),
+            kind: Default::default(),
             mirrored: false,
             pos,
         }
@@ -130,33 +130,13 @@ impl Joint {
         self.side
     }
 
-    pub fn mark(mut self, mark: JointKind) -> Self {
-        self.mark = mark;
+    pub fn kind(mut self, kind: JointKind) -> Self {
+        self.kind = kind;
         self
     }
 
-    pub fn get_mark(&self) -> JointKind {
-        self.mark
-    }
-
-    pub fn outward(mut self) -> Self {
-        self.mark = JointKind::Outward;
-        self
-    }
-
-    pub fn inward(mut self) -> Self {
-        self.mark = JointKind::Inward;
-        self
-    }
-
-    pub fn through(mut self) -> Self {
-        self.mark = JointKind::Through;
-        self
-    }
-
-    pub fn manual(mut self, mark: &'static str) -> Self {
-        self.mark = JointKind::Manual(mark);
-        self
+    pub fn get_kind(&self) -> JointKind {
+        self.kind
     }
 
     pub fn mirrored(mut self, mirrored: bool) -> Self {
@@ -168,48 +148,13 @@ impl Joint {
         self.mirrored
     }
 
-    pub fn joint_pos(mut self, pos: JointPosition) -> Self {
+    pub fn position(mut self, pos: JointPosition) -> Self {
         self.pos = pos;
         self
     }
 
-    pub fn get_joint_pos(&self) -> JointPosition {
+    pub fn get_position(&self) -> JointPosition {
         self.pos
-    }
-
-    pub fn cross_start(mut self, extending_border: BorderType) -> Self {
-        self.pos = JointPosition::CrossStart(extending_border);
-        self
-    }
-
-    pub fn prolong_start(mut self) -> Self {
-        self.pos = JointPosition::ProlongStart;
-        self
-    }
-
-    pub fn start(mut self) -> Self {
-        self.pos = JointPosition::Start;
-        self
-    }
-
-    pub fn pos(mut self, pos: u16) -> Self {
-        self.pos = JointPosition::Pos(pos);
-        self
-    }
-
-    pub fn end(mut self) -> Self {
-        self.pos = JointPosition::End;
-        self
-    }
-
-    pub fn prolong_end(mut self) -> Self {
-        self.pos = JointPosition::ProlongEnd;
-        self
-    }
-
-    pub fn cross_end(mut self, extending_border: BorderType) -> Self {
-        self.pos = JointPosition::CrossEnd(extending_border);
-        self
     }
 
     /// Get the location of the mark respective to the given area.
@@ -261,7 +206,7 @@ impl Joint {
     // Normalize respective to area.
     // Replaces Pos(n) with Start/End if matching.
     #[inline]
-    fn normalized(&self, area: Rect) -> Joint {
+    pub fn normalized(&self, area: Rect) -> Joint {
         match self.side {
             JointSide::Top | JointSide::Bottom => match self.pos {
                 JointPosition::Pos(n) => {

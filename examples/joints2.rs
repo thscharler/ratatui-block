@@ -20,6 +20,7 @@ fn main() -> Result<(), anyhow::Error> {
         direction: Direction::Horizontal,
         mono: false,
         border: BorderType::QuadrantInside,
+        other: BorderType::QuadrantInside,
         offset: 0,
         joint_area: Default::default(),
         joint_idx: 0,
@@ -41,6 +42,7 @@ struct State {
     direction: Direction,
     mono: bool,
     border: BorderType,
+    other: BorderType,
     max_offset: u16,
     offset: u16,
 
@@ -105,10 +107,10 @@ fn repaint_buttons(
         );
 
         Block::bordered()
-            .border_type(state.border)
+            .border_type(state.other)
             .render(above, buf);
         Block::bordered()
-            .border_type(state.border)
+            .border_type(state.other)
             .render(below, buf);
 
         // all areas
@@ -142,7 +144,7 @@ fn repaint_buttons(
     }
 
     // new block
-    let bbb = create_border(all.clone(), 1, state.border);
+    let bbb = create_border(all.as_ref(), &[state.other, state.border, state.other], 1);
     if state.mono {
         bbb.block.render(all[1], buf);
     } else {
@@ -159,17 +161,19 @@ fn repaint_buttons(
     buf.set_style(state.joint_area, THEME.cyan(1));
 
     if let Some(joint) = bbb.joints.get(state.joint_idx) {
+        let joint = joint.normalized(all[1]);
+
         let mut area = state.joint_area;
         area.height = 1;
         format!("#{:?} of {:?}", state.joint_idx + 1, bbb.joints.len()).render(area, buf);
         area.y += 1;
         format!("{:?}", joint.get_border()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.get_mark()).render(area, buf);
+        format!("{:?}", joint.get_kind()).render(area, buf);
         area.y += 1;
         format!("{:?}", joint.get_side()).render(area, buf);
         area.y += 1;
-        format!("{:?}", joint.get_joint_pos()).render(area, buf);
+        format!("{:?}", joint.get_position()).render(area, buf);
         area.y += 1;
         format!("{:?}", joint.is_mirrored()).render(area, buf);
         area.y += 1;
@@ -180,6 +184,10 @@ fn repaint_buttons(
     txt_area.height = 1;
 
     "F1: border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F2: other border"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
@@ -198,6 +206,8 @@ fn repaint_buttons(
 
     format!("border={:?}", state.border).render(txt_area, buf);
     txt_area.y += 1;
+    format!("other={:?}", state.other).render(txt_area, buf);
+    txt_area.y += 1;
     format!("offset={:?}", state.offset).render(txt_area, buf);
     txt_area.y += 1;
     format!("dir={:?}", state.direction).render(txt_area, buf);
@@ -214,6 +224,17 @@ fn handle_buttons(
     let r = match event {
         ct_event!(keycode press F(1)) => {
             state.border = match state.border {
+                BorderType::Plain => BorderType::Rounded,
+                BorderType::Rounded => BorderType::Double,
+                BorderType::Double => BorderType::Thick,
+                BorderType::Thick => BorderType::QuadrantInside,
+                BorderType::QuadrantInside => BorderType::QuadrantOutside,
+                BorderType::QuadrantOutside => BorderType::Plain,
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(2)) => {
+            state.other = match state.other {
                 BorderType::Plain => BorderType::Rounded,
                 BorderType::Rounded => BorderType::Double,
                 BorderType::Double => BorderType::Thick,
@@ -284,6 +305,19 @@ fn handle_buttons(
         }
         ct_event!(keycode press Left) if state.direction == Direction::Vertical => {
             state.joint_idx = state.joint_idx.saturating_sub(1);
+            Outcome::Changed
+        }
+
+        ct_event!(scroll down for _x, _y) => {
+            if state.offset < state.max_offset {
+                state.offset += 1;
+            }
+            Outcome::Changed
+        }
+        ct_event!(scroll up for _x, _y) => {
+            if state.offset > 0 {
+                state.offset -= 1;
+            }
             Outcome::Changed
         }
 

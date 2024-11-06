@@ -161,11 +161,11 @@ fn repaint_buttons(
     txt_area.y += 1;
     format!("joint={:?}", state.joint.get_border()).render(txt_area, buf);
     txt_area.y += 1;
-    format!("scale={:?}", state.joint.get_mark()).render(txt_area, buf);
+    format!("scale={:?}", state.joint.get_kind()).render(txt_area, buf);
     txt_area.y += 1;
     format!("side={:?}", state.joint.get_side()).render(txt_area, buf);
     txt_area.y += 1;
-    format!("pos={:?}", state.joint.get_joint_pos()).render(txt_area, buf);
+    format!("pos={:?}", state.joint.get_position()).render(txt_area, buf);
     txt_area.y += 1;
     format!("mirror={:?}", state.joint.is_mirrored()).render(txt_area, buf);
 
@@ -220,7 +220,7 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(4)) => {
-            state.joint = state.joint.mark(match state.joint.get_mark() {
+            state.joint = state.joint.kind(match state.joint.get_kind() {
                 JointKind::Inward => JointKind::Outward,
                 JointKind::Outward => JointKind::Through,
                 JointKind::Through => JointKind::Inward,
@@ -231,7 +231,7 @@ fn handle_buttons(
         ct_event!(keycode press Right) => {
             match state.joint.get_side() {
                 JointSide::Top => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossStart(_) => JointPosition::ProlongStart,
                         JointPosition::ProlongStart => JointPosition::Start,
                         JointPosition::Start => JointPosition::Pos(1),
@@ -249,10 +249,10 @@ fn handle_buttons(
                             JointPosition::CrossStart(state.hor_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Right => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossStart(_) => JointPosition::ProlongStart,
                         JointPosition::ProlongStart => JointPosition::Start,
                         JointPosition::Start => JointPosition::Pos(1),
@@ -270,10 +270,10 @@ fn handle_buttons(
                             JointPosition::CrossEnd(state.vert_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Bottom => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
                         JointPosition::ProlongEnd => JointPosition::End,
                         JointPosition::End => {
@@ -295,10 +295,10 @@ fn handle_buttons(
                             JointPosition::CrossEnd(state.hor_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Left => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
                         JointPosition::ProlongEnd => JointPosition::End,
                         JointPosition::End => {
@@ -320,7 +320,7 @@ fn handle_buttons(
                             JointPosition::CrossStart(state.vert_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
             };
             Outcome::Changed
@@ -328,7 +328,7 @@ fn handle_buttons(
         ct_event!(keycode press Left) => {
             match state.joint.get_side() {
                 JointSide::Top => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
                         JointPosition::ProlongEnd => JointPosition::End,
                         JointPosition::End => {
@@ -350,10 +350,10 @@ fn handle_buttons(
                             JointPosition::CrossStart(state.hor_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Left => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossStart(_) => JointPosition::ProlongStart,
                         JointPosition::ProlongStart => JointPosition::Start,
                         JointPosition::Start => JointPosition::Pos(1),
@@ -371,10 +371,10 @@ fn handle_buttons(
                             JointPosition::CrossStart(state.vert_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Bottom => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossStart(_) => JointPosition::ProlongStart,
                         JointPosition::ProlongStart => JointPosition::Start,
                         JointPosition::Start => JointPosition::Pos(1),
@@ -392,10 +392,10 @@ fn handle_buttons(
                             JointPosition::CrossEnd(state.hor_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
                 JointSide::Right => {
-                    let next = match state.joint.get_joint_pos() {
+                    let next = match state.joint.get_position() {
                         JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
                         JointPosition::ProlongEnd => JointPosition::End,
                         JointPosition::End => {
@@ -417,7 +417,7 @@ fn handle_buttons(
                             JointPosition::CrossEnd(state.vert_neighbour)
                         }
                     };
-                    state.joint = state.joint.joint_pos(next);
+                    state.joint = state.joint.position(next);
                 }
             };
             Outcome::Changed

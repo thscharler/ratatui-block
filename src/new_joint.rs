@@ -1,12 +1,10 @@
-use crate::JointKind::{Outward, Through};
-use crate::JointSide::{Bottom, Left, Right, Top};
+use crate::JointKind::Outward;
+use crate::JointSide::Top;
 use crate::{Joint, JointKind, JointPosition, JointSide};
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::widgets::BorderType;
-use ratatui::widgets::BorderType::{
-    Double, Plain, QuadrantInside, QuadrantOutside, Rounded, Thick,
-};
+use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 
 pub fn render_joint(joint: &Joint, area: Rect, buf: &mut Buffer) {
     // normalize before finding the glyph
@@ -18,7 +16,7 @@ pub fn render_joint(joint: &Joint, area: Rect, buf: &mut Buffer) {
             BorderType::Rounded => plain_joint(joint),
             BorderType::Double => double_joint(joint),
             BorderType::Thick => thick_joint(joint),
-            BorderType::QuadrantInside => quad_inside_joint(joint),
+            BorderType::QuadrantInside => quadrant_inside_joint(joint),
             BorderType::QuadrantOutside => "X",
         };
 
@@ -59,7 +57,7 @@ fn plain_joint(joint: Joint) -> &'static str {
     use JointPosition::*;
     use JointSide::*;
 
-    match (joint.mark, joint.side, joint.pos, joint.other_border) {
+    match (joint.kind, joint.side, joint.pos, joint.other_border) {
         (Outward, Top, CrossStart(_), Plain) => "┼",
         (Outward, Top, CrossStart(_), Rounded) => "┼",
         (Outward, Top, CrossStart(_), Double) => "┼",
@@ -440,7 +438,7 @@ fn double_joint(joint: Joint) -> &'static str {
     use JointPosition::*;
     use JointSide::*;
 
-    match (joint.mark, joint.side, joint.pos, joint.other_border) {
+    match (joint.kind, joint.side, joint.pos, joint.other_border) {
         (Outward, Top, CrossStart(_), _) => "╬",
         (Outward, Top, ProlongStart, _) => "╦",
         (Outward, Top, Start, _) => "╠",
@@ -597,7 +595,7 @@ fn thick_joint(joint: Joint) -> &'static str {
     use JointPosition::*;
     use JointSide::*;
 
-    match (joint.mark, joint.side, joint.pos, joint.other_border) {
+    match (joint.kind, joint.side, joint.pos, joint.other_border) {
         (Outward, Top, CrossStart(Thick), Plain) => "╈",
         (Outward, Top, CrossStart(_), Plain) => "\u{2546}",
         (Outward, Top, CrossStart(Thick), Rounded) => "╈",
@@ -932,77 +930,75 @@ fn thick_joint(joint: Joint) -> &'static str {
     }
 }
 
-fn quad_inside_joint(joint: Joint) -> &'static str {
+fn quadrant_inside_joint(joint: Joint) -> &'static str {
     use BorderType::*;
     use JointKind::*;
     use JointPosition::*;
     use JointSide::*;
 
     match (
-        joint.mark,
+        joint.kind,
         joint.side,
         joint.pos,
         joint.mirrored,
         joint.other_border,
     ) {
+        (Outward, Top, CrossStart(_), _, QuadrantInside) => "▚",
+        (Outward, Top, CrossStart(_), _, QuadrantOutside) => "▟",
         (Outward, Top, CrossStart(_), _, _) => "▚",
-        (Outward, Top, ProlongStart, false, _) => "▚",
-        (Outward, Top, ProlongStart, true, _) => "▄",
-        (Outward, Top, Start, false, _) => "▐",
-        (Outward, Top, Start, true, _) => "▐",
+        (Outward, Top, ProlongStart, _, QuadrantInside) => "▜",
+        (Outward, Top, ProlongStart, _, _) => "▄",
+        (Outward, Top, Start, false, QuadrantOutside) => "▙",
+        (Outward, Top, Start, _, _) => "▐",
         (Outward, Top, Pos(_), false, QuadrantInside) => "▟",
         (Outward, Top, Pos(_), true, QuadrantInside) => "▙",
         (Outward, Top, Pos(_), false, _) => "▙",
         (Outward, Top, Pos(_), true, _) => "▟",
-        (Outward, Top, End, false, _) => "▌",
-        (Outward, Top, End, true, _) => "▌",
-        (Outward, Top, ProlongEnd, false, _) => "▄",
-        (Outward, Top, ProlongEnd, true, _) => "▞",
+        (Outward, Top, End, true, QuadrantOutside) => "▟",
+        (Outward, Top, End, _, _) => "▌",
+        (Outward, Top, ProlongEnd, _, QuadrantInside) => "▛",
+        (Outward, Top, ProlongEnd, _, _) => "▄",
+        (Outward, Top, CrossEnd(_), _, QuadrantInside) => "▞",
+        (Outward, Top, CrossEnd(_), _, QuadrantOutside) => "▙",
         (Outward, Top, CrossEnd(_), _, _) => "▞",
 
         (Outward, Right, CrossStart(_), _, _) => "▞",
-        (Outward, Right, ProlongStart, false, _) => "▞",
-        (Outward, Right, ProlongStart, true, _) => "▌",
-        (Outward, Right, Start, false, _) => "▄",
-        (Outward, Right, Start, true, _) => "▄",
+        (Outward, Right, ProlongStart, _, QuadrantInside) => "▟",
+        (Outward, Right, ProlongStart, _, _) => "▌",
+        (Outward, Right, Start, _, _) => "▄",
         (Outward, Right, Pos(_), false, QuadrantInside) => "▙",
         (Outward, Right, Pos(_), true, QuadrantInside) => "▛",
         (Outward, Right, Pos(_), false, _) => "▛",
         (Outward, Right, Pos(_), true, _) => "▙",
-        (Outward, Right, End, false, _) => "▀",
-        (Outward, Right, End, true, _) => "▀",
-        (Outward, Right, ProlongEnd, false, _) => "▌",
-        (Outward, Right, ProlongEnd, true, _) => "▚",
+        (Outward, Right, End, _, _) => "▀",
+        (Outward, Right, ProlongEnd, _, QuadrantInside) => "▜",
+        (Outward, Right, ProlongEnd, _, _) => "▌",
         (Outward, Right, CrossEnd(_), _, _) => "▚",
 
         (Outward, Bottom, CrossStart(_), _, _) => "▞",
-        (Outward, Bottom, ProlongStart, false, _) => "▞",
-        (Outward, Bottom, ProlongStart, true, _) => "▀",
-        (Outward, Bottom, Start, false, _) => "▐",
-        (Outward, Bottom, Start, true, _) => "▐",
+        (Outward, Bottom, ProlongStart, _, QuadrantInside) => "▟",
+        (Outward, Bottom, ProlongStart, _, _) => "▀",
+        (Outward, Bottom, Start, _, _) => "▐",
         (Outward, Bottom, Pos(_), false, QuadrantInside) => "▜",
         (Outward, Bottom, Pos(_), true, QuadrantInside) => "▛",
         (Outward, Bottom, Pos(_), false, _) => "▛",
         (Outward, Bottom, Pos(_), true, _) => "▜",
-        (Outward, Bottom, End, false, _) => "▌",
-        (Outward, Bottom, End, true, _) => "▌",
-        (Outward, Bottom, ProlongEnd, false, _) => "▀",
-        (Outward, Bottom, ProlongEnd, true, _) => "▚",
+        (Outward, Bottom, End, _, _) => "▌",
+        (Outward, Bottom, ProlongEnd, _, QuadrantInside) => "▙",
+        (Outward, Bottom, ProlongEnd, _, _) => "▀",
         (Outward, Bottom, CrossEnd(_), _, _) => "▚",
 
         (Outward, Left, CrossStart(_), _, _) => "▚",
-        (Outward, Left, ProlongStart, false, _) => "▚",
-        (Outward, Left, ProlongStart, true, _) => "▐",
-        (Outward, Left, Start, false, _) => "▄",
-        (Outward, Left, Start, true, _) => "▄",
+        (Outward, Left, ProlongStart, _, QuadrantInside) => "▙",
+        (Outward, Left, ProlongStart, _, _) => "▐",
+        (Outward, Left, Start, _, _) => "▄",
         (Outward, Left, Pos(_), false, QuadrantInside) => "▟",
         (Outward, Left, Pos(_), true, QuadrantInside) => "▜",
         (Outward, Left, Pos(_), false, _) => "▜",
         (Outward, Left, Pos(_), true, _) => "▟",
-        (Outward, Left, End, false, _) => "▀",
-        (Outward, Left, End, true, _) => "▀",
-        (Outward, Left, ProlongEnd, false, _) => "▐",
-        (Outward, Left, ProlongEnd, true, _) => "▞",
+        (Outward, Left, End, _, _) => "▀",
+        (Outward, Left, ProlongEnd, _, QuadrantInside) => "▛",
+        (Outward, Left, ProlongEnd, _, _) => "▐",
         (Outward, Left, CrossEnd(_), _, _) => "▞",
 
         // ----------------------------------------------
