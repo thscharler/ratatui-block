@@ -7,7 +7,7 @@ use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::v3::{BorderGlyph, Side};
+use ratatui_block::v3::{BlockPointConnect, BorderGlyph, Side};
 use ratatui_block::{create_border, render_joint, v3};
 use std::rc::Rc;
 
@@ -16,9 +16,11 @@ mod mini_salsa;
 fn main() -> Result<(), anyhow::Error> {
     setup_logging()?;
 
+    debug!("(BorderGlyph, u16) {}", size_of::<(BorderGlyph, u16)>());
+    debug!("AreaPointConnect {}", size_of::<BlockPointConnect>());
     debug!("BorderGlyph {}", size_of::<BorderGlyph>());
     debug!("Side {}", size_of::<Side>());
-    debug!("Position {}", size_of::<v3::Position>());
+    debug!("Position {}", size_of::<v3::Kind>());
     debug!("BorderType {}", size_of::<BorderType>());
 
     let mut data = Data {};

@@ -1,11 +1,136 @@
+//!
+//! size_of says
+//!
+//! ```txt/plain
+//! (BorderGlyph, u16) 8
+//! AreaPointConnect 8
+//! BorderGlyph 5
+//! Side 1
+//! Position 2
+//! BorderType 1
+//! ```
+//!
+
 use ratatui::widgets::BorderType;
 
 /// Experimental AreaBorder.
+///
+/// This would be
+/// ```rust no_run
+///
+///     use ratatui_block::v3::BlockBorder;
+///     use ratatui::widgets::BorderType;
+///     use ratatui_block::v3::{BorderGlyph, Kind, Side};
+///
+///     let width = 20;
+///     let height = 10;
+///
+///     let border = BlockBorder {
+///         glyphs: vec![
+///             (
+///                 BorderGlyph {
+///                     side: Side::Top,
+///                     kind: Kind::RegularStart,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 1,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Top,
+///                     kind: Kind::Regular,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 width-2,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Top,
+///                     kind: Kind::RegularEnd,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 1,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Right,
+///                     kind: Kind::Regular,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 height-2,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Bottom,
+///                     kind: Kind::RegularStart,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 1,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Bottom,
+///                     kind: Kind::Regular,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 width-2,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Bottom,
+///                     kind: Kind::RegularEnd,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 1,
+///             ),
+///             (
+///                 BorderGlyph {
+///                     side: Side::Left,
+///                     kind: Kind::Regular,
+///                     own_border: BorderType::Plain,
+///                     other_border: Default::default(),
+///                 },
+///                 height-2,
+///             ),
+///         ],
+///     };
+///
+///
+///
+/// ```
+///
+/// Todo: impl Widget
+///
 #[derive(Debug, Clone)]
-pub struct AreaBorder {
+pub struct BlockBorder {
     /// Area border described as glyphs.
     /// The second value is a repeat.
+    /// Rendering of the glyphs starts at the beginning of
+    /// each side, and the glyphs for one side are stacked
+    /// from there-on.
+    ///
+    /// The glyphs need not be ordered by side here.
     pub glyphs: Vec<(BorderGlyph, u16)>,
+}
+
+///
+/// Experimental: Single manual connection point.
+///
+/// Todo: impl Widget
+///
+#[derive(Debug, Clone)]
+pub struct BlockPointConnect {
+    /// Glyph
+    pub glyph: BorderGlyph,
+    /// position from the start of BorderGlyph::side
+    pub position: u16,
 }
 
 /// Denotes one glyph used to render a block.
@@ -13,8 +138,8 @@ pub struct AreaBorder {
 pub struct BorderGlyph {
     /// Which side of the area.
     pub side: Side,
-    /// Position of the glyph.
-    pub pos: Position,
+    /// Type of glyph.
+    pub kind: Kind,
     /// The main border of the Block that is rendered.
     pub own_border: BorderType,
     /// The second/other Border that will be connected.
@@ -37,7 +162,7 @@ pub enum Side {
 /// Positions along one side of the block's area.
 ///
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Position {
+pub enum Kind {
     /// Regular start corner.
     RegularStart,
     /// Draw a 90° outward joint at the start.
@@ -64,29 +189,29 @@ pub enum Position {
     /// Regular border at position.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    Regular(u16),
+    Regular,
     /// Draw a 90° outward joint at some position.
     ///
     /// There is a difference if this joins with the left or the
     /// right side of the other area. This joins the start.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    AngleOutwardStart(u16),
+    AngleOutwardStart,
     /// Draw a 90° outward joint at some position.
     ///
     /// There is a difference if this joins with the left or the
     /// right side of the other area. This joins the end.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    AngleOutwardEnd(u16),
+    AngleOutwardEnd,
     /// Draw a 90° inward joint at some position.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    AngleInwardStart(u16),
+    AngleInwardStart,
     /// Draw a 90° inward joint at some position.
     ///
     /// Position 0 and width-1 are auto-converted to Start/End.
-    AngleInwardEnd(u16),
+    AngleInwardEnd,
     /// Draw a cross joint at some position.
     ///
     /// The border type here is the border at 90° to the inward.

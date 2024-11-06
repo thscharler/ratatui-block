@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Position","Side"],"struct":["BorderGlyph"]};
+window.SIDEBAR_ITEMS = {"enum":["Kind","Side"],"struct":["BlockBorder","BlockPointConnect","BorderGlyph"]};
