@@ -37,6 +37,7 @@ use ratatui::widgets::{BorderType, Widget};
 ///     let border = BlockBorder {
 ///         border_style: Default::default(),
 ///         own_border: BorderType::Plain,
+///         debug: "".to_string(),
 ///         symbols: vec![
 ///             (
 ///                 BorderSymbol {
