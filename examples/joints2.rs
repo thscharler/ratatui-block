@@ -1,14 +1,12 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
-use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Direction, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::v3::{BlockPointConnect, BorderGlyph, Side};
-use ratatui_block::{create_border, render_joint, v3};
+use ratatui_block::v3::create_border;
 use std::rc::Rc;
 
 mod mini_salsa;
@@ -16,20 +14,13 @@ mod mini_salsa;
 fn main() -> Result<(), anyhow::Error> {
     setup_logging()?;
 
-    debug!("(BorderGlyph, u16) {}", size_of::<(BorderGlyph, u16)>());
-    debug!("AreaPointConnect {}", size_of::<BlockPointConnect>());
-    debug!("BorderGlyph {}", size_of::<BorderGlyph>());
-    debug!("Side {}", size_of::<Side>());
-    debug!("Position {}", size_of::<v3::Kind>());
-    debug!("BorderType {}", size_of::<BorderType>());
-
     let mut data = Data {};
     let mut state = State {
         max_offset: 0,
         direction: Direction::Horizontal,
         mono: false,
-        border: BorderType::QuadrantInside,
-        other: BorderType::QuadrantInside,
+        border: BorderType::Plain,
+        other: BorderType::Plain,
         offset: 0,
         joint_area: Default::default(),
         joint_idx: 0,
@@ -114,14 +105,6 @@ fn repaint_buttons(
             5,
             layout[2][2].height,
         );
-
-        Block::bordered()
-            .border_type(state.other)
-            .render(above, buf);
-        Block::bordered()
-            .border_type(state.other)
-            .render(below, buf);
-
         // all areas
         all = [above, area, below].iter().copied().collect::<Rc<[Rect]>>();
     } else {
@@ -140,50 +123,27 @@ fn repaint_buttons(
             layout[2][2].width,
             4,
         );
-
-        Block::bordered().border_type(state.other).render(left, buf);
-        Block::bordered()
-            .border_type(state.other)
-            .render(right, buf);
-
         // all areas
         all = [left, area, right].iter().copied().collect::<Rc<[Rect]>>();
     }
 
+    Block::bordered()
+        .border_type(state.other)
+        .render(all[0], buf);
+    Block::bordered()
+        .border_type(state.other)
+        .render(all[2], buf);
+    Block::bordered()
+        .border_type(state.border)
+        .render(all[1], buf);
+
     // new block
-    let bbb = create_border(all.as_ref(), &[state.other, state.border, state.other], 1);
+    let mut bbb = create_border(all.as_ref(), &[state.other, state.border, state.other], 1);
     if state.mono {
-        bbb.block.render(all[1], buf);
+        (&bbb).render(all[1], buf);
     } else {
-        bbb.block
-            .border_style(Style::new().fg(THEME.orange[2]))
-            .render(all[1], buf);
-    }
-    for joint in bbb.joints.iter() {
-        render_joint(joint, all[1], buf);
-    }
-
-    state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 7, l0[0].width, 7);
-    state.joint_max = bbb.joints.len();
-    buf.set_style(state.joint_area, THEME.cyan(1));
-
-    if let Some(joint) = bbb.joints.get(state.joint_idx) {
-        let joint = joint.normalized(all[1]);
-
-        let mut area = state.joint_area;
-        area.height = 1;
-        format!("#{:?} of {:?}", state.joint_idx + 1, bbb.joints.len()).render(area, buf);
-        area.y += 1;
-        format!("{:?}", joint.get_border()).render(area, buf);
-        area.y += 1;
-        format!("{:?}", joint.get_kind()).render(area, buf);
-        area.y += 1;
-        format!("{:?}", joint.get_side()).render(area, buf);
-        area.y += 1;
-        format!("{:?}", joint.get_position()).render(area, buf);
-        area.y += 1;
-        format!("{:?}", joint.is_mirrored()).render(area, buf);
-        area.y += 1;
+        bbb = bbb.border_style(Style::new().fg(THEME.orange[2]));
+        (&bbb).render(all[1], buf);
     }
 
     let mut txt_area = l0[0];
@@ -218,8 +178,57 @@ fn repaint_buttons(
     format!("offset={:?}", state.offset).render(txt_area, buf);
     txt_area.y += 1;
     format!("dir={:?}", state.direction).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[0]={}", rect_dbg2(all[0])).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[1]={}", rect_dbg2(all[1])).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[2]={}", rect_dbg2(all[2])).render(txt_area, buf);
 
+    state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 8, l0[0].width, 8);
+    state.joint_max = bbb.symbols.len();
+    buf.set_style(state.joint_area, THEME.cyan(1));
+
+    if let Some((border_sym, start, repeat)) = bbb.symbols.get(state.joint_idx) {
+        let mut area = state.joint_area;
+        area.height = 1;
+        format!("#{:?} of {:?}", state.joint_idx + 1, bbb.symbols.len()).render(area, buf);
+        area.y += 1;
+        format!("{}", bbb.debug).render(area, buf);
+        area.y += 1;
+        format!("{:?}", border_sym.side).render(area, buf);
+        area.y += 1;
+        format!("{:?}", border_sym.kind).render(area, buf);
+        area.y += 1;
+        format!("{:?}", border_sym.other_border).render(area, buf);
+        area.y += 1;
+        format!("{:?}", start).render(area, buf);
+        area.y += 1;
+        format!("{:?}", repeat).render(area, buf);
+        area.y += 1;
+    }
     Ok(())
+}
+
+pub fn rect_dbg(area: Rect) -> String {
+    use std::fmt::Write;
+    let mut buf = String::new();
+    _ = write!(buf, "{}:{}+{}+{}", area.x, area.y, area.width, area.height);
+    buf
+}
+
+pub fn rect_dbg2(area: Rect) -> String {
+    use std::fmt::Write;
+    let mut buf = String::new();
+    _ = write!(
+        buf,
+        "{}:{}-{}:{}",
+        area.x,
+        area.y,
+        area.x + area.width.saturating_sub(1),
+        area.y + area.height.saturating_sub(1)
+    );
+    buf
 }
 
 fn handle_buttons(

@@ -309,11 +309,6 @@
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
 <a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//!
 //! size_of says
 //!
@@ -342,78 +337,71 @@
 ///     let height = 10;
 ///
 ///     let border = BlockBorder {
+///         own_border: BorderType::Plain,
 ///         glyphs: vec![
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Top,
 ///                     kind: Kind::RegularStart,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 1,
+///                 0, 1
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Top,
 ///                     kind: Kind::Regular,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 width-2,
+///                 1, width-2,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Top,
 ///                     kind: Kind::RegularEnd,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 1,
+///                 width-1, 1,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Right,
 ///                     kind: Kind::Regular,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 height-2,
+///                 1, height-2,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Bottom,
 ///                     kind: Kind::RegularStart,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 1,
+///                 height-1, 1,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Bottom,
 ///                     kind: Kind::Regular,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 width-2,
+///                 1, width-2,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Bottom,
 ///                     kind: Kind::RegularEnd,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 1,
+///                 width-1, 1,
 ///             ),
 ///             (
 ///                 BorderGlyph {
 ///                     side: Side::Left,
 ///                     kind: Kind::Regular,
-///                     own_border: BorderType::Plain,
 ///                     other_border: Default::default(),
 ///                 },
-///                 height-2,
+///                 1, height-2,
 ///             ),
 ///         ],
 ///     };
@@ -426,14 +414,16 @@
 ///
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>BlockBorder {
+    <span class="doccomment">/// The main border of the Block that is rendered.
+    </span><span class="kw">pub </span>own_border: BorderType,
     <span class="doccomment">/// Area border described as glyphs.
-    /// The second value is a repeat.
+    /// The second value is the offset, the third is the repeat.
     /// Rendering of the glyphs starts at the beginning of
     /// each side, and the glyphs for one side are stacked
     /// from there-on.
     ///
     /// The glyphs need not be ordered by side here.
-    </span><span class="kw">pub </span>glyphs: Vec&lt;(BorderGlyph, u16)&gt;,
+    </span><span class="kw">pub </span>glyphs: Vec&lt;(BorderGlyph, u16, u16)&gt;,
 }
 
 <span class="doccomment">///
@@ -443,6 +433,8 @@
 ///
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>BlockPointConnect {
+    <span class="doccomment">/// The main border of the Block that is rendered.
+    </span><span class="kw">pub </span>own_border: BorderType,
     <span class="doccomment">/// Glyph
     </span><span class="kw">pub </span>glyph: BorderGlyph,
     <span class="doccomment">/// position from the start of BorderGlyph::side
@@ -456,8 +448,6 @@
     </span><span class="kw">pub </span>side: Side,
     <span class="doccomment">/// Type of glyph.
     </span><span class="kw">pub </span>kind: Kind,
-    <span class="doccomment">/// The main border of the Block that is rendered.
-    </span><span class="kw">pub </span>own_border: BorderType,
     <span class="doccomment">/// The second/other Border that will be connected.
     </span><span class="kw">pub </span>other_border: BorderType,
 }
