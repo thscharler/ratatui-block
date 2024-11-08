@@ -236,7 +236,7 @@ impl BlockBorder {
             BorderType::Rounded => "X",
             BorderType::Double => "X",
             BorderType::Thick => "X",
-            BorderType::QuadrantInside => "X",
+            BorderType::QuadrantInside => quadrant_inside_symbol(side, symbol),
             BorderType::QuadrantOutside => "X",
         }
     }
