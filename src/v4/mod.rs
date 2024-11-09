@@ -233,11 +233,11 @@ impl BlockBorder {
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         match self.own_border {
             BorderType::Plain => plain_symbol(side, symbol),
-            BorderType::Rounded => "X",
-            BorderType::Double => "X",
-            BorderType::Thick => "X",
-            BorderType::QuadrantInside => quadrant_inside_symbol(side, symbol),
-            BorderType::QuadrantOutside => "X",
+            BorderType::Rounded => rounded_symbol(side, symbol),
+            BorderType::Double => double_symbol(side, symbol),
+            BorderType::Thick => thick_symbol(side, symbol),
+            BorderType::QuadrantInside => ascii_symbol(side, symbol),
+            BorderType::QuadrantOutside => star_symbol(side, symbol),
         }
     }
 }
