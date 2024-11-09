@@ -1,31 +1,27 @@
-mod border_symbols;
+//! Block borders.
+//!
+//! ![schematic](../../../../illustration.png)
+//!
+
+pub mod border_symbols;
 mod create_border;
 
-pub use border_symbols::*;
-pub use create_border::*;
-use std::fmt::{Debug, Formatter};
-use std::rc::Rc;
-
+use crate::v4::create_border::{base_border, connected_border, symbol_set};
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::prelude::Widget;
 use ratatui::style::Style;
 use ratatui::widgets::BorderType;
+use std::fmt::{Debug, Formatter};
+use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct BlockBorder {
-    pub border_style: Style,
-    pub symbol_set: Rc<dyn BorderSymbolSet>,
+    border_style: Style,
+    symbol_set: Rc<dyn BorderSymbolSet>,
 
-    pub top: Vec<BorderSymbol>,
-    pub bottom: Vec<BorderSymbol>,
-    pub left: Vec<BorderSymbol>,
-    pub right: Vec<BorderSymbol>,
-
-    pub top_left: BorderSymbol,
-    pub top_right: BorderSymbol,
-    pub bottom_left: BorderSymbol,
-    pub bottom_right: BorderSymbol,
+    area: Rect,
+    symbols: Vec<BorderSymbol>,
 }
 
 // #[derive(Debug, Clone)]
@@ -98,6 +94,10 @@ impl Side {
 }
 
 impl BorderSymbol {
+    /// Adds an outward connection to the given border.
+    ///
+    /// Replaces any existing outward connection.
+    /// Changes the BorderSymbol to add an outward connection if possible.
     pub fn join_outward(&mut self, side: Side, border: BorderType) {
         use BorderSymbol::*;
 
@@ -130,6 +130,10 @@ impl BorderSymbol {
         }
     }
 
+    /// Adds an inward connection to the given border.
+    ///
+    /// Replaces any existing inward connection.
+    /// Changes the BorderSymbol to add an inward connection if possible.
     pub fn join_inward(&mut self, side: Side, border: BorderType) {
         use BorderSymbol::*;
 
@@ -154,6 +158,9 @@ impl BorderSymbol {
         }
     }
 
+    /// Changes the BorderSymbol to add an overlapping area if possible.
+    ///
+    /// Does nothing if this is not possible for the current symbol.
     pub fn overlap(&mut self, side: Side, border: BorderType) {
         use BorderSymbol::*;
 
@@ -174,7 +181,9 @@ impl BorderSymbol {
         }
     }
 
-    /// Changes the self variant ...
+    /// Changes the BorderSymbol to prolong the border along the side.
+    ///
+    /// Does nothing if this is not possible for the current symbol.
     pub fn prolong(&mut self, side: Side, border: BorderType) {
         use BorderSymbol::*;
 
@@ -209,67 +218,235 @@ impl Debug for BlockBorder {
         f.debug_struct("BlockBorder")
             .field("border_style", &self.border_style)
             .field("symbol_set", &"..dyn..")
-            .field("top", &self.top)
-            .field("bottom", &self.bottom)
-            .field("left", &self.left)
-            .field("right", &self.right)
-            .field("top_left", &self.top_left)
-            .field("top_right", &self.top_right)
-            .field("bottom_left", &self.bottom_left)
-            .field("bottom_right", &self.bottom_right)
+            .field("symbols", &self.symbols)
             .finish()
     }
 }
 
 impl BlockBorder {
-    pub fn with_area(area: Rect) -> Self {
-        let mut top_bottom = Vec::new();
-        if area.width > 2 {
-            for _ in 0..area.width - 2 {
-                top_bottom.push(BorderSymbol::SideRegular)
-            }
-        }
-        let mut left_right = Vec::new();
-        if area.height > 2 {
-            for _ in 0..area.height - 2 {
-                left_right.push(BorderSymbol::SideRegular)
-            }
-        }
-
-        Self {
-            border_style: Default::default(),
-            symbol_set: Rc::new(PlainSymbolSet),
-            top: top_bottom.clone(),
-            bottom: top_bottom,
-            left: left_right.clone(),
-            right: left_right.clone(),
-            top_left: BorderSymbol::StartCornerRegular,
-            top_right: BorderSymbol::EndCornerRegular,
-            bottom_left: BorderSymbol::StartCornerRegular,
-            bottom_right: BorderSymbol::EndCornerRegular,
-        }
+    ///
+    /// New block border for the given area.
+    ///
+    pub fn new(area: Rect) -> Self {
+        base_border(area)
     }
 
+    ///
+    /// New block border for a Block that is part of some bigger layout.
+    ///
+    /// Given all the areas of the layout and each border type,
+    /// this creates a border that is connected at the edges.
+    ///
+    /// TODO: if the borders overlap more than just exactly for the border the result is undefined.
+    ///
+    pub fn from_layout(areas: &[Rect], borders: &[BorderType], select: usize) -> Self {
+        connected_border(areas, borders, select)
+    }
+
+    ///
+    /// Border style for the border.
+    ///
     pub fn border_style(mut self, style: Style) -> Self {
         self.border_style = style;
         self
     }
 
+    ///
+    /// Sets the border type used.
+    ///
     pub fn border_type(mut self, border: BorderType) -> Self {
-        self.symbol_set = match border {
-            BorderType::Plain => Rc::new(PlainSymbolSet),
-            BorderType::Rounded => Rc::new(RoundedSymbolSet),
-            BorderType::Double => Rc::new(DoubleSymbolSet),
-            BorderType::Thick => Rc::new(ThickSymbolSet),
-            BorderType::QuadrantInside => Rc::new(QuadrantInsideSymbolSet),
-            BorderType::QuadrantOutside => Rc::new(QuadrantOutsideSymbolSet),
-        };
+        self.symbol_set = symbol_set(border);
         self
     }
 
+    ///
+    /// Use a BorderSymbolSet.
+    ///
     pub fn border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
         self.symbol_set = border_set;
         self
+    }
+
+    ///
+    /// Area covered by the BlockBorder.
+    ///
+    pub fn get_area(&self) -> Rect {
+        self.area
+    }
+
+    /// BorderSymbol for the top-left corner.
+    pub fn top_left(&self) -> &BorderSymbol {
+        self.split().0
+    }
+
+    /// BorderSymbol's for the top border.
+    /// Slice with area.width-2 items.
+    pub fn top(&self) -> &[BorderSymbol] {
+        self.split().1
+    }
+
+    /// BorderSymbol for the top-right corner.
+    pub fn top_right(&self) -> &BorderSymbol {
+        self.split().2
+    }
+
+    /// BorderSymbol's for the right border.
+    /// Slice with area.height-2 items.
+    pub fn right(&self) -> &[BorderSymbol] {
+        self.split().3
+    }
+
+    /// BorderSymbol for the bottom-right corner.
+    pub fn bottom_right(&self) -> &BorderSymbol {
+        self.split().4
+    }
+
+    /// BorderSymbol's for the bottom border.
+    /// Slice with area.width-2 items.
+    pub fn bottom(&self) -> &[BorderSymbol] {
+        self.split().5
+    }
+
+    /// BorderSymbol for the bottom-left corner.
+    pub fn bottom_left(&self) -> &BorderSymbol {
+        self.split().6
+    }
+
+    /// BorderSymbols for the left border.
+    /// Slice with area.height-2 items.
+    pub fn left(&self) -> &[BorderSymbol] {
+        self.split().7
+    }
+
+    /// BorderSymbol for the top-left corner.
+    pub fn top_left_mut(&mut self) -> &mut BorderSymbol {
+        self.split_mut().0
+    }
+
+    /// BorderSymbol's for the top border.
+    /// Slice with area.width-2 items.
+    pub fn top_mut(&mut self) -> &mut [BorderSymbol] {
+        self.split_mut().1
+    }
+
+    /// BorderSymbol for the top-right corner.
+    pub fn top_right_mut(&mut self) -> &mut BorderSymbol {
+        self.split_mut().2
+    }
+
+    /// BorderSymbol's for the right border.
+    /// Slice with area.height-2 items.
+    pub fn right_mut(&mut self) -> &mut [BorderSymbol] {
+        self.split_mut().3
+    }
+
+    /// BorderSymbol for the bottom-right corner.
+    pub fn bottom_right_mut(&mut self) -> &mut BorderSymbol {
+        self.split_mut().4
+    }
+
+    /// BorderSymbol's for the bottom border.
+    /// Slice with area.width-2 items.
+    pub fn bottom_mut(&mut self) -> &mut [BorderSymbol] {
+        self.split_mut().5
+    }
+
+    /// BorderSymbol for the bottom-left corner.
+    pub fn bottom_left_mut(&mut self) -> &mut BorderSymbol {
+        self.split_mut().6
+    }
+
+    /// BorderSymbols for the left border.
+    /// Slice with area.height-2 items.
+    pub fn left_mut(&mut self) -> &mut [BorderSymbol] {
+        self.split_mut().7
+    }
+
+    /// All BorderSymbols.
+    pub fn get_symbols(&self) -> &[BorderSymbol] {
+        self.symbols.as_slice()
+    }
+
+    ///
+    /// Split into border parts.
+    ///
+    /// (top_left, top, top_right, right, bottom_left, bottom, bottom_right, left)
+    ///
+    #[inline(always)]
+    pub fn split_mut(
+        &mut self,
+    ) -> (
+        &mut BorderSymbol,
+        &mut [BorderSymbol],
+        &mut BorderSymbol,
+        &mut [BorderSymbol],
+        &mut BorderSymbol,
+        &mut [BorderSymbol],
+        &mut BorderSymbol,
+        &mut [BorderSymbol],
+    ) {
+        let (top_left, rest) = self.symbols.split_at_mut(1);
+        let (top, rest) = rest.split_at_mut(self.area.width.saturating_sub(2) as usize);
+        let (top_right, rest) = rest.split_at_mut(1);
+        let (right, rest) = rest.split_at_mut(self.area.height.saturating_sub(2) as usize);
+        let (bottom_left, rest) = rest.split_at_mut(1);
+        let (bottom, rest) = rest.split_at_mut(self.area.width.saturating_sub(2) as usize);
+        let (bottom_right, rest) = rest.split_at_mut(1);
+        let (left, rest) = rest.split_at_mut(self.area.height.saturating_sub(2) as usize);
+
+        assert!(rest.is_empty());
+
+        (
+            &mut top_left[0],
+            top,
+            &mut top_right[0],
+            right,
+            &mut bottom_left[0],
+            bottom,
+            &mut bottom_right[0],
+            left,
+        )
+    }
+
+    ///
+    /// Split into border parts.
+    ///
+    /// (top_left, top, top_right, right, bottom_left, bottom, bottom_right, left)
+    ///
+    #[inline(always)]
+    pub fn split(
+        &self,
+    ) -> (
+        &BorderSymbol,
+        &[BorderSymbol],
+        &BorderSymbol,
+        &[BorderSymbol],
+        &BorderSymbol,
+        &[BorderSymbol],
+        &BorderSymbol,
+        &[BorderSymbol],
+    ) {
+        let (top_left, rest) = self.symbols.split_at(1);
+        let (top, rest) = rest.split_at(self.area.width.saturating_sub(2) as usize);
+        let (top_right, rest) = rest.split_at(1);
+        let (right, rest) = rest.split_at(self.area.height.saturating_sub(2) as usize);
+        let (bottom_left, rest) = rest.split_at(1);
+        let (bottom, rest) = rest.split_at(self.area.width.saturating_sub(2) as usize);
+        let (bottom_right, rest) = rest.split_at(1);
+        let (left, rest) = rest.split_at(self.area.height.saturating_sub(2) as usize);
+
+        assert!(rest.is_empty());
+
+        (
+            &top_left[0],
+            top,
+            &top_right[0],
+            right,
+            &bottom_left[0],
+            bottom,
+            &bottom_right[0],
+            left,
+        )
     }
 }
 
@@ -278,36 +455,47 @@ impl Widget for &BlockBorder {
     where
         Self: Sized,
     {
+        let (
+            top_left, //
+            top,
+            top_right,
+            right,
+            bottom_left,
+            bottom,
+            bottom_right,
+            left,
+        ) = self.split();
+
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x, //
             area.y,
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol_set.symbol(Side::Top, self.top_left));
+            cell.set_symbol(self.symbol_set.symbol(Side::Top, *top_left));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(1), //
             area.y,
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol_set.symbol(Side::Top, self.top_right));
+            cell.set_symbol(self.symbol_set.symbol(Side::Top, *top_right));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x,
             area.y + area.height.saturating_sub(1),
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, self.bottom_left));
+            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, *bottom_left));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(1),
             area.y + area.height.saturating_sub(1),
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, self.bottom_right));
+            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, *bottom_right));
         }
 
-        for (i, symbol) in self.top.iter().enumerate() {
+        for (i, symbol) in top.iter().enumerate() {
             if let Some(cell) = buf.cell_mut(Position::new(
                 area.x + 1 + i as u16, //
                 area.y,
@@ -316,7 +504,7 @@ impl Widget for &BlockBorder {
                 cell.set_symbol(self.symbol_set.symbol(Side::Top, *symbol));
             }
         }
-        for (i, symbol) in self.bottom.iter().enumerate() {
+        for (i, symbol) in bottom.iter().enumerate() {
             if let Some(cell) = buf.cell_mut(Position::new(
                 area.x + 1 + i as u16,
                 area.y + area.height.saturating_sub(1),
@@ -325,7 +513,7 @@ impl Widget for &BlockBorder {
                 cell.set_symbol(self.symbol_set.symbol(Side::Bottom, *symbol));
             }
         }
-        for (i, symbol) in self.left.iter().enumerate() {
+        for (i, symbol) in left.iter().enumerate() {
             if let Some(cell) = buf.cell_mut(Position::new(
                 area.x, //
                 area.y + 1 + i as u16,
@@ -334,7 +522,7 @@ impl Widget for &BlockBorder {
                 cell.set_symbol(self.symbol_set.symbol(Side::Left, *symbol));
             }
         }
-        for (i, symbol) in self.right.iter().enumerate() {
+        for (i, symbol) in right.iter().enumerate() {
             if let Some(cell) = buf.cell_mut(Position::new(
                 area.x + area.width.saturating_sub(1), //
                 area.y + 1 + i as u16,
