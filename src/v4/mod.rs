@@ -3,6 +3,8 @@ mod create_border;
 
 pub use border_symbols::*;
 pub use create_border::*;
+use std::fmt::{Debug, Formatter};
+use std::rc::Rc;
 
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
@@ -10,10 +12,10 @@ use ratatui::prelude::Widget;
 use ratatui::style::Style;
 use ratatui::widgets::BorderType;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct BlockBorder {
     pub border_style: Style,
-    pub own_border: BorderType,
+    pub symbol_set: Rc<dyn BorderSymbolSet>,
 
     pub top: Vec<BorderSymbol>,
     pub bottom: Vec<BorderSymbol>,
@@ -59,6 +61,12 @@ pub enum Side {
     Left,
 }
 
+/// Symbol set trait
+pub trait BorderSymbolSet {
+    fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str;
+}
+
+/// Symbol descriptor.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BorderSymbol {
     StartCornerRegular,
@@ -196,8 +204,25 @@ impl BorderSymbol {
     }
 }
 
+impl Debug for BlockBorder {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BlockBorder")
+            .field("border_style", &self.border_style)
+            .field("symbol_set", &"..dyn..")
+            .field("top", &self.top)
+            .field("bottom", &self.bottom)
+            .field("left", &self.left)
+            .field("right", &self.right)
+            .field("top_left", &self.top_left)
+            .field("top_right", &self.top_right)
+            .field("bottom_left", &self.bottom_left)
+            .field("bottom_right", &self.bottom_right)
+            .finish()
+    }
+}
+
 impl BlockBorder {
-    pub fn with_area(own_border: BorderType, area: Rect) -> Self {
+    pub fn with_area(area: Rect) -> Self {
         let mut top_bottom = Vec::new();
         if area.width > 2 {
             for _ in 0..area.width - 2 {
@@ -213,7 +238,7 @@ impl BlockBorder {
 
         Self {
             border_style: Default::default(),
-            own_border,
+            symbol_set: Rc::new(PlainSymbolSet),
             top: top_bottom.clone(),
             bottom: top_bottom,
             left: left_right.clone(),
@@ -230,15 +255,21 @@ impl BlockBorder {
         self
     }
 
-    fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
-        match self.own_border {
-            BorderType::Plain => plain_symbol(side, symbol),
-            BorderType::Rounded => rounded_symbol(side, symbol),
-            BorderType::Double => double_symbol(side, symbol),
-            BorderType::Thick => thick_symbol(side, symbol),
-            BorderType::QuadrantInside => ascii_symbol(side, symbol),
-            BorderType::QuadrantOutside => star_symbol(side, symbol),
-        }
+    pub fn border_type(mut self, border: BorderType) -> Self {
+        self.symbol_set = match border {
+            BorderType::Plain => Rc::new(PlainSymbolSet),
+            BorderType::Rounded => Rc::new(RoundedSymbolSet),
+            BorderType::Double => Rc::new(DoubleSymbolSet),
+            BorderType::Thick => Rc::new(ThickSymbolSet),
+            BorderType::QuadrantInside => Rc::new(QuadrantInsideSymbolSet),
+            BorderType::QuadrantOutside => Rc::new(QuadrantOutsideSymbolSet),
+        };
+        self
+    }
+
+    pub fn border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+        self.symbol_set = border_set;
+        self
     }
 }
 
@@ -252,28 +283,28 @@ impl Widget for &BlockBorder {
             area.y,
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol(Side::Top, self.top_left));
+            cell.set_symbol(self.symbol_set.symbol(Side::Top, self.top_left));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(1), //
             area.y,
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol(Side::Top, self.top_right));
+            cell.set_symbol(self.symbol_set.symbol(Side::Top, self.top_right));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x,
             area.y + area.height.saturating_sub(1),
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol(Side::Bottom, self.bottom_left));
+            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, self.bottom_left));
         }
         if let Some(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(1),
             area.y + area.height.saturating_sub(1),
         )) {
             cell.set_style(self.border_style);
-            cell.set_symbol(self.symbol(Side::Bottom, self.bottom_right));
+            cell.set_symbol(self.symbol_set.symbol(Side::Bottom, self.bottom_right));
         }
 
         for (i, symbol) in self.top.iter().enumerate() {
@@ -282,7 +313,7 @@ impl Widget for &BlockBorder {
                 area.y,
             )) {
                 cell.set_style(self.border_style);
-                cell.set_symbol(self.symbol(Side::Top, *symbol));
+                cell.set_symbol(self.symbol_set.symbol(Side::Top, *symbol));
             }
         }
         for (i, symbol) in self.bottom.iter().enumerate() {
@@ -291,7 +322,7 @@ impl Widget for &BlockBorder {
                 area.y + area.height.saturating_sub(1),
             )) {
                 cell.set_style(self.border_style);
-                cell.set_symbol(self.symbol(Side::Bottom, *symbol));
+                cell.set_symbol(self.symbol_set.symbol(Side::Bottom, *symbol));
             }
         }
         for (i, symbol) in self.left.iter().enumerate() {
@@ -300,7 +331,7 @@ impl Widget for &BlockBorder {
                 area.y + 1 + i as u16,
             )) {
                 cell.set_style(self.border_style);
-                cell.set_symbol(self.symbol(Side::Left, *symbol));
+                cell.set_symbol(self.symbol_set.symbol(Side::Left, *symbol));
             }
         }
         for (i, symbol) in self.right.iter().enumerate() {
@@ -309,7 +340,7 @@ impl Widget for &BlockBorder {
                 area.y + 1 + i as u16,
             )) {
                 cell.set_style(self.border_style);
-                cell.set_symbol(self.symbol(Side::Right, *symbol));
+                cell.set_symbol(self.symbol_set.symbol(Side::Right, *symbol));
             }
         }
     }

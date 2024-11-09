@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BorderSymbol","Side"],"fn":["create_border"],"struct":["AsciiSymbolSet","BlockBorder","DoubleSymbolSet","PlainSymbolSet","QuadrantInsideSymbolSet","QuadrantOutsideSymbolSet","RoundedSymbolSet","StarSymbolSet","ThickSymbolSet"],"trait":["BorderSymbolSet"]};

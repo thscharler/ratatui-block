@@ -13,7 +13,7 @@ pub fn create_border(layout: &[Rect], borders: &[BorderType], n: usize) -> Block
     assert!(area_x1 <= area_x2);
     assert!(area_y1 <= area_y2);
 
-    let mut block = BlockBorder::with_area(own_border, area);
+    let mut block = BlockBorder::with_area(area).border_type(own_border);
 
     for (i, test) in layout.iter().enumerate() {
         let other_border = borders[i];
