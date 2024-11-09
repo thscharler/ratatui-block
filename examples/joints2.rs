@@ -4,10 +4,12 @@ use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
+use ratatui::symbols::border;
 use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::v4::create_border;
+use ratatui_block::v4::{create_border, OldSymbolSet};
+use std::rc::Rc;
 
 mod mini_salsa;
 
@@ -256,6 +258,11 @@ fn repaint_buttons(
 
     // new block
     let mut bbb = create_border(all.as_slice(), borders.as_slice(), 0);
+
+    // bbb = bbb.border_set(Rc::new(OldSymbolSet {
+    //     symbol_set: border::PROPORTIONAL_WIDE,
+    // }));
+
     if state.mono {
         (&bbb).render(all[0], buf);
     } else {

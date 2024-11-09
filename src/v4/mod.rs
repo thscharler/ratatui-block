@@ -51,13 +51,13 @@ pub struct BlockBorder {
 /// Names for the sides of an area.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Side {
-    /// Joint along the top side.
+    /// Border along the top side.
     Top,
-    /// Joint along the right side.
-    Right,
-    /// Joint along bottom side.
+    /// Border along bottom side.
     Bottom,
-    /// Joint along the left side.
+    /// Border along the right side.
+    Right,
+    /// Border along the left side.
     Left,
 }
 

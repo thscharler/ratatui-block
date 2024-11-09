@@ -1,5 +1,129 @@
 use crate::v4::{BorderSymbol, BorderSymbolSet, Side};
+use ratatui::symbols::border;
 use ratatui::widgets::BorderType;
+
+pub struct StaticSymbolSet {
+    pub top_left_regular: &'static str,
+    pub top_left_angled: &'static str,
+    pub top_left_prolonged: &'static str,
+    pub top_left_crossed: &'static str,
+
+    pub top_regular: &'static str,
+    pub top_overlap: &'static str,
+    pub top_outward: &'static str,
+    pub top_inward: &'static str,
+    pub top_crossed: &'static str,
+
+    pub top_right_regular: &'static str,
+    pub top_right_angled: &'static str,
+    pub top_right_prolonged: &'static str,
+    pub top_right_crossed: &'static str,
+
+    pub bottom_left_regular: &'static str,
+    pub bottom_left_angled: &'static str,
+    pub bottom_left_prolonged: &'static str,
+    pub bottom_left_crossed: &'static str,
+
+    pub bottom_regular: &'static str,
+    pub bottom_overlap: &'static str,
+    pub bottom_outward: &'static str,
+    pub bottom_inward: &'static str,
+    pub bottom_crossed: &'static str,
+
+    pub bottom_right_regular: &'static str,
+    pub bottom_right_angled: &'static str,
+    pub bottom_right_prolonged: &'static str,
+    pub bottom_right_crossed: &'static str,
+
+    pub left_regular: &'static str,
+    pub left_overlap: &'static str,
+    pub left_outward: &'static str,
+    pub left_inward: &'static str,
+    pub left_crossed: &'static str,
+
+    pub right_regular: &'static str,
+    pub right_overlap: &'static str,
+    pub right_outward: &'static str,
+    pub right_inward: &'static str,
+    pub right_crossed: &'static str,
+}
+
+// impl BorderSymbolSet for StaticSymbolSet {
+//     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
+//         match side {}
+//     }
+// }
+
+pub struct OldSymbolSet {
+    pub symbol_set: border::Set,
+}
+
+impl BorderSymbolSet for OldSymbolSet {
+    fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
+        match side {
+            Side::Top => match symbol {
+                BorderSymbol::StartCornerRegular => self.symbol_set.top_left,
+                BorderSymbol::StartCornerAngled(_, _) => self.symbol_set.top_left,
+                BorderSymbol::StartCornerProlonged(_, _) => self.symbol_set.top_left,
+                BorderSymbol::StartCornerCrossed(_, _, _, _) => self.symbol_set.top_left,
+                BorderSymbol::SideRegular => self.symbol_set.horizontal_top,
+                BorderSymbol::SideOverlap(_, _) => self.symbol_set.horizontal_top,
+                BorderSymbol::SideOutward(_, _) => self.symbol_set.horizontal_top,
+                BorderSymbol::SideInward(_, _) => self.symbol_set.horizontal_top,
+                BorderSymbol::SideCrossed(_, _, _, _) => self.symbol_set.horizontal_top,
+                BorderSymbol::EndCornerRegular => self.symbol_set.top_right,
+                BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.top_right,
+                BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.top_right,
+                BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.top_right,
+            },
+            Side::Bottom => match symbol {
+                BorderSymbol::StartCornerRegular => self.symbol_set.bottom_left,
+                BorderSymbol::StartCornerAngled(_, _) => self.symbol_set.bottom_left,
+                BorderSymbol::StartCornerProlonged(_, _) => self.symbol_set.bottom_left,
+                BorderSymbol::StartCornerCrossed(_, _, _, _) => self.symbol_set.bottom_left,
+                BorderSymbol::SideRegular => self.symbol_set.horizontal_bottom,
+                BorderSymbol::SideOverlap(_, _) => self.symbol_set.horizontal_bottom,
+                BorderSymbol::SideOutward(_, _) => self.symbol_set.horizontal_bottom,
+                BorderSymbol::SideInward(_, _) => self.symbol_set.horizontal_bottom,
+                BorderSymbol::SideCrossed(_, _, _, _) => self.symbol_set.horizontal_bottom,
+                BorderSymbol::EndCornerRegular => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_right,
+            },
+            Side::Right => match symbol {
+                BorderSymbol::StartCornerRegular => self.symbol_set.top_right,
+                BorderSymbol::StartCornerAngled(_, _) => self.symbol_set.top_right,
+                BorderSymbol::StartCornerProlonged(_, _) => self.symbol_set.top_right,
+                BorderSymbol::StartCornerCrossed(_, _, _, _) => self.symbol_set.top_right,
+                BorderSymbol::SideRegular => self.symbol_set.vertical_right,
+                BorderSymbol::SideOverlap(_, _) => self.symbol_set.vertical_right,
+                BorderSymbol::SideOutward(_, _) => self.symbol_set.vertical_right,
+                BorderSymbol::SideInward(_, _) => self.symbol_set.vertical_right,
+                BorderSymbol::SideCrossed(_, _, _, _) => self.symbol_set.vertical_right,
+                BorderSymbol::EndCornerRegular => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_right,
+                BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_right,
+            },
+            Side::Left => match symbol {
+                BorderSymbol::StartCornerRegular => self.symbol_set.top_left,
+                BorderSymbol::StartCornerAngled(_, _) => self.symbol_set.top_left,
+                BorderSymbol::StartCornerProlonged(_, _) => self.symbol_set.top_left,
+                BorderSymbol::StartCornerCrossed(_, _, _, _) => self.symbol_set.top_left,
+                BorderSymbol::SideRegular => self.symbol_set.vertical_left,
+                BorderSymbol::SideOverlap(_, _) => self.symbol_set.vertical_left,
+                BorderSymbol::SideOutward(_, _) => self.symbol_set.vertical_left,
+                BorderSymbol::SideInward(_, _) => self.symbol_set.vertical_left,
+                BorderSymbol::SideCrossed(_, _, _, _) => self.symbol_set.vertical_left,
+                BorderSymbol::EndCornerRegular => self.symbol_set.bottom_left,
+                BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_left,
+                BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_left,
+                BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_left,
+            },
+        }
+    }
+}
 
 pub struct PlainSymbolSet;
 
