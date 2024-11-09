@@ -1056,9 +1056,39 @@
 <a href="#1056" id="1056">1056</a>
 <a href="#1057" id="1057">1057</a>
 <a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a>
+<a href="#1060" id="1060">1060</a>
+<a href="#1061" id="1061">1061</a>
+<a href="#1062" id="1062">1062</a>
+<a href="#1063" id="1063">1063</a>
+<a href="#1064" id="1064">1064</a>
+<a href="#1065" id="1065">1065</a>
+<a href="#1066" id="1066">1066</a>
+<a href="#1067" id="1067">1067</a>
+<a href="#1068" id="1068">1068</a>
+<a href="#1069" id="1069">1069</a>
+<a href="#1070" id="1070">1070</a>
+<a href="#1071" id="1071">1071</a>
+<a href="#1072" id="1072">1072</a>
+<a href="#1073" id="1073">1073</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
 <span class="kw">use </span>ratatui::symbols::border;
 <span class="kw">use </span>ratatui::widgets::BorderType;
+<span class="kw">use </span>std::rc::Rc;
+
+<span class="doccomment">///
+/// Create the BorderSymbolSet for the given BorderType.
+///
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>symbol_set(border: BorderType) -&gt; Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt; {
+    <span class="kw">match </span>border {
+        BorderType::Plain =&gt; Rc::new(PlainSymbolSet),
+        BorderType::Rounded =&gt; Rc::new(RoundedSymbolSet),
+        BorderType::Double =&gt; Rc::new(DoubleSymbolSet),
+        BorderType::Thick =&gt; Rc::new(ThickSymbolSet),
+        BorderType::QuadrantInside =&gt; Rc::new(QuadrantInsideSymbolSet),
+        BorderType::QuadrantOutside =&gt; Rc::new(QuadrantOutsideSymbolSet),
+    }
+}
 
 <span class="doccomment">/// For manual borders.
 ///

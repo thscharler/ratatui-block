@@ -8,7 +8,7 @@ use ratatui::style::{Style, Styled};
 use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::BlockBorder;
+use ratatui_block::block_border::BlockBorder;
 use std::hint::black_box;
 use std::time::SystemTime;
 

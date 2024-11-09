@@ -1,6 +1,21 @@
 use crate::{BorderSymbol, BorderSymbolSet, Side};
 use ratatui::symbols::border;
 use ratatui::widgets::BorderType;
+use std::rc::Rc;
+
+///
+/// Create the BorderSymbolSet for the given BorderType.
+///
+pub(crate) fn symbol_set(border: BorderType) -> Rc<dyn BorderSymbolSet> {
+    match border {
+        BorderType::Plain => Rc::new(PlainSymbolSet),
+        BorderType::Rounded => Rc::new(RoundedSymbolSet),
+        BorderType::Double => Rc::new(DoubleSymbolSet),
+        BorderType::Thick => Rc::new(ThickSymbolSet),
+        BorderType::QuadrantInside => Rc::new(QuadrantInsideSymbolSet),
+        BorderType::QuadrantOutside => Rc::new(QuadrantOutsideSymbolSet),
+    }
+}
 
 /// For manual borders.
 ///
