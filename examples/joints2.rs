@@ -4,10 +4,11 @@ use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Position, Rect, Spacing};
 use ratatui::prelude::Widget;
-use ratatui::style::Style;
+use ratatui::style::{Style, Styled};
+use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::v4::BlockBorder;
+use ratatui_block::BlockBorder;
 use std::hint::black_box;
 use std::time::SystemTime;
 
@@ -298,95 +299,95 @@ fn repaint_buttons(
         (&bbb).render(all[0], buf);
     }
 
-    // let mut txt_area = l0[0];
-    // txt_area.y += 2;
-    // txt_area.height = 1;
-    //
-    // "F1: border"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "F2: other border"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "F4: variation"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "Left/Right: position"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 1;
-    // "F8: monochrome"
-    //     .set_style(THEME.secondary_text())
-    //     .render(txt_area, buf);
-    // txt_area.y += 2;
-    //
-    // format!("border={:?}", state.border).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("other={:?}", state.other).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("offset={:?}", state.offset).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("dir={:?}", state.variation).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("area[0]={}", rect_dbg2(all[0])).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("area[1]={}", rect_dbg2(all[1])).render(txt_area, buf);
-    // txt_area.y += 1;
-    // format!("area[2]={}", rect_dbg2(all[2])).render(txt_area, buf);
-    //
-    // state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 9, l0[0].width, 9);
-    //
-    // state.joint_max = (bbb.get_area().width * 2 + bbb.get_area().height * 2) as usize;
-    // buf.set_style(state.joint_area, THEME.cyan(1));
+    let mut txt_area = l0[0];
+    txt_area.y += 2;
+    txt_area.height = 1;
 
-    // if state.joint_idx < state.joint_max {
-    //     let top_start = 0;
-    //     let top_end = bbb.get_area().width as usize - 1;
-    //     let right_start = bbb.get_area().width as usize;
-    //     let right_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 3;
-    //     let bottom_start = bbb.get_area().width as usize + bbb.get_area().height as usize - 2;
-    //     let bottom_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
-    //         + bbb.get_area().width as usize
-    //         - 1;
-    //     let left_start = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
-    //         + bbb.get_area().width as usize;
-    //     let left_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
-    //         + bbb.get_area().width as usize
-    //         + bbb.get_area().height as usize
-    //         - 3;
-    //
-    //     let (name, border_sym) = if top_start == state.joint_idx {
-    //         ("top left", *bbb.top_left())
-    //     } else if (top_start + 1..top_end).contains(&state.joint_idx) {
-    //         ("top", bbb.top()[state.joint_idx - (top_start + 1)])
-    //     } else if top_end == state.joint_idx {
-    //         ("top_right", *bbb.top_right())
-    //     } else if (right_start..=right_end).contains(&state.joint_idx) {
-    //         ("right", bbb.right()[state.joint_idx - right_start])
-    //     } else if bottom_start == state.joint_idx {
-    //         ("bottom left", *bbb.bottom_left())
-    //     } else if (bottom_start + 1..bottom_end).contains(&state.joint_idx) {
-    //         ("bottom", bbb.bottom()[state.joint_idx - (bottom_start + 1)])
-    //     } else if bottom_end == state.joint_idx {
-    //         ("bottom right", *bbb.bottom_right())
-    //     } else if (left_start..=left_end).contains(&state.joint_idx) {
-    //         ("left", bbb.left()[state.joint_idx - left_start])
-    //     } else {
-    //         unreachable!("invalid idx");
-    //     };
-    //
-    //     let mut area = state.joint_area;
-    //     area.height = 1;
-    //     format!("#{:?} of {:?}", state.joint_idx + 1, state.joint_max).render(area, buf);
-    //     area.y += 1;
-    //     format!("{}", name).render(area, buf);
-    //     area.y += 1;
-    //     area.height = 8;
-    //     Text::from(format!("{:#?}", border_sym)).render(area, buf);
-    // }
+    "F1: border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F2: other border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F4: variation"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "Left/Right: position"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F8: monochrome"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 2;
+
+    format!("border={:?}", state.border).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("other={:?}", state.other).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("offset={:?}", state.offset).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("dir={:?}", state.variation).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[0]={}", rect_dbg2(all[0])).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[1]={}", rect_dbg2(all[1])).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("area[2]={}", rect_dbg2(all[2])).render(txt_area, buf);
+
+    state.joint_area = Rect::new(l0[0].x, l0[0].bottom() - 9, l0[0].width, 9);
+
+    state.joint_max = (bbb.get_area().width * 2 + bbb.get_area().height * 2) as usize;
+    buf.set_style(state.joint_area, THEME.cyan(1));
+
+    if state.joint_idx < state.joint_max {
+        let top_start = 0;
+        let top_end = bbb.get_area().width as usize - 1;
+        let right_start = bbb.get_area().width as usize;
+        let right_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 3;
+        let bottom_start = bbb.get_area().width as usize + bbb.get_area().height as usize - 2;
+        let bottom_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
+            + bbb.get_area().width as usize
+            - 1;
+        let left_start = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
+            + bbb.get_area().width as usize;
+        let left_end = bbb.get_area().width as usize + bbb.get_area().height as usize - 2
+            + bbb.get_area().width as usize
+            + bbb.get_area().height as usize
+            - 3;
+
+        let (name, border_sym) = if top_start == state.joint_idx {
+            ("top left", *bbb.top_left())
+        } else if (top_start + 1..top_end).contains(&state.joint_idx) {
+            ("top", bbb.top()[state.joint_idx - (top_start + 1)])
+        } else if top_end == state.joint_idx {
+            ("top_right", *bbb.top_right())
+        } else if (right_start..=right_end).contains(&state.joint_idx) {
+            ("right", bbb.right()[state.joint_idx - right_start])
+        } else if bottom_start == state.joint_idx {
+            ("bottom left", *bbb.bottom_left())
+        } else if (bottom_start + 1..bottom_end).contains(&state.joint_idx) {
+            ("bottom", bbb.bottom()[state.joint_idx - (bottom_start + 1)])
+        } else if bottom_end == state.joint_idx {
+            ("bottom right", *bbb.bottom_right())
+        } else if (left_start..=left_end).contains(&state.joint_idx) {
+            ("left", bbb.left()[state.joint_idx - left_start])
+        } else {
+            unreachable!("invalid idx");
+        };
+
+        let mut area = state.joint_area;
+        area.height = 1;
+        format!("#{:?} of {:?}", state.joint_idx + 1, state.joint_max).render(area, buf);
+        area.y += 1;
+        format!("{}", name).render(area, buf);
+        area.y += 1;
+        area.height = 8;
+        Text::from(format!("{:#?}", border_sym)).render(area, buf);
+    }
 
     Ok(())
 }

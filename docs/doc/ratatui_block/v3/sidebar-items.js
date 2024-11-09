@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Kind","Side"],"fn":["create_border","plain_symbol"],"struct":["BlockBorder","BlockPointConnect","BorderSymbol"]};

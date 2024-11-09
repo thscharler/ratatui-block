@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["v2","v3","v4"]};
+window.SIDEBAR_ITEMS = {"enum":["BorderSymbol","Side"],"mod":["border_symbols"],"struct":["BlockBorder"],"trait":["BorderSymbolSet"]};

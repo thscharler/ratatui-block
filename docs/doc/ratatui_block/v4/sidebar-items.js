@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["BorderSymbol","Side"],"mod":["border_symbols"],"struct":["BlockBorder"],"trait":["BorderSymbolSet"]};
