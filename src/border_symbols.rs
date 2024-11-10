@@ -6,7 +6,7 @@ use std::rc::Rc;
 ///
 /// Create the BorderSymbolSet for the given BorderType.
 ///
-pub(crate) fn symbol_set(border: BorderType) -> Rc<dyn BorderSymbolSet> {
+pub fn symbol_set(border: BorderType) -> Rc<dyn BorderSymbolSet> {
     match border {
         BorderType::Plain => Rc::new(PlainSymbolSet),
         BorderType::Rounded => Rc::new(RoundedSymbolSet),

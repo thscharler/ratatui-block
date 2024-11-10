@@ -1249,7 +1249,7 @@
 <span class="doccomment">///
 /// Create the BorderSymbolSet for the given BorderType.
 ///
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>symbol_set(border: BorderType) -&gt; Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt; {
+</span><span class="kw">pub fn </span>symbol_set(border: BorderType) -&gt; Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt; {
     <span class="kw">match </span>border {
         BorderType::Plain =&gt; Rc::new(PlainSymbolSet),
         BorderType::Rounded =&gt; Rc::new(RoundedSymbolSet),

@@ -7,6 +7,8 @@ use ratatui::style::{Style, Styled};
 use ratatui::widgets::BorderType;
 use ratatui::{crossterm, Frame};
 use ratatui_block::block_border::BlockBorder;
+use ratatui_block::border_symbols::{symbol_set, AsciiSymbolSet, StarSymbolSet};
+use std::rc::Rc;
 
 mod mini_salsa;
 
@@ -176,15 +178,17 @@ fn repaint_buttons(
 
     // debug!("******************************");
 
-    for i in 0..areas.len() {
+    for i in 0..areas.len().saturating_sub(1) {
         let mut bb = BlockBorder::from_layout(areas.as_slice(), borders.as_slice(), i);
-        if i + 1 == areas.len() && !state.mono {
-            bb = bb.border_style(Style::new().fg(THEME.orange[3]));
-        }
-        // debug!("{:#?}", bb);
-
         bb.render(areas[i], buf);
     }
+
+    let mut bb = BlockBorder::from_layout(areas.as_slice(), borders.as_slice(), areas.len() - 1);
+    bb = bb.border_set(Rc::new(AsciiSymbolSet));
+    if !state.mono {
+        bb = bb.border_style(Style::new().fg(THEME.orange[3]));
+    }
+    bb.render(areas[areas.len() - 1], buf);
 
     let mut txt_area = l0[0];
     txt_area.y += 2;

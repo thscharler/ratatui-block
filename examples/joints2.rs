@@ -9,7 +9,9 @@ use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
 use ratatui_block::block_border::BlockBorder;
+use ratatui_block::border_symbols::AsciiSymbolSet;
 use std::hint::black_box;
+use std::rc::Rc;
 use std::time::SystemTime;
 
 mod mini_salsa;
@@ -287,11 +289,10 @@ fn repaint_buttons(
     // debug!("tt {:?}", tt.elapsed()?.as_secs_f64() * 1e9 / 100_000.);
 
     let mut bbb = BlockBorder::from_layout(all.as_slice(), borders.as_slice(), 0);
-
+    // bbb = bbb.border_set(Rc::new(AsciiSymbolSet));
     // bbb = bbb.border_set(Rc::new(OldSymbolSet {
     //     symbol_set: border::PROPORTIONAL_WIDE,
     // }));
-
     if state.mono {
         (&bbb).render(all[0], buf);
     } else {
