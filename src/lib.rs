@@ -4,7 +4,6 @@ pub mod block_border;
 pub mod block_connect;
 pub mod border_symbols;
 
-use ratatui::prelude::Widget;
 use ratatui::widgets::BorderType;
 use std::fmt::Debug;
 

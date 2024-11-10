@@ -276,15 +276,15 @@ fn repaint_buttons(
         .render(all[0], buf);
 
     // new block
-    let tt = SystemTime::now();
-    for _ in 0..100_000 {
-        _ = black_box(BlockBorder::from_layout(
-            all.as_slice(),
-            borders.as_slice(),
-            0,
-        ));
-    }
-    debug!("tt {:?}", tt.elapsed()?.as_secs_f64() * 1e9 / 100_000.);
+    // let tt = SystemTime::now();
+    // for _ in 0..100_000 {
+    //     _ = black_box(BlockBorder::from_layout(
+    //         all.as_slice(),
+    //         borders.as_slice(),
+    //         0,
+    //     ));
+    // }
+    // debug!("tt {:?}", tt.elapsed()?.as_secs_f64() * 1e9 / 100_000.);
 
     let mut bbb = BlockBorder::from_layout(all.as_slice(), borders.as_slice(), 0);
 
