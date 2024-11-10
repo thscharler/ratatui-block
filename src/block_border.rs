@@ -10,7 +10,7 @@ use std::rc::Rc;
 ///
 /// Border for a Block.
 ///
-/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/blockborder.svg)
+/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/blockborder.png)
 ///
 #[derive(Clone)]
 pub struct BlockBorder {

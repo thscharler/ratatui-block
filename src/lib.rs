@@ -47,7 +47,7 @@ pub trait BorderSymbolSet {
 
 /// Symbol descriptor.
 ///
-/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/illustration.svg)
+/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/illustration.png)
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BorderSymbol {
     StartCornerRegular,
