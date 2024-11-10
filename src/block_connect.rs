@@ -6,6 +6,13 @@ use ratatui::style::Style;
 use ratatui::widgets::{BorderType, Widget};
 use std::rc::Rc;
 
+///
+/// Add a connection point to an existing border.
+///
+/// This widget can render any BorderSymbol from the given BorderSymbolSet.
+/// The exact placement is up to the caller, it renders the glyph at
+/// (area.x, area.y).
+///
 #[derive(Clone)]
 pub struct BlockConnect {
     border_style: Style,
@@ -49,11 +56,17 @@ impl BlockConnect {
         self
     }
 
+    ///
+    /// For which side of the area is this meant.
+    ///
     pub fn side(mut self, side: Side) -> Self {
         self.side = side;
         self
     }
 
+    ///
+    /// What kind of symbol.
+    ///
     pub fn symbol(mut self, symbol: BorderSymbol) -> Self {
         self.symbol = symbol;
         self

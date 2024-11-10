@@ -2081,7 +2081,7 @@
                 BorderSymbol::StartCornerCrossed(Left, QuadrantOutside, Top, QuadrantOutside) =&gt; {
                     <span class="string">"▚"
                 </span>}
-                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▗"</span>,
                 BorderSymbol::StartCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) =&gt; {
                     <span class="string">"▜"
                 </span>}
@@ -2090,7 +2090,7 @@
                 BorderSymbol::StartCornerCrossed(Right, QuadrantInside, Bottom, QuadrantInside) =&gt; {
                     <span class="string">"▚"
                 </span>}
-                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"▗"</span>,
                 BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::SideRegular =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::SideOverlap(<span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"█"</span>,
@@ -2099,11 +2099,11 @@
                 BorderSymbol::SideOutward(Right, QuadrantOutside) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::SideOutward(Left, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::SideOutward(Right, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
-                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::SideCrossed(Left, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideCrossed(Right, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▖"</span>,
                 BorderSymbol::EndCornerAngled(Left, QuadrantOutside) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::EndCornerAngled(Right, QuadrantOutside) =&gt; <span class="string">"▟"</span>,
@@ -2123,16 +2123,16 @@
                 BorderSymbol::EndCornerCrossed(Left, QuadrantOutside, Bottom, QuadrantOutside) =&gt; {
                     <span class="string">"▙"
                 </span>}
-                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▖"</span>,
                 BorderSymbol::EndCornerCrossed(Right, QuadrantInside, Top, QuadrantInside) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::EndCornerCrossed(Right, QuadrantInside, Bottom, QuadrantInside) =&gt; {
                     <span class="string">"▛"
                 </span>}
                 BorderSymbol::EndCornerCrossed(Left, QuadrantInside, Top, QuadrantInside) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::EndCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) =&gt; <span class="string">"▞"</span>,
-                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"▖"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
             },
             Bottom =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▝"</span>,
@@ -2164,7 +2164,7 @@
                     Bottom,
                     QuadrantOutside,
                 ) =&gt; <span class="string">"▞"</span>,
-                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::StartCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▝"</span>,
 
                 BorderSymbol::StartCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) =&gt; {
                     <span class="string">"▜"
@@ -2182,11 +2182,11 @@
                 BorderSymbol::SideOutward(Right, QuadrantOutside) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideOutward(Left, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideOutward(Right, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
+                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
+                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
                 BorderSymbol::SideCrossed(Left, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideCrossed(Right, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▘"</span>,
                 BorderSymbol::EndCornerAngled(Left, QuadrantOutside) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::EndCornerAngled(Right, QuadrantOutside) =&gt; <span class="string">"▜"</span>,
@@ -2206,7 +2206,7 @@
                     <span class="string">"▚"
                 </span>}
                 BorderSymbol::EndCornerCrossed(Right, QuadrantOutside, Top, QuadrantOutside) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▝"</span>,
                 BorderSymbol::EndCornerCrossed(Right, QuadrantInside, Top, QuadrantInside) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::EndCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerCrossed(Right, QuadrantInside, Bottom, QuadrantInside) =&gt; {
@@ -2214,7 +2214,7 @@
                 </span>}
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"▚"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
             },
             Right =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▖"</span>,
@@ -2238,11 +2238,11 @@
                 BorderSymbol::SideOutward(Bottom, QuadrantOutside) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideOutward(Top, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideOutward(Bottom, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::SideCrossed(Top, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideCrossed(Bottom, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▘"</span>,
                 BorderSymbol::EndCornerAngled(Top, QuadrantOutside) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::EndCornerAngled(Bottom, QuadrantOutside) =&gt; <span class="string">"▙"</span>,
@@ -2257,7 +2257,7 @@
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▛"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"▚"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
             },
             Left =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▗"</span>,
@@ -2281,11 +2281,11 @@
                 BorderSymbol::SideOutward(Bottom, QuadrantOutside) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::SideOutward(Top, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::SideOutward(Bottom, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::SideCrossed(Top, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideCrossed(Bottom, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▝"</span>,
                 BorderSymbol::EndCornerAngled(Top, QuadrantOutside) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::EndCornerAngled(Bottom, QuadrantOutside) =&gt; <span class="string">"▀"</span>,
@@ -2300,7 +2300,7 @@
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantOutside, <span class="kw">_</span>, QuadrantOutside) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, QuadrantInside, <span class="kw">_</span>, QuadrantInside) =&gt; <span class="string">"▞"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
             },
         }
     }
@@ -2324,15 +2324,15 @@
                 BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
                 BorderSymbol::SideInward(Left, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
                 BorderSymbol::SideInward(Right, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
                 BorderSymbol::SideCrossed(Left, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
                 BorderSymbol::SideCrossed(Right, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerAngled(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerProlonged(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▀"</span>,
             },
             Bottom =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▙"</span>,
@@ -2346,15 +2346,15 @@
                 BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::SideInward(Left, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideInward(Right, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::SideCrossed(Left, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::SideCrossed(Right, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::EndCornerAngled(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::EndCornerProlonged(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▄"</span>,
             },
             Right =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▜"</span>,
@@ -2366,15 +2366,15 @@
                 BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::SideInward(Top, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideInward(Bottom, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::SideCrossed(Top, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::SideCrossed(Bottom, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▟"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerAngled(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerProlonged(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▜"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▐"</span>,
             },
             Left =&gt; <span class="kw">match </span>symbol {
                 BorderSymbol::StartCornerRegular =&gt; <span class="string">"▛"</span>,
@@ -2386,15 +2386,15 @@
                 BorderSymbol::SideOutward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::SideInward(Top, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
                 BorderSymbol::SideInward(Bottom, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
-                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideInward(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::SideCrossed(Top, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▛"</span>,
                 BorderSymbol::SideCrossed(Bottom, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
-                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::SideCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
                 BorderSymbol::EndCornerRegular =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::EndCornerAngled(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::EndCornerProlonged(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
                 BorderSymbol::EndCornerCrossed(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▙"</span>,
-                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"X"</span>,
+                BorderSymbol::Cross(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"▌"</span>,
             },
         }
     }

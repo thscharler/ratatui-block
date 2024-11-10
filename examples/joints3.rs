@@ -1,6 +1,5 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
-use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Rect, Spacing};
 use ratatui::prelude::Widget;
@@ -26,7 +25,7 @@ fn main() -> Result<(), anyhow::Error> {
     };
 
     run_ui(
-        "╒═╤═╛",
+        "╒═╤═╛3",
         handle_buttons,
         repaint_buttons,
         &mut data,
@@ -195,15 +194,7 @@ fn repaint_buttons(
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
-    "F2: horizontal neighbours"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F3: vertical neighbours"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F4: first/last"
+    "F2: other border"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
