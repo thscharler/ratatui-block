@@ -1,12 +1,16 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
+use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::{Style, Styled};
+use ratatui::text::Text;
 use ratatui::widgets::{Block, BorderType};
 use ratatui::{crossterm, Frame};
-use ratatui_block::v2::{render_joint, Joint, JointKind, JointPosition, JointSide};
+use ratatui_block::block_connect::BlockConnect;
+use ratatui_block::BorderSymbol::{EndCornerRegular, SideRegular, StartCornerRegular};
+use ratatui_block::{BorderSymbol, Side};
 
 mod mini_salsa;
 
@@ -21,7 +25,11 @@ fn main() -> Result<(), anyhow::Error> {
         hor_neighbour: BorderType::Plain,
         vert_neighbour: BorderType::Plain,
 
-        joint: Joint::new(JointSide::Top, JointPosition::CrossStart(BorderType::Plain)),
+        first: true,
+        cross: false,
+
+        b_side: Side::Top,
+        b_symbol: BorderSymbol::StartCornerRegular,
 
         mono: false,
     };
@@ -44,9 +52,42 @@ struct State {
     hor_neighbour: BorderType,
     vert_neighbour: BorderType,
 
-    joint: Joint,
+    first: bool,
+    cross: bool,
+
+    b_side: Side,
+    b_symbol: BorderSymbol,
 
     mono: bool,
+}
+
+impl State {
+    fn angled_side(&self) -> Side {
+        match (self.b_side, self.first) {
+            (Side::Top, true) => Side::Left,
+            (Side::Top, false) => Side::Right,
+            (Side::Bottom, true) => Side::Left,
+            (Side::Bottom, false) => Side::Right,
+            (Side::Right, true) => Side::Top,
+            (Side::Right, false) => Side::Bottom,
+            (Side::Left, true) => Side::Top,
+            (Side::Left, false) => Side::Bottom,
+        }
+    }
+
+    fn angled(&self) -> BorderType {
+        match self.b_side {
+            Side::Top | Side::Bottom => self.vert_neighbour,
+            Side::Right | Side::Left => self.hor_neighbour,
+        }
+    }
+
+    fn prolonged(&self) -> BorderType {
+        match self.b_side {
+            Side::Top | Side::Bottom => self.hor_neighbour,
+            Side::Right | Side::Left => self.vert_neighbour,
+        }
+    }
 }
 
 fn repaint_buttons(
@@ -82,47 +123,140 @@ fn repaint_buttons(
 
     state.area = layout[1][1];
 
-    buf.set_style(area, THEME.deepblue(0));
+    buf.set_style(area, THEME.gray(0));
 
-    if !state.joint.is_mirrored() {
-        for a in 0..3 {
-            for b in 0..3 {
-                if a != 1 && b == 1 {
-                    Block::bordered()
-                        .border_type(state.hor_neighbour)
-                        .render(layout[a][b], buf);
-                }
-                if a == 1 && b != 1 {
-                    Block::bordered()
-                        .border_type(state.vert_neighbour)
-                        .render(layout[a][b], buf);
-                }
+    for a in 0..3 {
+        for b in 0..3 {
+            if a != 1 && b == 1 {
+                Block::bordered()
+                    .border_type(state.hor_neighbour)
+                    .render(layout[a][b], buf);
+            }
+            if a == 1 && b != 1 {
+                Block::bordered()
+                    .border_type(state.vert_neighbour)
+                    .render(layout[a][b], buf);
             }
         }
-    } else {
-        for a in 0..3 {
-            for b in 0..3 {
-                if (a == 0 || a == 2) && (b == 0 || b == 2) {
-                    Block::bordered()
-                        .border_type(state.hor_neighbour)
-                        .render(layout[a][b], buf);
-                }
-            }
+    }
+
+    Block::bordered()
+        .border_type(state.border)
+        .render(layout[1][1], buf);
+
+    let mut b_area = Rect::new(0, 0, 1, 1);
+    match (state.b_side, state.b_symbol) {
+        (Side::Top, BorderSymbol::StartCornerAngled(_, _))
+        | (Side::Top, BorderSymbol::StartCornerRegular)
+        | (Side::Top, BorderSymbol::StartCornerProlonged(_, _))
+        | (Side::Top, BorderSymbol::StartCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x;
+            b_area.y = layout[1][1].y;
+        }
+        (Side::Top, BorderSymbol::SideRegular)
+        | (Side::Top, BorderSymbol::SideOverlap(_, _))
+        | (Side::Top, BorderSymbol::SideOutward(_, _))
+        | (Side::Top, BorderSymbol::SideInward(_, _))
+        | (Side::Top, BorderSymbol::SideCrossed(_, _, _, _))
+        | (Side::Top, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width / 2;
+            b_area.y = layout[1][1].y;
+        }
+        (Side::Top, BorderSymbol::EndCornerRegular)
+        | (Side::Top, BorderSymbol::EndCornerAngled(_, _))
+        | (Side::Top, BorderSymbol::EndCornerProlonged(_, _))
+        | (Side::Top, BorderSymbol::EndCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width.saturating_sub(1);
+            b_area.y = layout[1][1].y;
+        }
+
+        (Side::Bottom, BorderSymbol::StartCornerAngled(_, _))
+        | (Side::Bottom, BorderSymbol::StartCornerRegular)
+        | (Side::Bottom, BorderSymbol::StartCornerProlonged(_, _))
+        | (Side::Bottom, BorderSymbol::StartCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x;
+            b_area.y = layout[1][1].y + layout[1][1].height.saturating_sub(1);
+        }
+        (Side::Bottom, BorderSymbol::SideRegular)
+        | (Side::Bottom, BorderSymbol::SideOverlap(_, _))
+        | (Side::Bottom, BorderSymbol::SideOutward(_, _))
+        | (Side::Bottom, BorderSymbol::SideInward(_, _))
+        | (Side::Bottom, BorderSymbol::SideCrossed(_, _, _, _))
+        | (Side::Bottom, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width / 2;
+            b_area.y = layout[1][1].y + layout[1][1].height.saturating_sub(1);
+        }
+        (Side::Bottom, BorderSymbol::EndCornerRegular)
+        | (Side::Bottom, BorderSymbol::EndCornerAngled(_, _))
+        | (Side::Bottom, BorderSymbol::EndCornerProlonged(_, _))
+        | (Side::Bottom, BorderSymbol::EndCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width.saturating_sub(1);
+            b_area.y = layout[1][1].y + layout[1][1].height.saturating_sub(1);
+        }
+
+        (Side::Right, BorderSymbol::StartCornerAngled(_, _))
+        | (Side::Right, BorderSymbol::StartCornerRegular)
+        | (Side::Right, BorderSymbol::StartCornerProlonged(_, _))
+        | (Side::Right, BorderSymbol::StartCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width.saturating_sub(1);
+            b_area.y = layout[1][1].y;
+        }
+        (Side::Right, BorderSymbol::SideRegular)
+        | (Side::Right, BorderSymbol::SideOverlap(_, _))
+        | (Side::Right, BorderSymbol::SideOutward(_, _))
+        | (Side::Right, BorderSymbol::SideInward(_, _))
+        | (Side::Right, BorderSymbol::SideCrossed(_, _, _, _))
+        | (Side::Right, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width.saturating_sub(1);
+            b_area.y = layout[1][1].y + layout[1][1].height / 2;
+        }
+        (Side::Right, BorderSymbol::EndCornerRegular)
+        | (Side::Right, BorderSymbol::EndCornerAngled(_, _))
+        | (Side::Right, BorderSymbol::EndCornerProlonged(_, _))
+        | (Side::Right, BorderSymbol::EndCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x + layout[1][1].width.saturating_sub(1);
+            b_area.y = layout[1][1].y + layout[1][1].height.saturating_sub(1);
+        }
+
+        (Side::Left, BorderSymbol::StartCornerAngled(_, _))
+        | (Side::Left, BorderSymbol::StartCornerRegular)
+        | (Side::Left, BorderSymbol::StartCornerProlonged(_, _))
+        | (Side::Left, BorderSymbol::StartCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x;
+            b_area.y = layout[1][1].y;
+        }
+        (Side::Left, BorderSymbol::SideRegular)
+        | (Side::Left, BorderSymbol::SideOverlap(_, _))
+        | (Side::Left, BorderSymbol::SideOutward(_, _))
+        | (Side::Left, BorderSymbol::SideInward(_, _))
+        | (Side::Left, BorderSymbol::SideCrossed(_, _, _, _))
+        | (Side::Left, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+            b_area.x = layout[1][1].x;
+            b_area.y = layout[1][1].y + layout[1][1].height / 2;
+        }
+        (Side::Left, BorderSymbol::EndCornerRegular)
+        | (Side::Left, BorderSymbol::EndCornerAngled(_, _))
+        | (Side::Left, BorderSymbol::EndCornerProlonged(_, _))
+        | (Side::Left, BorderSymbol::EndCornerCrossed(_, _, _, _)) => {
+            b_area.x = layout[1][1].x;
+            b_area.y = layout[1][1].y + layout[1][1].height.saturating_sub(1);
         }
     }
 
     if state.mono {
-        Block::bordered()
+        BlockConnect::new()
             .border_type(state.border)
-            .render(layout[1][1], buf);
+            .side(state.b_side)
+            .symbol(state.b_symbol)
+            .render(b_area, buf);
     } else {
-        Block::bordered()
+        BlockConnect::new()
+            .border_style(Style::new().fg(THEME.limegreen[3]))
             .border_type(state.border)
-            .border_style(Style::new().fg(THEME.orange[2]))
-            .render(layout[1][1], buf);
+            .side(state.b_side)
+            .symbol(state.b_symbol)
+            .render(b_area, buf);
     }
-
-    render_joint(&state.joint, layout[1][1], buf);
 
     let mut txt_area = l0[0];
     txt_area.y += 2;
@@ -140,15 +274,11 @@ fn repaint_buttons(
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
-    "F4: joint type"
+    "F4: first/last"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
     "Left/Right: position"
-        .set_style(THEME.secondary_text())
-        .render(txt_area, buf);
-    txt_area.y += 1;
-    "F6: mirror"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
@@ -157,22 +287,16 @@ fn repaint_buttons(
         .render(txt_area, buf);
     txt_area.y += 2;
 
-    format!("border={:?}", state.border).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("joint={:?}", state.joint.get_border()).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("scale={:?}", state.joint.get_kind()).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("side={:?}", state.joint.get_side()).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("pos={:?}", state.joint.get_position()).render(txt_area, buf);
-    txt_area.y += 1;
-    format!("mirror={:?}", state.joint.is_mirrored()).render(txt_area, buf);
-
-    txt_area.y += 2;
     format!("hor={:?}", state.hor_neighbour).render(txt_area, buf);
     txt_area.y += 1;
     format!("vert={:?}", state.vert_neighbour).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("border={:?}", state.border).render(txt_area, buf);
+    txt_area.y += 1;
+    format!("side={:?}", state.b_side).render(txt_area, buf);
+    txt_area.y += 1;
+    txt_area.height = 10;
+    Text::from(format!("symbol={:#?}", state.b_symbol)).render(txt_area, buf);
 
     Ok(())
 }
@@ -193,7 +317,6 @@ fn handle_buttons(
                 BorderType::QuadrantInside => BorderType::QuadrantOutside,
                 BorderType::QuadrantOutside => BorderType::Plain,
             };
-            state.joint = state.joint.border(state.border);
             Outcome::Changed
         }
         ct_event!(keycode press F(2)) => {
@@ -205,7 +328,6 @@ fn handle_buttons(
                 BorderType::QuadrantInside => BorderType::QuadrantOutside,
                 BorderType::QuadrantOutside => BorderType::Plain,
             };
-            state.joint = state.joint.other(state.hor_neighbour);
             Outcome::Changed
         }
         ct_event!(keycode press F(3)) => {
@@ -220,212 +342,129 @@ fn handle_buttons(
             Outcome::Changed
         }
         ct_event!(keycode press F(4)) => {
-            state.joint = state.joint.kind(match state.joint.get_kind() {
-                JointKind::Inward => JointKind::Outward,
-                JointKind::Outward => JointKind::Through,
-                JointKind::Through => JointKind::Inward,
-                JointKind::Manual(c) => JointKind::Manual(c),
-            });
+            state.first = !state.first;
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(5)) => {
+            state.cross = !state.cross;
             Outcome::Changed
         }
         ct_event!(keycode press Right) => {
-            match state.joint.get_side() {
-                JointSide::Top => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => JointPosition::Start,
-                        JointPosition::Start => JointPosition::Pos(1),
-                        JointPosition::Pos(n) => {
-                            if n < state.area.width.saturating_sub(2) {
-                                JointPosition::Pos(n + 1)
-                            } else {
-                                JointPosition::End
-                            }
-                        }
-                        JointPosition::End => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.vert_neighbour),
-                        JointPosition::CrossEnd(_) => {
-                            state.joint = state.joint.side(JointSide::Right);
-                            JointPosition::CrossStart(state.hor_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
+            use BorderSymbol::*;
+            state.b_symbol = match state.b_symbol {
+                StartCornerRegular => StartCornerAngled(state.angled_side(), state.angled()),
+                StartCornerAngled(_, _) => {
+                    StartCornerProlonged(state.angled_side(), state.prolonged())
                 }
-                JointSide::Right => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => JointPosition::Start,
-                        JointPosition::Start => JointPosition::Pos(1),
-                        JointPosition::Pos(n) => {
-                            if n < state.area.height.saturating_sub(2) {
-                                JointPosition::Pos(n + 1)
-                            } else {
-                                JointPosition::End
-                            }
-                        }
-                        JointPosition::End => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.hor_neighbour),
-                        JointPosition::CrossEnd(_) => {
-                            state.joint = state.joint.side(JointSide::Bottom);
-                            JointPosition::CrossEnd(state.vert_neighbour)
-                        }
+                StartCornerProlonged(_, _) => StartCornerCrossed(
+                    state.angled_side(),
+                    state.angled(),
+                    state.b_side.opposite(),
+                    state.prolonged(),
+                ),
+                StartCornerCrossed(_, _, _, _) => SideRegular,
+
+                SideRegular => SideOverlap(state.angled_side(), state.angled()),
+                SideOverlap(_, _) => SideOutward(state.angled_side(), state.angled()),
+                SideOutward(_, _) => SideInward(state.angled_side().opposite(), state.angled()),
+                SideInward(_, _) => SideCrossed(
+                    state.angled_side(),
+                    state.angled(),
+                    state.angled_side(),
+                    state.angled(),
+                ),
+                SideCrossed(_, _, _, _) => Cross {
+                    0: state.angled_side(),
+                    1: state.angled(),
+                    2: state.b_side.opposite(),
+                    3: state.prolonged(),
+                    4: state.angled_side(),
+                    5: state.angled(),
+                    6: state.b_side.opposite(),
+                    7: state.prolonged(),
+                },
+                Cross(_, _, _, _, _, _, _, _) => EndCornerRegular,
+                EndCornerRegular => EndCornerAngled(state.angled_side(), state.angled()),
+                EndCornerAngled(_, _) => EndCornerProlonged(state.angled_side(), state.prolonged()),
+                EndCornerProlonged(_, _) => EndCornerCrossed(
+                    state.angled_side(),
+                    state.angled(),
+                    state.b_side.opposite(),
+                    state.prolonged(),
+                ),
+                EndCornerCrossed(_, _, _, _) => {
+                    state.b_side = match state.b_side {
+                        Side::Top => Side::Right,
+                        Side::Right => Side::Bottom,
+                        Side::Bottom => Side::Left,
+                        Side::Left => Side::Top,
                     };
-                    state.joint = state.joint.position(next);
-                }
-                JointSide::Bottom => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::End,
-                        JointPosition::End => {
-                            JointPosition::Pos(state.area.width.saturating_sub(2))
-                        }
-                        JointPosition::Pos(n) => {
-                            if n > 1 {
-                                JointPosition::Pos(n - 1)
-                            } else {
-                                JointPosition::Start
-                            }
-                        }
-                        JointPosition::Start => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => {
-                            JointPosition::CrossStart(state.vert_neighbour)
-                        }
-                        JointPosition::CrossStart(_) => {
-                            state.joint = state.joint.side(JointSide::Left);
-                            JointPosition::CrossEnd(state.hor_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
-                }
-                JointSide::Left => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::End,
-                        JointPosition::End => {
-                            JointPosition::Pos(state.area.height.saturating_sub(2))
-                        }
-                        JointPosition::Pos(n) => {
-                            if n > 1 {
-                                JointPosition::Pos(n - 1)
-                            } else {
-                                JointPosition::Start
-                            }
-                        }
-                        JointPosition::Start => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => {
-                            JointPosition::CrossStart(state.hor_neighbour)
-                        }
-                        JointPosition::CrossStart(_) => {
-                            state.joint = state.joint.side(JointSide::Top);
-                            JointPosition::CrossStart(state.vert_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
+                    StartCornerRegular
                 }
             };
             Outcome::Changed
         }
         ct_event!(keycode press Left) => {
-            match state.joint.get_side() {
-                JointSide::Top => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::End,
-                        JointPosition::End => {
-                            JointPosition::Pos(state.area.width.saturating_sub(2))
-                        }
-                        JointPosition::Pos(n) => {
-                            if n > 1 {
-                                JointPosition::Pos(n - 1)
-                            } else {
-                                JointPosition::Start
-                            }
-                        }
-                        JointPosition::Start => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => {
-                            JointPosition::CrossStart(state.vert_neighbour)
-                        }
-                        JointPosition::CrossStart(_) => {
-                            state.joint = state.joint.side(JointSide::Left);
-                            JointPosition::CrossStart(state.hor_neighbour)
-                        }
+            use BorderSymbol::*;
+            state.b_symbol = match state.b_symbol {
+                StartCornerRegular => {
+                    state.b_side = match state.b_side {
+                        Side::Top => Side::Right,
+                        Side::Right => Side::Bottom,
+                        Side::Bottom => Side::Left,
+                        Side::Left => Side::Top,
                     };
-                    state.joint = state.joint.position(next);
+                    EndCornerCrossed(
+                        state.angled_side(),
+                        state.angled(),
+                        state.b_side.opposite(),
+                        state.prolonged(),
+                    )
                 }
-                JointSide::Left => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => JointPosition::Start,
-                        JointPosition::Start => JointPosition::Pos(1),
-                        JointPosition::Pos(n) => {
-                            if n < state.area.height.saturating_sub(2) {
-                                JointPosition::Pos(n + 1)
-                            } else {
-                                JointPosition::End
-                            }
-                        }
-                        JointPosition::End => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.hor_neighbour),
-                        JointPosition::CrossEnd(_) => {
-                            state.joint = state.joint.side(JointSide::Bottom);
-                            JointPosition::CrossStart(state.vert_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
+                StartCornerAngled(_, _) => StartCornerRegular,
+                StartCornerProlonged(_, _) => {
+                    StartCornerAngled(state.angled_side(), state.angled())
                 }
-                JointSide::Bottom => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossStart(_) => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => JointPosition::Start,
-                        JointPosition::Start => JointPosition::Pos(1),
-                        JointPosition::Pos(n) => {
-                            if n < state.area.width.saturating_sub(2) {
-                                JointPosition::Pos(n + 1)
-                            } else {
-                                JointPosition::End
-                            }
-                        }
-                        JointPosition::End => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::CrossEnd(state.vert_neighbour),
-                        JointPosition::CrossEnd(_) => {
-                            state.joint = state.joint.side(JointSide::Right);
-                            JointPosition::CrossEnd(state.hor_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
+                StartCornerCrossed(_, _, _, _) => {
+                    StartCornerProlonged(state.angled_side(), state.prolonged())
                 }
-                JointSide::Right => {
-                    let next = match state.joint.get_position() {
-                        JointPosition::CrossEnd(_) => JointPosition::ProlongEnd,
-                        JointPosition::ProlongEnd => JointPosition::End,
-                        JointPosition::End => {
-                            JointPosition::Pos(state.area.height.saturating_sub(2))
-                        }
-                        JointPosition::Pos(n) => {
-                            if n > 1 {
-                                JointPosition::Pos(n - 1)
-                            } else {
-                                JointPosition::Start
-                            }
-                        }
-                        JointPosition::Start => JointPosition::ProlongStart,
-                        JointPosition::ProlongStart => {
-                            JointPosition::CrossStart(state.hor_neighbour)
-                        }
-                        JointPosition::CrossStart(_) => {
-                            state.joint = state.joint.side(JointSide::Top);
-                            JointPosition::CrossEnd(state.vert_neighbour)
-                        }
-                    };
-                    state.joint = state.joint.position(next);
+                SideRegular => StartCornerCrossed(
+                    state.angled_side(),
+                    state.angled(),
+                    state.b_side.opposite(),
+                    state.prolonged(),
+                ),
+                SideOverlap(_, _) => SideRegular,
+                SideOutward(_, _) => SideOverlap(state.angled_side(), state.angled()),
+                SideInward(_, _) => SideOutward(state.angled_side(), state.angled()),
+                SideCrossed(_, _, _, _) => {
+                    SideInward(state.angled_side().opposite(), state.angled())
+                }
+                Cross(_, _, _, _, _, _, _, _) => SideCrossed(
+                    state.angled_side(),
+                    state.angled(),
+                    state.angled_side(),
+                    state.angled(),
+                ),
+                EndCornerRegular => Cross {
+                    0: state.angled_side(),
+                    1: state.angled(),
+                    2: state.b_side.opposite(),
+                    3: state.prolonged(),
+                    4: state.angled_side(),
+                    5: state.angled(),
+                    6: state.b_side.opposite(),
+                    7: state.prolonged(),
+                },
+                EndCornerAngled(_, _) => EndCornerRegular,
+                EndCornerProlonged(_, _) => EndCornerAngled(state.angled_side(), state.angled()),
+                EndCornerCrossed(_, _, _, _) => {
+                    EndCornerProlonged(state.angled_side(), state.prolonged())
                 }
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(6)) => {
-            state.joint = state.joint.mirrored(!state.joint.is_mirrored());
-            Outcome::Changed
-        }
+
         ct_event!(keycode press F(8)) => {
             state.mono = !state.mono;
             Outcome::Changed

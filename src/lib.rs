@@ -1,6 +1,7 @@
 //! Block borders.
 
 pub mod block_border;
+pub mod block_connect;
 pub mod border_symbols;
 
 use ratatui::prelude::Widget;
@@ -20,12 +21,6 @@ use std::fmt::Debug;
 //     pub inner_horizontal: Vec<BorderSymbol>,
 // }
 //
-// #[derive(Debug, Clone)]
-// pub struct BlockConnect {
-//     pub border_style: Style,
-//     pub border: BorderType,
-//     pub connect: BorderSymbol,
-// }
 
 /// Names for the sides of an area.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
