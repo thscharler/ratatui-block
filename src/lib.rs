@@ -51,7 +51,7 @@ pub trait BorderSymbolSet {
 /// Which side of the other area is connected may also influence
 /// the actual glyph.
 ///
-/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_1.png)
+/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_2.png)
 ///
 ///
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
