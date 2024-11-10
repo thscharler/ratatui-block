@@ -47,27 +47,74 @@ pub trait BorderSymbolSet {
 
 /// Symbol descriptor.
 ///
-/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/illustration.png)
+/// Describes the symbols geometrically as they occur along one
+/// side of the area.
+///
+/// Schematics for the connection.
+///
+/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_1.png)
+///
+/// Which side of the other area is connected may also influence
+/// the actual glyph.
+///
+/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_1.png)
+///
+///
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BorderSymbol {
+    /// Regular start corner.
     StartCornerRegular,
+    /// Start corner with an extension perpendicular to the line.
     StartCornerAngled(Side, BorderType),
+    /// Start corner that goes on in the direction of the line.
     StartCornerProlonged(Side, BorderType),
+    /// Crossing at the start.
+    /// The first value is the border perpendicular to the line,
+    /// the second goes in the direction of the line.
     StartCornerCrossed(Side, BorderType, Side, BorderType),
 
+    /// Regular side.
     SideRegular,
+    /// Regular side, but overlapping with some other border.
     SideOverlap(Side, BorderType),
+    /// Side with a connection point outwards.
     SideOutward(Side, BorderType),
+    /// Side with a connection point inwards.
     SideInward(Side, BorderType),
+    /// Side with a crossing.
+    /// The first value is the border outwards, the second
+    /// goes inwards.
     SideCrossed(Side, BorderType, Side, BorderType),
 
+    /// Regular end corner.
     EndCornerRegular,
+    /// End corner with an extension perpendicular to the line.
     EndCornerAngled(Side, BorderType),
+    /// End corner that goes on in the direction of the line.
     EndCornerProlonged(Side, BorderType),
+    /// Crossing at the end.
+    /// The first value is the border perpendicular to the line,
+    /// the second goes in the direction of the line.
     EndCornerCrossed(Side, BorderType, Side, BorderType),
+
+    /// 4-way crossing of up to 4 different border types
+    /// along the side.
+    ///
+    /// Borders are (angled_outward, forward, angled_inward, backward).
+    Cross(
+        Side,
+        BorderType,
+        Side,
+        BorderType,
+        Side,
+        BorderType,
+        Side,
+        BorderType,
+    ),
 }
 
 impl Side {
+    /// Give the opposite side.
     pub fn opposite(&self) -> Self {
         match self {
             Side::Top => Side::Bottom,
@@ -112,6 +159,26 @@ impl BorderSymbol {
             EndCornerCrossed(_, _, prolong_side, prolong_border) => {
                 EndCornerCrossed(side, border, prolong_side, prolong_border)
             }
+
+            Cross(
+                _,
+                _,
+                forward_side,
+                forward_border,
+                inward_side,
+                inward_border,
+                backward_side,
+                backward_border,
+            ) => Cross(
+                side,
+                border,
+                forward_side,
+                forward_border,
+                inward_side,
+                inward_border,
+                backward_side,
+                backward_border,
+            ),
         }
     }
 
@@ -140,6 +207,26 @@ impl BorderSymbol {
             EndCornerAngled(_, _) => *self,
             EndCornerProlonged(_, _) => *self,
             EndCornerCrossed(_, _, _, _) => *self,
+
+            Cross(
+                outward_side,
+                outward_border,
+                forward_side,
+                forward_border,
+                _,
+                _,
+                backward_side,
+                backward_border,
+            ) => Cross(
+                outward_side,
+                outward_border,
+                forward_side,
+                forward_border,
+                side,
+                border,
+                backward_side,
+                backward_border,
+            ),
         }
     }
 
@@ -163,6 +250,17 @@ impl BorderSymbol {
             EndCornerAngled(_, _) => *self,
             EndCornerProlonged(_, _) => *self,
             EndCornerCrossed(_, _, _, _) => *self,
+
+            Cross(outward_side, outward_border, _, _, inward_side, inward_border, _, _) => Cross(
+                outward_side,
+                outward_border,
+                side,
+                border,
+                inward_side,
+                inward_border,
+                side,
+                border,
+            ),
         }
     }
 
@@ -194,6 +292,27 @@ impl BorderSymbol {
             EndCornerCrossed(angle_side, angle_border, _, _) => {
                 EndCornerCrossed(angle_side, angle_border, side, border)
             }
+
+            // can't do anything with Cross, can't say which way is prolonged.
+            Cross(
+                outward_side,
+                outward_border,
+                forward_side,
+                forward_border,
+                inward_side,
+                inward_border,
+                backward_side,
+                backward_border,
+            ) => Cross(
+                outward_side,
+                outward_border,
+                forward_side,
+                forward_border,
+                inward_side,
+                inward_border,
+                backward_side,
+                backward_border,
+            ),
         }
     }
 }
