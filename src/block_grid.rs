@@ -18,6 +18,9 @@ pub struct BlockGrid {
     inner_border_type: BorderType,
     inner_set: Rc<dyn BorderSymbolSet>,
 
+    horizontal_side: Side,
+    vertical_side: Side,
+
     vertical: Vec<u16>,
     horizontal: Vec<u16>,
 }
@@ -44,6 +47,8 @@ impl BlockGrid {
             outer_border_type: Default::default(),
             inner_border_type: Default::default(),
             inner_set: Rc::new(PlainSymbolSet),
+            horizontal_side: Side::Left,
+            vertical_side: Side::Top,
             vertical: vec![],
             horizontal: vec![],
         }
@@ -99,6 +104,18 @@ impl BlockGrid {
         self
     }
 
+    /// Add a vertical side.
+    pub fn vertical_side(mut self, side: Side) -> Self {
+        self.vertical_side = side;
+        self
+    }
+
+    /// Add a horizontal side.
+    pub fn horizontal_side(mut self, side: Side) -> Self {
+        self.horizontal_side = side;
+        self
+    }
+
     /// Add a vertical divider.
     pub fn vertical(mut self, pos: u16) -> Self {
         self.vertical.push(pos);
@@ -117,17 +134,17 @@ impl BlockGrid {
         for p in self.vertical.iter().copied() {
             if p > 0 && p < self.block.get_area().width.saturating_sub(2) {
                 self.block.top_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(Side::Left, self.inner_border_type);
+                    BorderSymbol::SideInward(self.vertical_side, self.inner_border_type);
                 self.block.bottom_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(Side::Left, self.inner_border_type);
+                    BorderSymbol::SideInward(self.vertical_side, self.inner_border_type);
             }
         }
         for p in self.horizontal.iter().copied() {
             if p > 0 && p < self.block.get_area().height.saturating_sub(2) {
                 self.block.left_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(Side::Top, self.inner_border_type);
+                    BorderSymbol::SideInward(self.horizontal_side, self.inner_border_type);
                 self.block.right_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(Side::Top, self.inner_border_type);
+                    BorderSymbol::SideInward(self.horizontal_side, self.inner_border_type);
             }
         }
     }
@@ -139,19 +156,18 @@ impl Widget for BlockGrid {
         Self: Sized,
     {
         self.layout();
-        debug!("{:#?}", self);
 
         self.block.render(area, buf);
-
-        let s0 = Side::Right;
-        let s1 = Side::Top;
 
         for x in self.vertical.iter().copied() {
             if x > 0 && x < area.width.saturating_sub(2) {
                 for y in area.y + 1..area.y + area.height.saturating_sub(1) {
                     if let Some(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
                         cell.set_style(self.inner_style);
-                        cell.set_symbol(self.inner_set.symbol(s0, BorderSymbol::SideRegular));
+                        cell.set_symbol(
+                            self.inner_set
+                                .symbol(self.horizontal_side, BorderSymbol::SideRegular),
+                        );
                     }
                 }
             }
@@ -161,7 +177,10 @@ impl Widget for BlockGrid {
                 for x in area.x + 1..area.x + area.width.saturating_sub(1) {
                     if let Some(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
                         cell.set_style(self.inner_style);
-                        cell.set_symbol(self.inner_set.symbol(s1, BorderSymbol::SideRegular));
+                        cell.set_symbol(
+                            self.inner_set
+                                .symbol(self.vertical_side, BorderSymbol::SideRegular),
+                        );
                     }
                 }
             }
@@ -172,18 +191,15 @@ impl Widget for BlockGrid {
                     if y > 0 && y < area.height.saturating_sub(2) {
                         if let Some(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
                             cell.set_style(Style::new().red());
-                            cell.set_symbol(self.inner_set.symbol(
-                                s0,
-                                BorderSymbol::Cross(
-                                    s0,
-                                    self.inner_border_type,
-                                    s1,
-                                    self.inner_border_type,
-                                    s0,
-                                    self.inner_border_type,
-                                    s1,
-                                    self.inner_border_type,
-                                ),
+                            cell.set_symbol(self.inner_set.crossing(
+                                self.horizontal_side,
+                                self.inner_border_type,
+                                self.vertical_side,
+                                self.inner_border_type,
+                                self.horizontal_side,
+                                self.inner_border_type,
+                                self.vertical_side,
+                                self.inner_border_type,
                             ));
                         }
                     }

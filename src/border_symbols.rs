@@ -1,9 +1,6 @@
-use crate::Side::{Bottom, Left, Right, Top};
 use crate::{BorderSymbol, BorderSymbolSet, Side};
-use log::debug;
 use ratatui::symbols::border;
 use ratatui::widgets::BorderType;
-use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 use std::rc::Rc;
 
 ///
@@ -91,7 +88,6 @@ impl BorderSymbolSet for StaticSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.top_right_angled,
                 BorderSymbol::EndCornerProlonged(_, _) => self.top_right_prolonged,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.top_right_crossed,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => self.crossed,
             },
             Side::Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => self.bottom_left_regular,
@@ -107,7 +103,6 @@ impl BorderSymbolSet for StaticSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.bottom_right_angled,
                 BorderSymbol::EndCornerProlonged(_, _) => self.bottom_right_prolonged,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.bottom_right_crossed,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => self.crossed,
             },
             Side::Right => match symbol {
                 BorderSymbol::StartCornerRegular => self.top_right_regular,
@@ -123,7 +118,6 @@ impl BorderSymbolSet for StaticSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.bottom_right_angled,
                 BorderSymbol::EndCornerProlonged(_, _) => self.bottom_right_prolonged,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.bottom_right_crossed,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => self.crossed,
             },
             Side::Left => match symbol {
                 BorderSymbol::StartCornerRegular => self.top_left_regular,
@@ -139,9 +133,22 @@ impl BorderSymbolSet for StaticSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.bottom_left_angled,
                 BorderSymbol::EndCornerProlonged(_, _) => self.bottom_left_prolonged,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.bottom_left_crossed,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => self.crossed,
             },
         }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        _top: BorderType,
+        _right_side: Side,
+        _right: BorderType,
+        _bottom_side: Side,
+        _bottom: BorderType,
+        _left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
+        self.crossed
     }
 }
 
@@ -169,7 +176,6 @@ impl BorderSymbolSet for OldSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.top_right,
                 BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.top_right,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.top_right,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => &" ",
             },
             Side::Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => self.symbol_set.bottom_left,
@@ -185,7 +191,6 @@ impl BorderSymbolSet for OldSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_right,
                 BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_right,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_right,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => &" ",
             },
             Side::Right => match symbol {
                 BorderSymbol::StartCornerRegular => self.symbol_set.top_right,
@@ -201,7 +206,6 @@ impl BorderSymbolSet for OldSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_right,
                 BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_right,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_right,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => &" ",
             },
             Side::Left => match symbol {
                 BorderSymbol::StartCornerRegular => self.symbol_set.top_left,
@@ -217,15 +221,28 @@ impl BorderSymbolSet for OldSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => self.symbol_set.bottom_left,
                 BorderSymbol::EndCornerProlonged(_, _) => self.symbol_set.bottom_left,
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => self.symbol_set.bottom_left,
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => &" ",
             },
         }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        _top: BorderType,
+        _right_side: Side,
+        _right: BorderType,
+        _bottom_side: Side,
+        _bottom: BorderType,
+        _left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
+        &" "
     }
 }
 
 macro_rules! plain {
     () => {
-        Plain | Rounded
+        BorderType::Plain | BorderType::Rounded
     };
 }
 
@@ -271,27 +288,6 @@ impl BorderSymbolSet for PlainSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, Thick, _, _) => "╀",
                 BorderSymbol::EndCornerCrossed(_, _, _, Thick) => "┾",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "┼",
-                // Double: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Double, _, Double, _, Double, _, Double) => "╬",
-                BorderSymbol::Cross(_, Double, _, _, _, Double, _, _) => "╫",
-                BorderSymbol::Cross(_, _, _, Double, _, _, _, Double) => "╪",
-                // Thick: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, Thick) => "╋",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, _) => "╊",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, Thick) => "╇",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, _) => "╄",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, Thick) => "╉",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, _) => "╂",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, Thick) => "╃",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, _) => "╀",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, Thick) => "╈",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, _) => "\u{2546}",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, Thick) => "┿",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, _) => "┾",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, Thick) => "╅",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, _) => "╁",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, Thick) => "┽",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "┼",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "└",
@@ -325,27 +321,6 @@ impl BorderSymbolSet for PlainSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, Thick, _, _) => "╁",
                 BorderSymbol::EndCornerCrossed(_, _, _, Thick) => "┾",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "┼",
-                // Double: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Double, _, Double, _, Double, _, Double) => "╬",
-                BorderSymbol::Cross(_, Double, _, _, _, Double, _, _) => "╫",
-                BorderSymbol::Cross(_, _, _, Double, _, _, _, Double) => "╪",
-                // Thick: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, Thick) => "╋",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, _) => "╊",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, Thick) => "╈",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, _) => "\u{2546}",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, Thick) => "╉",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, _) => "╂",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, Thick) => "╅",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, _) => "╁",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, Thick) => "╇",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, _) => "╄",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, Thick) => "┿",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, _) => "┾",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, Thick) => "╃",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, _) => "╀",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, Thick) => "┽",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "┼",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "┐",
@@ -379,27 +354,6 @@ impl BorderSymbolSet for PlainSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, Thick, _, _) => "┾",
                 BorderSymbol::EndCornerCrossed(_, _, _, Thick) => "╁",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "┼",
-                // Double: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Double, _, Double, _, Double, _, Double) => "╬",
-                BorderSymbol::Cross(_, Double, _, _, _, Double, _, _) => "╪",
-                BorderSymbol::Cross(_, _, _, Double, _, _, _, Double) => "╫",
-                // Thick: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, Thick) => "╋",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, _) => "╈",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, Thick) => "╊",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, _) => "\u{2546}",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, Thick) => "╇",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, _) => "┿",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, Thick) => "╄",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, _) => "┾",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, Thick) => "╉",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, _) => "╅",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, Thick) => "╂",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, _) => "╁",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, Thick) => "╃",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, _) => "┽",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, Thick) => "╀",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "┼",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "┌",
@@ -433,28 +387,45 @@ impl BorderSymbolSet for PlainSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, Thick, _, _) => "┽",
                 BorderSymbol::EndCornerCrossed(_, _, _, Thick) => "╁",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "┼",
-                // Double: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Double, _, Double, _, Double, _, Double) => "╬",
-                BorderSymbol::Cross(_, Double, _, _, _, Double, _, _) => "╪",
-                BorderSymbol::Cross(_, _, _, Double, _, _, _, Double) => "╫",
-                // Thick: outward, forward, inward, backward
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, Thick) => "╋",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, Thick, _, _) => "╈",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, Thick) => "╊",
-                BorderSymbol::Cross(_, _, _, Thick, _, Thick, _, _) => "\u{2546}",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, Thick) => "╇",
-                BorderSymbol::Cross(_, Thick, _, _, _, Thick, _, _) => "┿",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, Thick) => "╄",
-                BorderSymbol::Cross(_, _, _, _, _, Thick, _, _) => "┾",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, Thick) => "╉",
-                BorderSymbol::Cross(_, Thick, _, Thick, _, _, _, _) => "╅",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, Thick) => "╂",
-                BorderSymbol::Cross(_, _, _, Thick, _, _, _, _) => "╁",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, Thick) => "╃",
-                BorderSymbol::Cross(_, Thick, _, _, _, _, _, _) => "┽",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, Thick) => "╀",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "┼",
             },
+        }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        top: BorderType,
+        _right_side: Side,
+        right: BorderType,
+        _bottom_side: Side,
+        bottom: BorderType,
+        _left_side: Side,
+        left: BorderType,
+    ) -> &'static str {
+        use BorderType::*;
+
+        match (top, right, bottom, left) {
+            // Double
+            (Double, Double, Double, Double) => "╬",
+            (Double, _, Double, _) => "╫",
+            (_, Double, _, Double) => "╪",
+            // Thick
+            (Thick, Thick, Thick, Thick) => "╋",
+            (Thick, Thick, Thick, _) => "╊",
+            (Thick, Thick, _, Thick) => "╇",
+            (Thick, Thick, _, _) => "╄",
+            (Thick, _, Thick, Thick) => "╉",
+            (Thick, _, Thick, _) => "╂",
+            (Thick, _, _, Thick) => "╃",
+            (Thick, _, _, _) => "╀",
+            (_, Thick, Thick, Thick) => "╈",
+            (_, Thick, Thick, _) => "\u{2546}",
+            (_, Thick, _, Thick) => "┿",
+            (_, Thick, _, _) => "┾",
+            (_, _, Thick, Thick) => "╅",
+            (_, _, Thick, _) => "╁",
+            (_, _, _, Thick) => "┽",
+            (_, _, _, _) => "┼",
         }
     }
 }
@@ -490,6 +461,29 @@ impl BorderSymbolSet for RoundedSymbolSet {
             },
         }
     }
+
+    fn crossing(
+        &self,
+        top_side: Side,
+        top: BorderType,
+        right_side: Side,
+        right: BorderType,
+        bottom_side: Side,
+        bottom: BorderType,
+        left_side: Side,
+        left: BorderType,
+    ) -> &'static str {
+        PlainSymbolSet.crossing(
+            top_side,
+            top,
+            right_side,
+            right,
+            bottom_side,
+            bottom,
+            left_side,
+            left,
+        )
+    }
 }
 
 /// Double border symbol set.
@@ -499,7 +493,6 @@ impl BorderSymbolSet for DoubleSymbolSet {
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
-        use BorderType::*;
 
         match side {
             Top => match symbol {
@@ -519,11 +512,6 @@ impl BorderSymbolSet for DoubleSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "╣",
                 BorderSymbol::EndCornerProlonged(_, _) => "╦",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╬",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╪",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╫",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╬",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "╚",
@@ -542,11 +530,6 @@ impl BorderSymbolSet for DoubleSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "╣",
                 BorderSymbol::EndCornerProlonged(_, _) => "╩",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╬",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╪",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╫",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╬",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "╗",
@@ -565,11 +548,6 @@ impl BorderSymbolSet for DoubleSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "╩",
                 BorderSymbol::EndCornerProlonged(_, _) => "╣",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╬",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╫",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╪",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╬",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "╔",
@@ -588,12 +566,26 @@ impl BorderSymbolSet for DoubleSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "╩",
                 BorderSymbol::EndCornerProlonged(_, _) => "╠",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╬",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╫",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╪",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╬",
             },
+        }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        top: BorderType,
+        _right_side: Side,
+        right: BorderType,
+        _bottom_side: Side,
+        bottom: BorderType,
+        _left_side: Side,
+        left: BorderType,
+    ) -> &'static str {
+        match (top, right, bottom, left) {
+            (plain!(), plain!(), plain!(), plain!()) => "┼",
+            (plain!(), _, plain!(), _) => "╪",
+            (_, plain!(), _, plain!()) => "╫",
+            (_, _, _, _) => "╬",
         }
     }
 }
@@ -637,23 +629,6 @@ impl BorderSymbolSet for ThickSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, plain!(), _, _) => "╈",
                 BorderSymbol::EndCornerCrossed(_, _, _, plain!()) => "╉",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╋",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, _) => "┽",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, plain!()) => "╁",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, _) => "╅",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, plain!()) => "┾",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "┿",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, plain!()) => "\u{2546}",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, _) => "╈",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, plain!()) => "╀",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, _) => "╃",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╂",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, _) => "╉",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, plain!()) => "╄",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, _) => "╇",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, plain!()) => "╊",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╋",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "┗",
@@ -684,23 +659,6 @@ impl BorderSymbolSet for ThickSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, plain!(), _, _) => "╇",
                 BorderSymbol::EndCornerCrossed(_, _, _, plain!()) => "╉",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╋",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, _) => "┽",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, plain!()) => "╀",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, _) => "╃",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, plain!()) => "┾",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "┿",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, plain!()) => "╄",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, _) => "╇",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, plain!()) => "╁",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, _) => "╅",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "╂",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, _) => "╉",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, plain!()) => "\u{2546}",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, _) => "╈",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, plain!()) => "╊",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╋",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "┓",
@@ -731,23 +689,6 @@ impl BorderSymbolSet for ThickSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, plain!(), _, _) => "╉",
                 BorderSymbol::EndCornerCrossed(_, _, _, plain!()) => "╇",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╋",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, _) => "╀",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, plain!()) => "┽",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, _) => "╃",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, plain!()) => "╁",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╂",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, plain!()) => "╅",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, _) => "╉",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, plain!()) => "┾",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, _) => "╄",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "┿",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, _) => "╇",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, plain!()) => "\u{2546}",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, _) => "╊",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, plain!()) => "╈",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╋",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "┏",
@@ -778,24 +719,38 @@ impl BorderSymbolSet for ThickSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, plain!(), _, _) => "╊",
                 BorderSymbol::EndCornerCrossed(_, _, _, plain!()) => "╇",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "╋",
-                // outward, forward, inward, backward
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, plain!()) => "┼",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, plain!(), _, _) => "╀",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, plain!()) => "┾",
-                BorderSymbol::Cross(_, plain!(), _, plain!(), _, _, _, _) => "╄",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, plain!()) => "╁",
-                BorderSymbol::Cross(_, plain!(), _, _, _, plain!(), _, _) => "╂",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, plain!()) => "\u{2546}",
-                BorderSymbol::Cross(_, plain!(), _, _, _, _, _, _) => "╊",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, plain!()) => "┽",
-                BorderSymbol::Cross(_, _, _, plain!(), _, plain!(), _, _) => "╃",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, plain!()) => "┿",
-                BorderSymbol::Cross(_, _, _, plain!(), _, _, _, _) => "╇",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, plain!()) => "╅",
-                BorderSymbol::Cross(_, _, _, _, _, plain!(), _, _) => "╉",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, plain!()) => "╈",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "╋",
             },
+        }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        top: BorderType,
+        _right_side: Side,
+        right: BorderType,
+        _bottom_side: Side,
+        bottom: BorderType,
+        _left_side: Side,
+        left: BorderType,
+    ) -> &'static str {
+        match (top, right, bottom, left) {
+            (plain!(), plain!(), plain!(), plain!()) => "┼",
+            (plain!(), plain!(), plain!(), _) => "┽",
+            (plain!(), plain!(), _, plain!()) => "╁",
+            (plain!(), plain!(), _, _) => "╅",
+            (plain!(), _, plain!(), plain!()) => "┾",
+            (plain!(), _, plain!(), _) => "┿",
+            (plain!(), _, _, plain!()) => "\u{2546}",
+            (plain!(), _, _, _) => "╈",
+            (_, plain!(), plain!(), plain!()) => "╀",
+            (_, plain!(), plain!(), _) => "╃",
+            (_, plain!(), _, plain!()) => "╂",
+            (_, plain!(), _, _) => "╉",
+            (_, _, plain!(), plain!()) => "╄",
+            (_, _, plain!(), _) => "╇",
+            (_, _, _, plain!()) => "╊",
+            (_, _, _, _) => "╋",
         }
     }
 }
@@ -892,12 +847,6 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) => "▞",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▖",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▙",
-
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "▝",
@@ -979,11 +928,6 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 }
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▚",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▛",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "▖",
@@ -1026,11 +970,6 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, QuadrantOutside, _, QuadrantOutside) => "▛",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▚",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▛",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▌",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "▗",
@@ -1073,12 +1012,44 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, QuadrantOutside, _, QuadrantOutside) => "▜",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▞",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
+        }
+    }
+
+    fn crossing(
+        &self,
+        top_side: Side,
+        _top: BorderType,
+        right_side: Side,
+        _right: BorderType,
+        bottom_side: Side,
+        _bottom: BorderType,
+        left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
+        use Side::*;
+        match (top_side, right_side, bottom_side, left_side) {
+            (Left, Top, Left, Top) => "▟",
+            (Left, Top, Left, Bottom) => "▜",
+            (Left, Top, Right, Top) => "▟",
+            (Left, Top, Right, Bottom) => "█",
+
+            (Left, Bottom, Left, Top) => "▟",
+            (Left, Bottom, Left, Bottom) => "▜",
+            (Left, Bottom, Right, Top) => "▞",
+            (Left, Bottom, Right, Bottom) => "▛",
+
+            (Right, Top, Left, Top) => "▙",
+            (Right, Top, Left, Bottom) => "▚",
+            (Right, Top, Right, Top) => "▙",
+            (Right, Top, Right, Bottom) => "▙",
+
+            (Right, Bottom, Left, Top) => "█",
+            (Right, Bottom, Left, Bottom) => "▜",
+            (Right, Bottom, Right, Top) => "▛",
+            (Right, Bottom, Right, Bottom) => "▛",
+
+            (_, _, _, _) => "█",
         }
     }
 }
@@ -1091,7 +1062,7 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
         use crate::Side::*;
         use BorderType::*;
 
-        let fff = match side {
+        match side {
             Top => match symbol {
                 BorderSymbol::StartCornerRegular => "▛",
                 BorderSymbol::StartCornerAngled(_, _) => "▛",
@@ -1112,11 +1083,6 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▜",
                 BorderSymbol::EndCornerProlonged(_, _) => "▜",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▀",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "▙",
@@ -1140,11 +1106,6 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▟",
                 BorderSymbol::EndCornerProlonged(_, _) => "▟",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▟",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "▜",
@@ -1166,11 +1127,6 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▜",
                 BorderSymbol::EndCornerProlonged(_, _) => "▜",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
-                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
-                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
-                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
-                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "▛",
@@ -1192,17 +1148,45 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▙",
                 BorderSymbol::EndCornerProlonged(_, _) => "▙",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, Left, _, Top, _, _, _) => "▛",
-                BorderSymbol::Cross(_, _, Left, _, Bottom, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, Right, _, Top, _, _, _) => "▜",
-                BorderSymbol::Cross(_, _, Right, _, Bottom, _, _, _) => "▟",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
-        };
+        }
+    }
 
-        debug!("{:?} {:?} => {:?}", side, symbol, fff);
+    fn crossing(
+        &self,
+        top_side: Side,
+        _top: BorderType,
+        right_side: Side,
+        _right: BorderType,
+        bottom_side: Side,
+        _bottom: BorderType,
+        left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
+        use Side::*;
+        match (top_side, right_side, bottom_side, left_side) {
+            (Right, Bottom, Right, Bottom) => "▟",
+            (Right, Bottom, Right, Top) => "▜",
+            (Right, Bottom, Left, Bottom) => "▟",
+            (Right, Bottom, Left, Top) => "█",
 
-        fff
+            (Right, Top, Right, Bottom) => "▟",
+            (Right, Top, Right, Top) => "▜",
+            (Right, Top, Left, Bottom) => "▞",
+            (Right, Top, Left, Top) => "▛",
+
+            (Left, Bottom, Right, Bottom) => "▙",
+            (Left, Bottom, Right, Top) => "▚",
+            (Left, Bottom, Left, Bottom) => "▙",
+            (Left, Bottom, Left, Top) => "▙",
+
+            (Left, Top, Right, Bottom) => "█",
+            (Left, Top, Right, Top) => "▜",
+            (Left, Top, Left, Bottom) => "▛",
+            (Left, Top, Left, Top) => "▛",
+
+            (_, _, _, _) => "█",
+        }
     }
 }
 
@@ -1228,7 +1212,6 @@ impl BorderSymbolSet for AsciiSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "+",
                 BorderSymbol::EndCornerProlonged(_, _) => "+",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "+",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "+",
             },
             Bottom => match symbol {
                 BorderSymbol::StartCornerRegular => "+",
@@ -1244,7 +1227,6 @@ impl BorderSymbolSet for AsciiSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "+",
                 BorderSymbol::EndCornerProlonged(_, _) => "+",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "+",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "+",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "+",
@@ -1260,7 +1242,6 @@ impl BorderSymbolSet for AsciiSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "+",
                 BorderSymbol::EndCornerProlonged(_, _) => "+",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "+",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "+",
             },
             Left => match symbol {
                 BorderSymbol::StartCornerRegular => "+",
@@ -1276,9 +1257,22 @@ impl BorderSymbolSet for AsciiSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "+",
                 BorderSymbol::EndCornerProlonged(_, _) => "+",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "+",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "+",
             },
         }
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        _top: BorderType,
+        _right_side: Side,
+        _right: BorderType,
+        _bottom_side: Side,
+        _bottom: BorderType,
+        _left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
+        &"+"
     }
 }
 
@@ -1287,6 +1281,20 @@ pub struct StarSymbolSet;
 
 impl BorderSymbolSet for StarSymbolSet {
     fn symbol(&self, _side: Side, _symbol: BorderSymbol) -> &'static str {
+        &"*"
+    }
+
+    fn crossing(
+        &self,
+        _top_side: Side,
+        _top: BorderType,
+        _right_side: Side,
+        _right: BorderType,
+        _bottom_side: Side,
+        _bottom: BorderType,
+        _left_side: Side,
+        _left: BorderType,
+    ) -> &'static str {
         &"*"
     }
 }

@@ -19,19 +19,32 @@ pub enum Side {
     Right,
     /// Border along the left side.
     Left,
-    // /// General crossing of 4 lines.
-    // Cross,
 }
 
 /// Symbol set trait
 pub trait BorderSymbolSet {
     ///
-    /// Get the actual symbol.
+    /// Get the actual symbol occurring along one side of the area.
     ///
     /// side: Which side of the area.
     /// symbol: Symbol definition.
     ///
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str;
+
+    ///
+    /// Get the symbol for a general crossing of lines.
+    ///
+    fn crossing(
+        &self,
+        top_side: Side,
+        top: BorderType,
+        right_side: Side,
+        right: BorderType,
+        bottom_side: Side,
+        bottom: BorderType,
+        left_side: Side,
+        left: BorderType,
+    ) -> &'static str;
 }
 
 /// Symbol descriptor.
@@ -85,21 +98,14 @@ pub enum BorderSymbol {
     /// The first value is the border perpendicular to the line,
     /// the second goes in the direction of the line.
     EndCornerCrossed(Side, BorderType, Side, BorderType),
-
-    /// 4-way crossing of up to 4 different border types
-    /// along the side.
-    ///
-    /// Borders are (angled_outward, forward, angled_inward, backward).
-    Cross(
-        Side,
-        BorderType,
-        Side,
-        BorderType,
-        Side,
-        BorderType,
-        Side,
-        BorderType,
-    ),
+    //
+    // /// 4-way crossing of up to 4 different border types
+    // /// along the side.
+    // ///
+    // /// This is only defined for Side::Cross
+    // ///
+    // /// Borders are (angled_outward, forward, angled_inward, backward).
+    // Cross(BorderType, BorderType, BorderType, BorderType),
 }
 
 impl Side {
@@ -148,26 +154,6 @@ impl BorderSymbol {
             EndCornerCrossed(_, _, prolong_side, prolong_border) => {
                 EndCornerCrossed(side, border, prolong_side, prolong_border)
             }
-
-            Cross(
-                _,
-                _,
-                forward_side,
-                forward_border,
-                inward_side,
-                inward_border,
-                backward_side,
-                backward_border,
-            ) => Cross(
-                side,
-                border,
-                forward_side,
-                forward_border,
-                inward_side,
-                inward_border,
-                backward_side,
-                backward_border,
-            ),
         }
     }
 
@@ -196,26 +182,6 @@ impl BorderSymbol {
             EndCornerAngled(_, _) => *self,
             EndCornerProlonged(_, _) => *self,
             EndCornerCrossed(_, _, _, _) => *self,
-
-            Cross(
-                outward_side,
-                outward_border,
-                forward_side,
-                forward_border,
-                _,
-                _,
-                backward_side,
-                backward_border,
-            ) => Cross(
-                outward_side,
-                outward_border,
-                forward_side,
-                forward_border,
-                side,
-                border,
-                backward_side,
-                backward_border,
-            ),
         }
     }
 
@@ -239,17 +205,6 @@ impl BorderSymbol {
             EndCornerAngled(_, _) => *self,
             EndCornerProlonged(_, _) => *self,
             EndCornerCrossed(_, _, _, _) => *self,
-
-            Cross(outward_side, outward_border, _, _, inward_side, inward_border, _, _) => Cross(
-                outward_side,
-                outward_border,
-                side,
-                border,
-                inward_side,
-                inward_border,
-                side,
-                border,
-            ),
         }
     }
 
@@ -281,27 +236,6 @@ impl BorderSymbol {
             EndCornerCrossed(angle_side, angle_border, _, _) => {
                 EndCornerCrossed(angle_side, angle_border, side, border)
             }
-
-            // can't do anything with Cross, can't say which way is prolonged.
-            Cross(
-                outward_side,
-                outward_border,
-                forward_side,
-                forward_border,
-                inward_side,
-                inward_border,
-                backward_side,
-                backward_border,
-            ) => Cross(
-                outward_side,
-                outward_border,
-                forward_side,
-                forward_border,
-                inward_side,
-                inward_border,
-                backward_side,
-                backward_border,
-            ),
         }
     }
 }

@@ -5,9 +5,11 @@ use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Rect, Spacing};
 use ratatui::prelude::Widget;
 use ratatui::style::Styled;
+use ratatui::text::Line;
 use ratatui::widgets::BorderType;
 use ratatui::{crossterm, Frame};
 use ratatui_block::block_grid::BlockGrid;
+use ratatui_block::Side;
 
 mod mini_salsa;
 
@@ -20,6 +22,9 @@ fn main() -> Result<(), anyhow::Error> {
 
         border: BorderType::Plain,
         inner: BorderType::Plain,
+
+        hside: Side::Left,
+        vside: Side::Top,
 
         mono: false,
     };
@@ -40,6 +45,10 @@ struct State {
 
     border: BorderType,
     inner: BorderType,
+
+    hside: Side,
+    vside: Side,
+
     mono: bool,
 }
 
@@ -82,8 +91,9 @@ fn repaint_buttons(
 
     let mut gr = BlockGrid::new(state.area)
         .border_type(state.border)
-        .inner_border_type(state.inner);
-    // debug!("{:#?}", l_main);
+        .inner_border_type(state.inner)
+        .horizontal_side(state.hside)
+        .vertical_side(state.vside);
     for a in l_main {
         gr = gr.vertical(a[0].right() - state.area.left());
     }
@@ -105,9 +115,13 @@ fn repaint_buttons(
         .render(txt_area, buf);
     txt_area.y += 1;
 
-    format!("inner={:?}", state.inner).render(txt_area, buf);
+    Line::from(format!("inner={:?}", state.inner)).render(txt_area, buf);
     txt_area.y += 1;
-    format!("border={:?}", state.border).render(txt_area, buf);
+    Line::from(format!("border={:?}", state.border)).render(txt_area, buf);
+    txt_area.y += 1;
+    Line::from(format!("hside={:?}", state.hside)).render(txt_area, buf);
+    txt_area.y += 1;
+    Line::from(format!("vside={:?}", state.vside)).render(txt_area, buf);
     txt_area.y += 1;
 
     Ok(())
@@ -139,6 +153,24 @@ fn handle_buttons(
                 BorderType::Thick => BorderType::QuadrantInside,
                 BorderType::QuadrantInside => BorderType::QuadrantOutside,
                 BorderType::QuadrantOutside => BorderType::Plain,
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(3)) => {
+            state.hside = match state.hside {
+                Side::Top => Side::Right,
+                Side::Right => Side::Bottom,
+                Side::Bottom => Side::Left,
+                Side::Left => Side::Top,
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(4)) => {
+            state.vside = match state.vside {
+                Side::Top => Side::Right,
+                Side::Right => Side::Bottom,
+                Side::Bottom => Side::Left,
+                Side::Left => Side::Top,
             };
             Outcome::Changed
         }
