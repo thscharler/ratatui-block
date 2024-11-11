@@ -34,6 +34,9 @@ pub trait BorderSymbolSet {
     ///
     /// Get the symbol for a general crossing of lines.
     ///
+    /// The number of parameters comes from handling Quadrant crossings.
+    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside.png)
+    ///
     fn crossing(
         &self,
         top_side: Side,

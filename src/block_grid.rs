@@ -166,7 +166,7 @@ impl Widget for BlockGrid {
                         cell.set_style(self.inner_style);
                         cell.set_symbol(
                             self.inner_set
-                                .symbol(self.horizontal_side, BorderSymbol::SideRegular),
+                                .symbol(self.vertical_side, BorderSymbol::SideRegular),
                         );
                     }
                 }
@@ -179,7 +179,7 @@ impl Widget for BlockGrid {
                         cell.set_style(self.inner_style);
                         cell.set_symbol(
                             self.inner_set
-                                .symbol(self.vertical_side, BorderSymbol::SideRegular),
+                                .symbol(self.horizontal_side, BorderSymbol::SideRegular),
                         );
                     }
                 }
@@ -192,13 +192,13 @@ impl Widget for BlockGrid {
                         if let Some(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
                             cell.set_style(Style::new().red());
                             cell.set_symbol(self.inner_set.crossing(
-                                self.horizontal_side,
-                                self.inner_border_type,
                                 self.vertical_side,
                                 self.inner_border_type,
                                 self.horizontal_side,
                                 self.inner_border_type,
                                 self.vertical_side,
+                                self.inner_border_type,
+                                self.horizontal_side,
                                 self.inner_border_type,
                             ));
                         }

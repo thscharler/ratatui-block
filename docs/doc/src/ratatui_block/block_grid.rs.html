@@ -376,7 +376,7 @@
                         cell.set_style(<span class="self">self</span>.inner_style);
                         cell.set_symbol(
                             <span class="self">self</span>.inner_set
-                                .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
+                                .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
                         );
                     }
                 }
@@ -389,7 +389,7 @@
                         cell.set_style(<span class="self">self</span>.inner_style);
                         cell.set_symbol(
                             <span class="self">self</span>.inner_set
-                                .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
+                                .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
                         );
                     }
                 }
@@ -402,13 +402,13 @@
                         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
                             cell.set_style(Style::new().red());
                             cell.set_symbol(<span class="self">self</span>.inner_set.crossing(
-                                <span class="self">self</span>.horizontal_side,
-                                <span class="self">self</span>.inner_border_type,
                                 <span class="self">self</span>.vertical_side,
                                 <span class="self">self</span>.inner_border_type,
                                 <span class="self">self</span>.horizontal_side,
                                 <span class="self">self</span>.inner_border_type,
                                 <span class="self">self</span>.vertical_side,
+                                <span class="self">self</span>.inner_border_type,
+                                <span class="self">self</span>.horizontal_side,
                                 <span class="self">self</span>.inner_border_type,
                             ));
                         }
