@@ -2,24 +2,11 @@
 
 pub mod block_border;
 pub mod block_connect;
+pub mod block_grid;
 pub mod border_symbols;
 
 use ratatui::widgets::BorderType;
 use std::fmt::Debug;
-
-// #[derive(Debug, Clone)]
-// pub struct BlockGrid {
-//     pub border_style: Style,
-//     pub border: BorderType,
-//
-//     pub top: Vec<BorderSymbol>,
-//     pub bottom: Vec<BorderSymbol>,
-//     pub left: Vec<BorderSymbol>,
-//     pub right: Vec<BorderSymbol>,
-//     pub inner_vertical: Vec<BorderSymbol>,
-//     pub inner_horizontal: Vec<BorderSymbol>,
-// }
-//
 
 /// Names for the sides of an area.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -32,10 +19,18 @@ pub enum Side {
     Right,
     /// Border along the left side.
     Left,
+    // /// General crossing of 4 lines.
+    // Cross,
 }
 
 /// Symbol set trait
 pub trait BorderSymbolSet {
+    ///
+    /// Get the actual symbol.
+    ///
+    /// side: Which side of the area.
+    /// symbol: Symbol definition.
+    ///
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str;
 }
 

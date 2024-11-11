@@ -1,6 +1,9 @@
+use crate::Side::{Bottom, Left, Right, Top};
 use crate::{BorderSymbol, BorderSymbolSet, Side};
+use log::debug;
 use ratatui::symbols::border;
 use ratatui::widgets::BorderType;
+use ratatui::widgets::BorderType::{QuadrantInside, QuadrantOutside};
 use std::rc::Rc;
 
 ///
@@ -889,6 +892,11 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(Left, QuadrantInside, Bottom, QuadrantInside) => "▞",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▖",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▙",
+
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Bottom => match symbol {
@@ -971,7 +979,11 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 }
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▚",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▛",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▀",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
+                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Right => match symbol {
                 BorderSymbol::StartCornerRegular => "▖",
@@ -1014,6 +1026,10 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, QuadrantOutside, _, QuadrantOutside) => "▛",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▚",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▛",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▌",
             },
             Left => match symbol {
@@ -1057,6 +1073,10 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
                 BorderSymbol::EndCornerCrossed(_, QuadrantOutside, _, QuadrantOutside) => "▜",
                 BorderSymbol::EndCornerCrossed(_, QuadrantInside, _, QuadrantInside) => "▞",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▟",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▙",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▛",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
         }
@@ -1069,8 +1089,9 @@ pub struct QuadrantOutsideSymbolSet;
 impl BorderSymbolSet for QuadrantOutsideSymbolSet {
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
+        use BorderType::*;
 
-        match side {
+        let fff = match side {
             Top => match symbol {
                 BorderSymbol::StartCornerRegular => "▛",
                 BorderSymbol::StartCornerAngled(_, _) => "▛",
@@ -1079,8 +1100,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::SideRegular => "▀",
                 BorderSymbol::SideOverlap(_, _) => "▀",
                 BorderSymbol::SideOutward(_, _) => "▀",
-                BorderSymbol::SideInward(Left, _) => "▛",
-                BorderSymbol::SideInward(Right, _) => "▜",
+                BorderSymbol::SideInward(Left, QuadrantOutside) => "▛",
+                BorderSymbol::SideInward(Right, QuadrantOutside) => "▜",
+                BorderSymbol::SideInward(Left, _) => "▜",
+                BorderSymbol::SideInward(Right, _) => "▛",
                 BorderSymbol::SideInward(_, _) => "▀",
                 BorderSymbol::SideCrossed(Left, _, _, _) => "▛",
                 BorderSymbol::SideCrossed(Right, _, _, _) => "▜",
@@ -1089,6 +1112,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▜",
                 BorderSymbol::EndCornerProlonged(_, _) => "▜",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▀",
             },
             Bottom => match symbol {
@@ -1101,8 +1128,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::SideOutward(Left, _) => "▄",
                 BorderSymbol::SideOutward(Right, _) => "▄",
                 BorderSymbol::SideOutward(_, _) => "▄",
-                BorderSymbol::SideInward(Left, _) => "▙",
-                BorderSymbol::SideInward(Right, _) => "▟",
+                BorderSymbol::SideInward(Left, QuadrantOutside) => "▙",
+                BorderSymbol::SideInward(Right, QuadrantOutside) => "▟",
+                BorderSymbol::SideInward(Left, _) => "▟",
+                BorderSymbol::SideInward(Right, _) => "▙",
                 BorderSymbol::SideInward(_, _) => "▄",
                 BorderSymbol::SideCrossed(Left, _, _, _) => "▙",
                 BorderSymbol::SideCrossed(Right, _, _, _) => "▟",
@@ -1111,6 +1140,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▟",
                 BorderSymbol::EndCornerProlonged(_, _) => "▟",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▟",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▄",
             },
             Right => match symbol {
@@ -1121,8 +1154,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::SideRegular => "▐",
                 BorderSymbol::SideOverlap(_, _) => "▐",
                 BorderSymbol::SideOutward(_, _) => "▐",
-                BorderSymbol::SideInward(Top, _) => "▜",
-                BorderSymbol::SideInward(Bottom, _) => "▟",
+                BorderSymbol::SideInward(Top, QuadrantOutside) => "▜",
+                BorderSymbol::SideInward(Bottom, QuadrantOutside) => "▟",
+                BorderSymbol::SideInward(Top, _) => "▟",
+                BorderSymbol::SideInward(Bottom, _) => "▜",
                 BorderSymbol::SideInward(_, _) => "▐",
                 BorderSymbol::SideCrossed(Top, _, _, _) => "▜",
                 BorderSymbol::SideCrossed(Bottom, _, _, _) => "▟",
@@ -1131,6 +1166,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▜",
                 BorderSymbol::EndCornerProlonged(_, _) => "▜",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▜",
+                BorderSymbol::Cross(Left, _, Top, _, _, _, _, _) => "▛",
+                BorderSymbol::Cross(Left, _, Bottom, _, _, _, _, _) => "▙",
+                BorderSymbol::Cross(Right, _, Top, _, _, _, _, _) => "▜",
+                BorderSymbol::Cross(Right, _, Bottom, _, _, _, _, _) => "▟",
                 BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
             Left => match symbol {
@@ -1141,8 +1180,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::SideRegular => "▌",
                 BorderSymbol::SideOverlap(_, _) => "▌",
                 BorderSymbol::SideOutward(_, _) => "▌",
-                BorderSymbol::SideInward(Top, _) => "▛",
-                BorderSymbol::SideInward(Bottom, _) => "▙",
+                BorderSymbol::SideInward(Top, QuadrantOutside) => "▛",
+                BorderSymbol::SideInward(Bottom, QuadrantOutside) => "▙",
+                BorderSymbol::SideInward(Top, _) => "▙",
+                BorderSymbol::SideInward(Bottom, _) => "▛",
                 BorderSymbol::SideInward(_, _) => "▌",
                 BorderSymbol::SideCrossed(Top, _, _, _) => "▛",
                 BorderSymbol::SideCrossed(Bottom, _, _, _) => "▙",
@@ -1151,9 +1192,17 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
                 BorderSymbol::EndCornerAngled(_, _) => "▙",
                 BorderSymbol::EndCornerProlonged(_, _) => "▙",
                 BorderSymbol::EndCornerCrossed(_, _, _, _) => "▙",
-                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▌",
+                BorderSymbol::Cross(_, _, Left, _, Top, _, _, _) => "▛",
+                BorderSymbol::Cross(_, _, Left, _, Bottom, _, _, _) => "▙",
+                BorderSymbol::Cross(_, _, Right, _, Top, _, _, _) => "▜",
+                BorderSymbol::Cross(_, _, Right, _, Bottom, _, _, _) => "▟",
+                BorderSymbol::Cross(_, _, _, _, _, _, _, _) => "▐",
             },
-        }
+        };
+
+        debug!("{:?} {:?} => {:?}", side, symbol, fff);
+
+        fff
     }
 }
 
