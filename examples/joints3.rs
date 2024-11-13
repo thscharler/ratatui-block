@@ -184,7 +184,7 @@ fn repaint_buttons(
     }
 
     let mut bb = BlockBorder::from_layout(areas.as_slice(), borders.as_slice(), areas.len() - 1);
-    bb = bb.border_set(Rc::new(AsciiSymbolSet));
+    // bb = bb.border_set(Rc::new(AsciiSymbolSet));
     if !state.mono {
         bb = bb.border_style(Style::new().fg(THEME.orange[3]));
     }

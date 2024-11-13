@@ -121,8 +121,7 @@ fn repaint_buttons(
         | (Side::Top, BorderSymbol::SideOverlap(_, _))
         | (Side::Top, BorderSymbol::SideOutward(_, _))
         | (Side::Top, BorderSymbol::SideInward(_, _))
-        | (Side::Top, BorderSymbol::SideCrossed(_, _, _, _))
-        | (Side::Top, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+        | (Side::Top, BorderSymbol::SideCrossed(_, _, _, _)) => {
             b_area.x = l_main[1][1].x + l_main[1][1].width / 2;
             b_area.y = l_main[1][1].y;
         }
@@ -145,8 +144,7 @@ fn repaint_buttons(
         | (Side::Bottom, BorderSymbol::SideOverlap(_, _))
         | (Side::Bottom, BorderSymbol::SideOutward(_, _))
         | (Side::Bottom, BorderSymbol::SideInward(_, _))
-        | (Side::Bottom, BorderSymbol::SideCrossed(_, _, _, _))
-        | (Side::Bottom, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+        | (Side::Bottom, BorderSymbol::SideCrossed(_, _, _, _)) => {
             b_area.x = l_main[1][1].x + l_main[1][1].width / 2;
             b_area.y = l_main[1][1].y + l_main[1][1].height.saturating_sub(1);
         }
@@ -169,8 +167,7 @@ fn repaint_buttons(
         | (Side::Right, BorderSymbol::SideOverlap(_, _))
         | (Side::Right, BorderSymbol::SideOutward(_, _))
         | (Side::Right, BorderSymbol::SideInward(_, _))
-        | (Side::Right, BorderSymbol::SideCrossed(_, _, _, _))
-        | (Side::Right, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+        | (Side::Right, BorderSymbol::SideCrossed(_, _, _, _)) => {
             b_area.x = l_main[1][1].x + l_main[1][1].width.saturating_sub(1);
             b_area.y = l_main[1][1].y + l_main[1][1].height / 2;
         }
@@ -193,8 +190,7 @@ fn repaint_buttons(
         | (Side::Left, BorderSymbol::SideOverlap(_, _))
         | (Side::Left, BorderSymbol::SideOutward(_, _))
         | (Side::Left, BorderSymbol::SideInward(_, _))
-        | (Side::Left, BorderSymbol::SideCrossed(_, _, _, _))
-        | (Side::Left, BorderSymbol::Cross(_, _, _, _, _, _, _, _)) => {
+        | (Side::Left, BorderSymbol::SideCrossed(_, _, _, _)) => {
             b_area.x = l_main[1][1].x;
             b_area.y = l_main[1][1].y + l_main[1][1].height / 2;
         }
@@ -423,167 +419,7 @@ fn handle_buttons(
                 SideCrossed(Left, _, Bottom, _) => {
                     SideCrossed(Left, state.angled(), Left, state.angled())
                 }
-                SideCrossed(Left, _, Left, _) => Cross {
-                    0: Top,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Top,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Top, _, _, _, Top, _, _, _) => Cross {
-                    0: Top,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Right,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Top, _, _, _, Right, _, _, _) => Cross {
-                    0: Top,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Bottom,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Top, _, _, _, Bottom, _, _, _) => Cross {
-                    0: Top,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Left,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Top, _, _, _, Left, _, _, _) => Cross {
-                    0: Right,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Top,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Right, _, _, _, Top, _, _, _) => Cross {
-                    0: Right,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Right,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Right, _, _, _, Right, _, _, _) => Cross {
-                    0: Right,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Bottom,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Right, _, _, _, Bottom, _, _, _) => Cross {
-                    0: Right,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Left,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Right, _, _, _, Left, _, _, _) => Cross {
-                    0: Bottom,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Top,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Bottom, _, _, _, Top, _, _, _) => Cross {
-                    0: Bottom,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Right,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Bottom, _, _, _, Right, _, _, _) => Cross {
-                    0: Bottom,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Bottom,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Bottom, _, _, _, Bottom, _, _, _) => Cross {
-                    0: Bottom,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Left,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Bottom, _, _, _, Left, _, _, _) => Cross {
-                    0: Left,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Top,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Left, _, _, _, Top, _, _, _) => Cross {
-                    0: Left,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Right,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Left, _, _, _, Right, _, _, _) => Cross {
-                    0: Left,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Bottom,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Left, _, _, _, Bottom, _, _, _) => Cross {
-                    0: Left,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Left,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
-                Cross(Left, _, _, _, Left, _, _, _) => EndCornerRegular,
+                SideCrossed(Left, _, Left, _) => EndCornerRegular,
                 EndCornerRegular => EndCornerAngled(Top, state.angled()),
                 EndCornerAngled(Top, _) => EndCornerAngled(Right, state.angled()),
                 EndCornerAngled(Right, _) => EndCornerAngled(Bottom, state.angled()),
@@ -673,19 +509,7 @@ fn handle_buttons(
                 SideOutward(_, _) => SideOverlap(Top, state.angled()),
                 SideInward(_, _) => SideOutward(Top, state.angled()),
                 SideCrossed(_, _, _, _) => SideInward(Top.opposite(), state.angled()),
-                Cross(_, _, _, _, _, _, _, _) => {
-                    SideCrossed(Top, state.angled(), Top, state.angled())
-                }
-                EndCornerRegular => Cross {
-                    0: Top,
-                    1: state.angled(),
-                    2: state.b_side.opposite(),
-                    3: state.prolonged(),
-                    4: Top,
-                    5: state.angled(),
-                    6: state.b_side.opposite(),
-                    7: state.prolonged(),
-                },
+                EndCornerRegular => SideCrossed(Top, state.angled(), Top, state.angled()),
                 EndCornerAngled(_, _) => EndCornerRegular,
                 EndCornerProlonged(_, _) => EndCornerAngled(Top, state.angled()),
                 EndCornerCrossed(_, _, _, _) => EndCornerProlonged(Top, state.prolonged()),
