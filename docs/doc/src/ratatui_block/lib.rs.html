@@ -254,6 +254,9 @@
 <a href="#254" id="254">254</a>
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Block borders.
 
 </span><span class="kw">pub mod </span>block_border;
@@ -291,7 +294,7 @@
     /// Get the symbol for a general crossing of lines.
     ///
     /// The number of parameters comes from handling Quadrant crossings.
-    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside.png)
+    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/quadrant_inside.png)
     ///
     /// __Remark__
     /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.
@@ -316,20 +319,23 @@
 ///
 /// Schematics for the connection.
 ///
-/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_1.png)
+/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_1.png)
 ///
 /// Which side of the other area is connected may also influence
 /// the actual glyph.
 ///
-/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_2.png)
+/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_2.png)
 ///
 /// Construction for PlainBorderSet
 ///
-/// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/plain_symbol_set.png)
+/// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/plain_symbol_set.png)
 ///
 /// Construction for QuadrantInsideBorderSet
 ///
-/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside_symbol_set.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_start.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_end.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_outside_start.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_outside_end.png)
 ///
 ///
 ///
