@@ -37,6 +37,9 @@ pub trait BorderSymbolSet {
     /// The number of parameters comes from handling Quadrant crossings.
     /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside.png)
     ///
+    /// __Remark__
+    /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.
+    ///
     fn crossing(
         &self,
         top_side: Side,
@@ -63,6 +66,15 @@ pub trait BorderSymbolSet {
 /// the actual glyph.
 ///
 /// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_2.png)
+///
+/// Construction for PlainBorderSet
+///
+/// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/plain_symbol_set.png)
+///
+/// Construction for QuadrantInsideBorderSet
+///
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside_symbol_set.png)
+///
 ///
 ///
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

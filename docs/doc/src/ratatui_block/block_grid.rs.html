@@ -208,6 +208,26 @@
 <a href="#208" id="208">208</a>
 <a href="#209" id="209">209</a>
 <a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_border::BlockBorder;
 <span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
@@ -222,14 +242,16 @@
 <span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>BlockGrid {
     block: BlockBorder,
+    outer_border_type: BorderType,
 
     inner_style: Style,
-    outer_border_type: BorderType,
-    inner_border_type: BorderType,
-    inner_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
     horizontal_side: Side,
+    horizontal_border: BorderType,
+    horizontal_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
     vertical_side: Side,
+    vertical_border: BorderType,
+    vertical_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
     vertical: Vec&lt;u16&gt;,
     horizontal: Vec&lt;u16&gt;,
@@ -241,11 +263,11 @@
             .field(<span class="string">"block"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.block)
             .field(<span class="string">"inner_style"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner_style)
             .field(<span class="string">"outer_border_type"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.outer_border_type)
-            .field(<span class="string">"inner_border_type"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner_border_type)
             .field(<span class="string">"inner_set"</span>, <span class="kw-2">&amp;</span><span class="string">"..dyn.."</span>)
             .field(<span class="string">"vertical"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.vertical)
             .field(<span class="string">"horizontal"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.horizontal)
-            .finish()
+            <span class="comment">// todo:
+            </span>.finish()
     }
 }
 
@@ -255,10 +277,12 @@
             block: BlockBorder::new(area),
             inner_style: Default::default(),
             outer_border_type: Default::default(),
-            inner_border_type: Default::default(),
-            inner_set: Rc::new(PlainSymbolSet),
             horizontal_side: Side::Left,
+            horizontal_border: Default::default(),
+            horizontal_set: Rc::new(PlainSymbolSet),
             vertical_side: Side::Top,
+            vertical_border: Default::default(),
+            vertical_set: Rc::new(PlainSymbolSet),
             vertical: <span class="macro">vec!</span>[],
             horizontal: <span class="macro">vec!</span>[],
         }
@@ -300,17 +324,34 @@
     <span class="doccomment">///
     /// Sets the border type used.
     ///
-    </span><span class="kw">pub fn </span>inner_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.inner_border_type = border;
-        <span class="self">self</span>.inner_set = symbol_set(border);
+    </span><span class="kw">pub fn </span>horizontal_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.horizontal_border = border;
+        <span class="self">self</span>.horizontal_set = symbol_set(border);
         <span class="self">self
     </span>}
 
     <span class="doccomment">///
     /// Use a BorderSymbolSet.
     ///
-    </span><span class="kw">pub fn </span>inner_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.inner_set = border_set;
+    </span><span class="kw">pub fn </span>horizontal_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.horizontal_set = border_set;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">///
+    /// Sets the border type used.
+    ///
+    </span><span class="kw">pub fn </span>vertical_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_border = border;
+        <span class="self">self</span>.vertical_set = symbol_set(border);
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">///
+    /// Use a BorderSymbolSet.
+    ///
+    </span><span class="kw">pub fn </span>vertical_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_set = border_set;
         <span class="self">self
     </span>}
 
@@ -344,17 +385,17 @@
         <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
             <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; <span class="self">self</span>.block.get_area().width.saturating_sub(<span class="number">2</span>) {
                 <span class="self">self</span>.block.top_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.inner_border_type);
+                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
                 <span class="self">self</span>.block.bottom_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.inner_border_type);
+                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
             }
         }
         <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
             <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; <span class="self">self</span>.block.get_area().height.saturating_sub(<span class="number">2</span>) {
                 <span class="self">self</span>.block.left_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.inner_border_type);
+                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
                 <span class="self">self</span>.block.right_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.inner_border_type);
+                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
             }
         }
     }
@@ -375,7 +416,7 @@
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
                         cell.set_style(<span class="self">self</span>.inner_style);
                         cell.set_symbol(
-                            <span class="self">self</span>.inner_set
+                            <span class="self">self</span>.vertical_set
                                 .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
                         );
                     }
@@ -388,7 +429,7 @@
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
                         cell.set_style(<span class="self">self</span>.inner_style);
                         cell.set_symbol(
-                            <span class="self">self</span>.inner_set
+                            <span class="self">self</span>.horizontal_set
                                 .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
                         );
                     }
@@ -401,15 +442,14 @@
                     <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {
                         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
                             cell.set_style(Style::new().red());
-                            cell.set_symbol(<span class="self">self</span>.inner_set.crossing(
-                                <span class="self">self</span>.vertical_side,
-                                <span class="self">self</span>.inner_border_type,
+                            cell.set_symbol(<span class="self">self</span>.horizontal_set.symbol(
                                 <span class="self">self</span>.horizontal_side,
-                                <span class="self">self</span>.inner_border_type,
-                                <span class="self">self</span>.vertical_side,
-                                <span class="self">self</span>.inner_border_type,
-                                <span class="self">self</span>.horizontal_side,
-                                <span class="self">self</span>.inner_border_type,
+                                BorderSymbol::SideCrossed(
+                                    <span class="self">self</span>.vertical_side,
+                                    <span class="self">self</span>.vertical_border,
+                                    <span class="self">self</span>.vertical_side,
+                                    <span class="self">self</span>.vertical_border,
+                                ),
                             ));
                         }
                     }

@@ -1,6 +1,5 @@
 use crate::mini_salsa::theme::THEME;
 use crate::mini_salsa::{layout_grid, run_ui, setup_logging, MiniSalsaState};
-use log::debug;
 use rat_event::{ct_event, Outcome};
 use ratatui::layout::{Constraint, Layout, Rect, Spacing};
 use ratatui::prelude::Widget;
@@ -21,11 +20,12 @@ fn main() -> Result<(), anyhow::Error> {
         area: Default::default(),
 
         border: BorderType::Plain,
-        inner: BorderType::Plain,
 
         hside: Side::Left,
+        hborder: BorderType::Plain,
         vside: Side::Top,
 
+        vborder: BorderType::Plain,
         mono: false,
     };
 
@@ -44,10 +44,11 @@ struct State {
     area: Rect,
 
     border: BorderType,
-    inner: BorderType,
 
     hside: Side,
+    hborder: BorderType,
     vside: Side,
+    vborder: BorderType,
 
     mono: bool,
 }
@@ -91,8 +92,9 @@ fn repaint_buttons(
 
     let mut gr = BlockGrid::new(state.area)
         .border_type(state.border)
-        .inner_border_type(state.inner)
+        .horizontal_border_type(state.hborder)
         .horizontal_side(state.hside)
+        .vertical_border_type(state.vborder)
         .vertical_side(state.vside);
     for a in l_main {
         gr = gr.vertical(a[0].right() - state.area.left());
@@ -110,12 +112,26 @@ fn repaint_buttons(
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
-    "F2: inner border"
+    "F3: horizontal border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F4: vertical border"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F5: horizontal side"
+        .set_style(THEME.secondary_text())
+        .render(txt_area, buf);
+    txt_area.y += 1;
+    "F6: vertical side"
         .set_style(THEME.secondary_text())
         .render(txt_area, buf);
     txt_area.y += 1;
 
-    Line::from(format!("inner={:?}", state.inner)).render(txt_area, buf);
+    Line::from(format!("hborder={:?}", state.hborder)).render(txt_area, buf);
+    txt_area.y += 1;
+    Line::from(format!("vborder={:?}", state.vborder)).render(txt_area, buf);
     txt_area.y += 1;
     Line::from(format!("border={:?}", state.border)).render(txt_area, buf);
     txt_area.y += 1;
@@ -145,8 +161,8 @@ fn handle_buttons(
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(2)) => {
-            state.inner = match state.inner {
+        ct_event!(keycode press F(3)) => {
+            state.hborder = match state.hborder {
                 BorderType::Plain => BorderType::Rounded,
                 BorderType::Rounded => BorderType::Double,
                 BorderType::Double => BorderType::Thick,
@@ -156,7 +172,18 @@ fn handle_buttons(
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(3)) => {
+        ct_event!(keycode press F(4)) => {
+            state.vborder = match state.vborder {
+                BorderType::Plain => BorderType::Rounded,
+                BorderType::Rounded => BorderType::Double,
+                BorderType::Double => BorderType::Thick,
+                BorderType::Thick => BorderType::QuadrantInside,
+                BorderType::QuadrantInside => BorderType::QuadrantOutside,
+                BorderType::QuadrantOutside => BorderType::Plain,
+            };
+            Outcome::Changed
+        }
+        ct_event!(keycode press F(5)) => {
             state.hside = match state.hside {
                 Side::Top => Side::Right,
                 Side::Right => Side::Bottom,
@@ -165,7 +192,7 @@ fn handle_buttons(
             };
             Outcome::Changed
         }
-        ct_event!(keycode press F(4)) => {
+        ct_event!(keycode press F(6)) => {
             state.vside = match state.vside {
                 Side::Top => Side::Right,
                 Side::Right => Side::Bottom,

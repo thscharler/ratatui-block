@@ -12,14 +12,16 @@ use std::rc::Rc;
 #[derive(Clone)]
 pub struct BlockGrid {
     block: BlockBorder,
+    outer_border_type: BorderType,
 
     inner_style: Style,
-    outer_border_type: BorderType,
-    inner_border_type: BorderType,
-    inner_set: Rc<dyn BorderSymbolSet>,
 
     horizontal_side: Side,
+    horizontal_border: BorderType,
+    horizontal_set: Rc<dyn BorderSymbolSet>,
     vertical_side: Side,
+    vertical_border: BorderType,
+    vertical_set: Rc<dyn BorderSymbolSet>,
 
     vertical: Vec<u16>,
     horizontal: Vec<u16>,
@@ -31,10 +33,10 @@ impl Debug for BlockGrid {
             .field("block", &self.block)
             .field("inner_style", &self.inner_style)
             .field("outer_border_type", &self.outer_border_type)
-            .field("inner_border_type", &self.inner_border_type)
             .field("inner_set", &"..dyn..")
             .field("vertical", &self.vertical)
             .field("horizontal", &self.horizontal)
+            // todo:
             .finish()
     }
 }
@@ -45,10 +47,12 @@ impl BlockGrid {
             block: BlockBorder::new(area),
             inner_style: Default::default(),
             outer_border_type: Default::default(),
-            inner_border_type: Default::default(),
-            inner_set: Rc::new(PlainSymbolSet),
             horizontal_side: Side::Left,
+            horizontal_border: Default::default(),
+            horizontal_set: Rc::new(PlainSymbolSet),
             vertical_side: Side::Top,
+            vertical_border: Default::default(),
+            vertical_set: Rc::new(PlainSymbolSet),
             vertical: vec![],
             horizontal: vec![],
         }
@@ -90,17 +94,34 @@ impl BlockGrid {
     ///
     /// Sets the border type used.
     ///
-    pub fn inner_border_type(mut self, border: BorderType) -> Self {
-        self.inner_border_type = border;
-        self.inner_set = symbol_set(border);
+    pub fn horizontal_border_type(mut self, border: BorderType) -> Self {
+        self.horizontal_border = border;
+        self.horizontal_set = symbol_set(border);
         self
     }
 
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn inner_border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
-        self.inner_set = border_set;
+    pub fn horizontal_border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+        self.horizontal_set = border_set;
+        self
+    }
+
+    ///
+    /// Sets the border type used.
+    ///
+    pub fn vertical_border_type(mut self, border: BorderType) -> Self {
+        self.vertical_border = border;
+        self.vertical_set = symbol_set(border);
+        self
+    }
+
+    ///
+    /// Use a BorderSymbolSet.
+    ///
+    pub fn vertical_border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+        self.vertical_set = border_set;
         self
     }
 
@@ -134,17 +155,17 @@ impl BlockGrid {
         for p in self.vertical.iter().copied() {
             if p > 0 && p < self.block.get_area().width.saturating_sub(2) {
                 self.block.top_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(self.vertical_side, self.inner_border_type);
+                    BorderSymbol::SideInward(self.vertical_side, self.vertical_border);
                 self.block.bottom_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(self.vertical_side, self.inner_border_type);
+                    BorderSymbol::SideInward(self.vertical_side, self.vertical_border);
             }
         }
         for p in self.horizontal.iter().copied() {
             if p > 0 && p < self.block.get_area().height.saturating_sub(2) {
                 self.block.left_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(self.horizontal_side, self.inner_border_type);
+                    BorderSymbol::SideInward(self.horizontal_side, self.horizontal_border);
                 self.block.right_mut()[p as usize - 1] =
-                    BorderSymbol::SideInward(self.horizontal_side, self.inner_border_type);
+                    BorderSymbol::SideInward(self.horizontal_side, self.horizontal_border);
             }
         }
     }
@@ -165,7 +186,7 @@ impl Widget for BlockGrid {
                     if let Some(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
                         cell.set_style(self.inner_style);
                         cell.set_symbol(
-                            self.inner_set
+                            self.vertical_set
                                 .symbol(self.vertical_side, BorderSymbol::SideRegular),
                         );
                     }
@@ -178,7 +199,7 @@ impl Widget for BlockGrid {
                     if let Some(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
                         cell.set_style(self.inner_style);
                         cell.set_symbol(
-                            self.inner_set
+                            self.horizontal_set
                                 .symbol(self.horizontal_side, BorderSymbol::SideRegular),
                         );
                     }
@@ -191,15 +212,14 @@ impl Widget for BlockGrid {
                     if y > 0 && y < area.height.saturating_sub(2) {
                         if let Some(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
                             cell.set_style(Style::new().red());
-                            cell.set_symbol(self.inner_set.crossing(
-                                self.vertical_side,
-                                self.inner_border_type,
+                            cell.set_symbol(self.horizontal_set.symbol(
                                 self.horizontal_side,
-                                self.inner_border_type,
-                                self.vertical_side,
-                                self.inner_border_type,
-                                self.horizontal_side,
-                                self.inner_border_type,
+                                BorderSymbol::SideCrossed(
+                                    self.vertical_side,
+                                    self.vertical_border,
+                                    self.vertical_side,
+                                    self.vertical_border,
+                                ),
                             ));
                         }
                     }
