@@ -35,7 +35,7 @@ pub trait BorderSymbolSet {
     /// Get the symbol for a general crossing of lines.
     ///
     /// The number of parameters comes from handling Quadrant crossings.
-    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside.png)
+    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/quadrant_inside.png)
     ///
     /// __Remark__
     /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.
@@ -60,20 +60,23 @@ pub trait BorderSymbolSet {
 ///
 /// Schematics for the connection.
 ///
-/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_1.png)
+/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_1.png)
 ///
 /// Which side of the other area is connected may also influence
 /// the actual glyph.
 ///
-/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/border_symbol_2.png)
+/// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_2.png)
 ///
 /// Construction for PlainBorderSet
 ///
-/// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/plain_symbol_set.png)
+/// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/plain_symbol_set.png)
 ///
 /// Construction for QuadrantInsideBorderSet
 ///
-/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/quadrant_inside_symbol_set.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_start.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_end.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_outside_start.png)
+/// ![quadrant_inside_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/q_inside_outside_end.png)
 ///
 ///
 ///
