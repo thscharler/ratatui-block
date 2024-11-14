@@ -32,7 +32,7 @@ pub trait BorderSymbolSet {
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str;
 
     ///
-    /// Get the symbol for a general crossing of lines.
+    /// Get the symbol for a 4-way crossing of lines.
     ///
     /// The number of parameters comes from handling Quadrant crossings.
     /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/quadrant_inside.png)
@@ -67,7 +67,8 @@ pub trait BorderSymbolSet {
 ///
 /// ![connection sides](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_2.png)
 ///
-/// Construction for PlainBorderSet
+/// Construction for PlainBorderSet. Note that some of the glyphs do not
+/// exist in unicode and are replaced with single line versions.
 ///
 /// ![plain_border_set](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/plain_symbol_set.png)
 ///

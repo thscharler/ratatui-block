@@ -228,10 +228,19 @@
 <a href="#228" id="228">228</a>
 <a href="#229" id="229">229</a>
 <a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_border::BlockBorder;
 <span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
-<span class="kw">use </span>log::debug;
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::style::{Style, Stylize};
@@ -274,7 +283,7 @@
 <span class="kw">impl </span>BlockGrid {
     <span class="kw">pub fn </span>new(area: Rect) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            block: BlockBorder::new(area),
+            block: BlockBorder::from_area(area),
             inner_style: Default::default(),
             outer_border_type: Default::default(),
             horizontal_side: Side::Left,
@@ -288,7 +297,9 @@
         }
     }
 
-    <span class="doccomment">///
+    <span class="comment">// TODO: from_layout()
+
+    </span><span class="doccomment">///
     /// Border style for the border.
     ///
     </span><span class="kw">pub fn </span>border_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
@@ -382,19 +393,24 @@
 
 <span class="kw">impl </span>BlockGrid {
     <span class="kw">fn </span>layout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>border = <span class="self">self</span>.block.prefab.as_mut().expect(<span class="string">"border"</span>);
+        <span class="kw">let </span>width = border.width();
+        <span class="kw">let </span>height = border.height();
+        <span class="kw">let </span>(<span class="kw">_</span>, top, <span class="kw">_</span>, right, <span class="kw">_</span>, bottom, <span class="kw">_</span>, left) = border.split_mut();
+
         <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
-            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; <span class="self">self</span>.block.get_area().width.saturating_sub(<span class="number">2</span>) {
-                <span class="self">self</span>.block.top_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
+            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; width.saturating_sub(<span class="number">2</span>) {
+                top[p <span class="kw">as </span>usize - <span class="number">1</span>] =
                     BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
-                <span class="self">self</span>.block.bottom_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
+                bottom[p <span class="kw">as </span>usize - <span class="number">1</span>] =
                     BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
             }
         }
         <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
-            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; <span class="self">self</span>.block.get_area().height.saturating_sub(<span class="number">2</span>) {
-                <span class="self">self</span>.block.left_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
+            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; height.saturating_sub(<span class="number">2</span>) {
+                left[p <span class="kw">as </span>usize - <span class="number">1</span>] =
                     BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
-                <span class="self">self</span>.block.right_mut()[p <span class="kw">as </span>usize - <span class="number">1</span>] =
+                right[p <span class="kw">as </span>usize - <span class="number">1</span>] =
                     BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
             }
         }
@@ -408,9 +424,11 @@
     {
         <span class="self">self</span>.layout();
 
-        <span class="self">self</span>.block.render(area, buf);
+        <span class="comment">// render the block and all connections.
+        </span><span class="self">self</span>.block.render(area, buf);
 
-        <span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
+        <span class="comment">// render vertical
+        </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
             <span class="kw">if </span>x &gt; <span class="number">0 </span>&amp;&amp; x &lt; area.width.saturating_sub(<span class="number">2</span>) {
                 <span class="kw">for </span>y <span class="kw">in </span>area.y + <span class="number">1</span>..area.y + area.height.saturating_sub(<span class="number">1</span>) {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
@@ -423,7 +441,8 @@
                 }
             }
         }
-        <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
+        <span class="comment">// render horizontal
+        </span><span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
             <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {
                 <span class="kw">for </span>x <span class="kw">in </span>area.x + <span class="number">1</span>..area.x + area.width.saturating_sub(<span class="number">1</span>) {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
@@ -436,7 +455,8 @@
                 }
             }
         }
-        <span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
+        <span class="comment">// render crossings
+        </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
             <span class="kw">if </span>x &gt; <span class="number">0 </span>&amp;&amp; x &lt; area.width.saturating_sub(<span class="number">2</span>) {
                 <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
                     <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {

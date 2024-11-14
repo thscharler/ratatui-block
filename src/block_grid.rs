@@ -1,7 +1,6 @@
 use crate::block_border::BlockBorder;
 use crate::border_symbols::{symbol_set, PlainSymbolSet};
 use crate::{BorderSymbol, BorderSymbolSet, Side};
-use log::debug;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::style::{Style, Stylize};
@@ -44,7 +43,7 @@ impl Debug for BlockGrid {
 impl BlockGrid {
     pub fn new(area: Rect) -> Self {
         Self {
-            block: BlockBorder::new(area),
+            block: BlockBorder::from_area(area),
             inner_style: Default::default(),
             outer_border_type: Default::default(),
             horizontal_side: Side::Left,
@@ -57,6 +56,8 @@ impl BlockGrid {
             horizontal: vec![],
         }
     }
+
+    // TODO: from_layout()
 
     ///
     /// Border style for the border.
@@ -152,19 +153,24 @@ impl BlockGrid {
 
 impl BlockGrid {
     fn layout(&mut self) {
+        let border = self.block.prefab.as_mut().expect("border");
+        let width = border.width();
+        let height = border.height();
+        let (_, top, _, right, _, bottom, _, left) = border.split_mut();
+
         for p in self.vertical.iter().copied() {
-            if p > 0 && p < self.block.get_area().width.saturating_sub(2) {
-                self.block.top_mut()[p as usize - 1] =
+            if p > 0 && p < width.saturating_sub(2) {
+                top[p as usize - 1] =
                     BorderSymbol::SideInward(self.vertical_side, self.vertical_border);
-                self.block.bottom_mut()[p as usize - 1] =
+                bottom[p as usize - 1] =
                     BorderSymbol::SideInward(self.vertical_side, self.vertical_border);
             }
         }
         for p in self.horizontal.iter().copied() {
-            if p > 0 && p < self.block.get_area().height.saturating_sub(2) {
-                self.block.left_mut()[p as usize - 1] =
+            if p > 0 && p < height.saturating_sub(2) {
+                left[p as usize - 1] =
                     BorderSymbol::SideInward(self.horizontal_side, self.horizontal_border);
-                self.block.right_mut()[p as usize - 1] =
+                right[p as usize - 1] =
                     BorderSymbol::SideInward(self.horizontal_side, self.horizontal_border);
             }
         }
@@ -178,8 +184,10 @@ impl Widget for BlockGrid {
     {
         self.layout();
 
+        // render the block and all connections.
         self.block.render(area, buf);
 
+        // render vertical
         for x in self.vertical.iter().copied() {
             if x > 0 && x < area.width.saturating_sub(2) {
                 for y in area.y + 1..area.y + area.height.saturating_sub(1) {
@@ -193,6 +201,7 @@ impl Widget for BlockGrid {
                 }
             }
         }
+        // render horizontal
         for y in self.horizontal.iter().copied() {
             if y > 0 && y < area.height.saturating_sub(2) {
                 for x in area.x + 1..area.x + area.width.saturating_sub(1) {
@@ -206,6 +215,7 @@ impl Widget for BlockGrid {
                 }
             }
         }
+        // render crossings
         for x in self.vertical.iter().copied() {
             if x > 0 && x < area.width.saturating_sub(2) {
                 for y in self.horizontal.iter().copied() {
