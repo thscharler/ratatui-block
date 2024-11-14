@@ -107,13 +107,22 @@ impl BlockBorder {
     }
 }
 
+impl Widget for BlockBorder {
+    fn render(self, area: Rect, buf: &mut Buffer)
+    where
+        Self: Sized,
+    {
+        Widget::render(&self, area, buf);
+    }
+}
+
 impl Widget for &BlockBorder {
     fn render(self, area: Rect, buf: &mut Buffer)
     where
         Self: Sized,
     {
         if let Some(border) = self.prefab.as_ref() {
-            render_prefab(
+            render_block_prefab(
                 border,
                 self.border_style,
                 self.symbol_set.as_ref(),
@@ -121,12 +130,12 @@ impl Widget for &BlockBorder {
                 buf,
             );
         } else {
-            render_direct(self.border_style, self.symbol_set.as_ref(), area, buf);
+            render_block_direct(self.border_style, self.symbol_set.as_ref(), area, buf);
         }
     }
 }
 
-fn render_prefab(
+pub(crate) fn render_block_prefab(
     border: &PrefabBorder,
     style: Style,
     symbols: &dyn BorderSymbolSet,
@@ -175,7 +184,12 @@ fn render_prefab(
     }
 }
 
-fn render_direct(style: Style, symbols: &dyn BorderSymbolSet, area: Rect, buf: &mut Buffer) {
+pub(crate) fn render_block_direct(
+    style: Style,
+    symbols: &dyn BorderSymbolSet,
+    area: Rect,
+    buf: &mut Buffer,
+) {
     // not prepared for a specific size.
     if let Some(cell) = buf.cell_mut(Position::new(
         area.x, //

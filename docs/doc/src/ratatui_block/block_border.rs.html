@@ -633,24 +633,46 @@
 <a href="#633" id="633">633</a>
 <a href="#634" id="634">634</a>
 <a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::border_symbols::symbol_set;
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
+<span class="kw">use </span>dyn_clone::clone_box;
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::prelude::{Style, Widget};
 <span class="kw">use </span>ratatui::widgets::BorderType;
 <span class="kw">use </span>std::fmt::{Debug, Formatter};
-<span class="kw">use </span>std::rc::Rc;
 
 <span class="doccomment">///
 /// Border for a Block.
 ///
 /// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
 ///
-</span><span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>BlockBorder {
     border_style: Style,
-    symbol_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
+    symbol_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
     <span class="comment">// prepared border.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) prefab: <span class="prelude-ty">Option</span>&lt;PrefabBorder&gt;,
 }
@@ -660,6 +682,16 @@
     width: u16,
     height: u16,
     symbols: Vec&lt;BorderSymbol&gt;,
+}
+
+<span class="kw">impl </span>Clone <span class="kw">for </span>BlockBorder {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            border_style: <span class="self">self</span>.border_style,
+            symbol_set: clone_box(<span class="self">self</span>.symbol_set.as_ref()),
+            prefab: <span class="self">self</span>.prefab.clone(),
+        }
+    }
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>BlockBorder {
@@ -727,10 +759,19 @@
     <span class="doccomment">///
     /// Use a BorderSymbolSet.
     ///
-    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.symbol_set = border_set;
         <span class="self">self
     </span>}
+}
+
+<span class="kw">impl </span>Widget <span class="kw">for </span>BlockBorder {
+    <span class="kw">fn </span>render(<span class="self">self</span>, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer)
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        Widget::render(<span class="kw-2">&amp;</span><span class="self">self</span>, area, buf);
+    }
 }
 
 <span class="kw">impl </span>Widget <span class="kw">for </span><span class="kw-2">&amp;</span>BlockBorder {
@@ -739,7 +780,7 @@
         </span><span class="self">Self</span>: Sized,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(border) = <span class="self">self</span>.prefab.as_ref() {
-            render_prefab(
+            render_block_prefab(
                 border,
                 <span class="self">self</span>.border_style,
                 <span class="self">self</span>.symbol_set.as_ref(),
@@ -747,12 +788,12 @@
                 buf,
             );
         } <span class="kw">else </span>{
-            render_direct(<span class="self">self</span>.border_style, <span class="self">self</span>.symbol_set.as_ref(), area, buf);
+            render_block_direct(<span class="self">self</span>.border_style, <span class="self">self</span>.symbol_set.as_ref(), area, buf);
         }
     }
 }
 
-<span class="kw">fn </span>render_prefab(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>render_block_prefab(
     border: <span class="kw-2">&amp;</span>PrefabBorder,
     style: Style,
     symbols: <span class="kw-2">&amp;</span><span class="kw">dyn </span>BorderSymbolSet,
@@ -801,7 +842,12 @@
     }
 }
 
-<span class="kw">fn </span>render_direct(style: Style, symbols: <span class="kw-2">&amp;</span><span class="kw">dyn </span>BorderSymbolSet, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>render_block_direct(
+    style: Style,
+    symbols: <span class="kw-2">&amp;</span><span class="kw">dyn </span>BorderSymbolSet,
+    area: Rect,
+    buf: <span class="kw-2">&amp;mut </span>Buffer,
+) {
     <span class="comment">// not prepared for a specific size.
     </span><span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
         area.x, <span class="comment">//

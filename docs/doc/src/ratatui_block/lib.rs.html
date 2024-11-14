@@ -261,6 +261,9 @@
 <a href="#261" id="261">261</a>
 <a href="#262" id="262">262</a>
 <a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Block borders.
 
 </span><span class="kw">pub mod </span>block_border;
@@ -268,6 +271,7 @@
 <span class="kw">pub mod </span>block_grid;
 <span class="kw">pub mod </span>border_symbols;
 
+<span class="kw">use </span>dyn_clone::DynClone;
 <span class="kw">use </span>ratatui::widgets::BorderType;
 <span class="kw">use </span>std::fmt::Debug;
 
@@ -285,10 +289,12 @@
 }
 
 <span class="doccomment">/// Symbol set trait
-</span><span class="kw">pub trait </span>BorderSymbolSet
-<span class="kw">where
-    for</span>&lt;<span class="lifetime">'a</span>&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">Self</span>: ToOwned,
-{
+</span><span class="kw">pub trait </span>BorderSymbolSet: DynClone {
+    <span class="doccomment">///
+    /// Equivalent BorderType.
+    ///
+    </span><span class="kw">fn </span>border_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BorderType;
+
     <span class="doccomment">///
     /// Get the actual symbol occurring along one side of the area.
     ///

@@ -25,6 +25,11 @@ pub enum Side {
 /// Symbol set trait
 pub trait BorderSymbolSet: DynClone {
     ///
+    /// Equivalent BorderType.
+    ///
+    fn border_type(&self) -> BorderType;
+
+    ///
     /// Get the actual symbol occurring along one side of the area.
     ///
     /// side: Which side of the area.

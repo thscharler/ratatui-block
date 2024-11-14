@@ -84,13 +84,23 @@
 <a href="#84" id="84">84</a>
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
+<span class="kw">use </span>dyn_clone::clone_box;
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::style::Style;
 <span class="kw">use </span>ratatui::widgets::{BorderType, Widget};
-<span class="kw">use </span>std::rc::Rc;
 
 <span class="doccomment">///
 /// Add a connection point to an existing border.
@@ -99,12 +109,22 @@
 /// The exact placement is up to the caller, it renders the glyph at
 /// (area.x, area.y).
 ///
-</span><span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>BlockConnect {
     border_style: Style,
-    symbol_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
+    symbol_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
     side: Side,
     symbol: BorderSymbol,
+}
+
+<span class="kw">impl </span>Clone <span class="kw">for </span>BlockConnect {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            border_style: <span class="self">self</span>.border_style,
+            symbol_set: clone_box(<span class="self">self</span>.symbol_set.as_ref()),
+            side: <span class="self">self</span>.side,
+            symbol: <span class="self">self</span>.symbol,
+        }
+    }
 }
 
 <span class="kw">impl </span>BlockConnect {
@@ -112,7 +132,7 @@
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             border_style: Default::default(),
-            symbol_set: Rc::new(PlainSymbolSet),
+            symbol_set: Box::new(PlainSymbolSet),
             side: Side::Top,
             symbol: BorderSymbol::StartCornerRegular,
         }
@@ -137,7 +157,7 @@
     <span class="doccomment">///
     /// Use a BorderSymbolSet.
     ///
-    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.symbol_set = border_set;
         <span class="self">self
     </span>}

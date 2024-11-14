@@ -238,60 +238,113 @@
 <a href="#238" id="238">238</a>
 <a href="#239" id="239">239</a>
 <a href="#240" id="240">240</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_border::BlockBorder;
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_border::render_block_direct;
 <span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
+<span class="kw">use </span>dyn_clone::clone_box;
 <span class="kw">use </span>ratatui::buffer::Buffer;
 <span class="kw">use </span>ratatui::layout::{Position, Rect};
 <span class="kw">use </span>ratatui::style::{Style, Stylize};
 <span class="kw">use </span>ratatui::widgets::{BorderType, Widget};
 <span class="kw">use </span>std::fmt::{Debug, Formatter};
-<span class="kw">use </span>std::rc::Rc;
 
-<span class="attr">#[derive(Clone)]
-</span><span class="kw">pub struct </span>BlockGrid {
-    block: BlockBorder,
-    outer_border_type: BorderType,
+<span class="kw">pub struct </span>BlockGrid {
+    outer_style: Style,
+    outer_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
-    inner_style: Style,
-
+    horizontal_style: Style,
     horizontal_side: Side,
-    horizontal_border: BorderType,
-    horizontal_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
+    horizontal_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
+
+    vertical_style: Style,
     vertical_side: Side,
-    vertical_border: BorderType,
-    vertical_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
+    vertical_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
     vertical: Vec&lt;u16&gt;,
     horizontal: Vec&lt;u16&gt;,
 }
 
+<span class="kw">impl </span>Clone <span class="kw">for </span>BlockGrid {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            outer_style: <span class="self">self</span>.outer_style,
+            outer_set: clone_box(<span class="self">self</span>.outer_set.as_ref()),
+            horizontal_style: <span class="self">self</span>.horizontal_style,
+            horizontal_side: <span class="self">self</span>.horizontal_side,
+            horizontal_set: clone_box(<span class="self">self</span>.horizontal_set.as_ref()),
+            vertical_style: <span class="self">self</span>.vertical_style,
+            vertical_side: <span class="self">self</span>.vertical_side,
+            vertical_set: clone_box(<span class="self">self</span>.vertical_set.as_ref()),
+            vertical: <span class="self">self</span>.vertical.clone(),
+            horizontal: <span class="self">self</span>.horizontal.clone(),
+        }
+    }
+}
+
 <span class="kw">impl </span>Debug <span class="kw">for </span>BlockGrid {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         f.debug_struct(<span class="string">"BlockGrid"</span>)
-            .field(<span class="string">"block"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.block)
-            .field(<span class="string">"inner_style"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner_style)
-            .field(<span class="string">"outer_border_type"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.outer_border_type)
-            .field(<span class="string">"inner_set"</span>, <span class="kw-2">&amp;</span><span class="string">"..dyn.."</span>)
-            .field(<span class="string">"vertical"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.vertical)
+            .field(<span class="string">"outer_style"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.outer_style)
+            .field(<span class="string">"outer_border_set"</span>, <span class="kw-2">&amp;</span><span class="string">"outer_border_set"</span>)
+            .field(<span class="string">"horizontal_style"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.horizontal_style)
+            .field(<span class="string">"horizontal_side"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.horizontal_side)
+            .field(<span class="string">"horizontal_set"</span>, <span class="kw-2">&amp;</span><span class="string">"horizontal_set"</span>)
+            .field(<span class="string">"vertical_style"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.vertical_style)
+            .field(<span class="string">"vertical_side"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.vertical_side)
+            .field(<span class="string">"vertical_set"</span>, <span class="kw-2">&amp;</span><span class="string">"vertical_set"</span>)
             .field(<span class="string">"horizontal"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.horizontal)
-            <span class="comment">// todo:
-            </span>.finish()
+            .field(<span class="string">"vertical"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.vertical)
+            .finish()
     }
 }
 
 <span class="kw">impl </span>BlockGrid {
-    <span class="kw">pub fn </span>new(area: Rect) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            block: BlockBorder::from_area(area),
-            inner_style: Default::default(),
-            outer_border_type: Default::default(),
+            outer_style: Default::default(),
+            outer_set: Box::new(PlainSymbolSet),
+            horizontal_style: Default::default(),
             horizontal_side: Side::Left,
-            horizontal_border: Default::default(),
-            horizontal_set: Rc::new(PlainSymbolSet),
+            horizontal_set: Box::new(PlainSymbolSet),
+            vertical_style: Default::default(),
             vertical_side: Side::Top,
-            vertical_border: Default::default(),
-            vertical_set: Rc::new(PlainSymbolSet),
+            vertical_set: Box::new(PlainSymbolSet),
             vertical: <span class="macro">vec!</span>[],
             horizontal: <span class="macro">vec!</span>[],
         }
@@ -303,72 +356,31 @@
     /// Border style for the border.
     ///
     </span><span class="kw">pub fn </span>border_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.block = <span class="self">self</span>.block.border_style(style);
+        <span class="self">self</span>.outer_style = style;
         <span class="self">self
     </span>}
 
     <span class="doccomment">///
     /// Border style for the border.
     ///
-    </span><span class="kw">pub fn </span>inner_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.inner_style = style;
+    </span><span class="kw">pub fn </span>border_type(<span class="kw-2">mut </span><span class="self">self</span>, border_type: BorderType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.outer_set = symbol_set(border_type);
         <span class="self">self
     </span>}
 
     <span class="doccomment">///
-    /// Sets the border type used.
+    /// Border style for the border.
     ///
-    </span><span class="kw">pub fn </span>border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.block = <span class="self">self</span>.block.border_type(border);
-        <span class="self">self</span>.outer_border_type = border;
+    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: <span class="kw">impl </span>BorderSymbolSet + <span class="lifetime">'static</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.outer_set = Box::new(border_set);
         <span class="self">self
     </span>}
 
     <span class="doccomment">///
-    /// Use a BorderSymbolSet.
+    /// Border style for the border.
     ///
-    </span><span class="kw">pub fn </span>border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.block = <span class="self">self</span>.block.border_set(border_set);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">///
-    /// Sets the border type used.
-    ///
-    </span><span class="kw">pub fn </span>horizontal_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.horizontal_border = border;
-        <span class="self">self</span>.horizontal_set = symbol_set(border);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">///
-    /// Use a BorderSymbolSet.
-    ///
-    </span><span class="kw">pub fn </span>horizontal_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.horizontal_set = border_set;
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">///
-    /// Sets the border type used.
-    ///
-    </span><span class="kw">pub fn </span>vertical_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.vertical_border = border;
-        <span class="self">self</span>.vertical_set = symbol_set(border);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">///
-    /// Use a BorderSymbolSet.
-    ///
-    </span><span class="kw">pub fn </span>vertical_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: Rc&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.vertical_set = border_set;
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Add a vertical side.
-    </span><span class="kw">pub fn </span>vertical_side(<span class="kw-2">mut </span><span class="self">self</span>, side: Side) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.vertical_side = side;
+    </span><span class="kw">pub fn </span>horizontal_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.horizontal_style = style;
         <span class="self">self
     </span>}
 
@@ -378,9 +390,19 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Add a vertical divider.
-    </span><span class="kw">pub fn </span>vertical(<span class="kw-2">mut </span><span class="self">self</span>, pos: u16) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.vertical.push(pos);
+    <span class="doccomment">///
+    /// Sets the border type used.
+    ///
+    </span><span class="kw">pub fn </span>horizontal_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.horizontal_set = symbol_set(border);
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">///
+    /// Use a BorderSymbolSet.
+    ///
+    </span><span class="kw">pub fn </span>horizontal_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: <span class="kw">impl </span>BorderSymbolSet + <span class="lifetime">'static</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.horizontal_set = Box::new(border_set);
         <span class="self">self
     </span>}
 
@@ -389,32 +411,42 @@
         <span class="self">self</span>.horizontal.push(pos);
         <span class="self">self
     </span>}
-}
 
-<span class="kw">impl </span>BlockGrid {
-    <span class="kw">fn </span>layout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">let </span>border = <span class="self">self</span>.block.prefab.as_mut().expect(<span class="string">"border"</span>);
-        <span class="kw">let </span>width = border.width();
-        <span class="kw">let </span>height = border.height();
-        <span class="kw">let </span>(<span class="kw">_</span>, top, <span class="kw">_</span>, right, <span class="kw">_</span>, bottom, <span class="kw">_</span>, left) = border.split_mut();
+    <span class="doccomment">///
+    /// Border style for the border.
+    ///
+    </span><span class="kw">pub fn </span>vertical_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_style = style;
+        <span class="self">self
+    </span>}
 
-        <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
-            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; width.saturating_sub(<span class="number">2</span>) {
-                top[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
-                bottom[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_border);
-            }
-        }
-        <span class="kw">for </span>p <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
-            <span class="kw">if </span>p &gt; <span class="number">0 </span>&amp;&amp; p &lt; height.saturating_sub(<span class="number">2</span>) {
-                left[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
-                right[p <span class="kw">as </span>usize - <span class="number">1</span>] =
-                    BorderSymbol::SideInward(<span class="self">self</span>.horizontal_side, <span class="self">self</span>.horizontal_border);
-            }
-        }
-    }
+    <span class="doccomment">/// Add a vertical side.
+    </span><span class="kw">pub fn </span>vertical_side(<span class="kw-2">mut </span><span class="self">self</span>, side: Side) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_side = side;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">///
+    /// Sets the border type used.
+    ///
+    </span><span class="kw">pub fn </span>vertical_border_type(<span class="kw-2">mut </span><span class="self">self</span>, border: BorderType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_set = symbol_set(border);
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">///
+    /// Use a BorderSymbolSet.
+    ///
+    </span><span class="kw">pub fn </span>vertical_border_set(<span class="kw-2">mut </span><span class="self">self</span>, border_set: <span class="kw">impl </span>BorderSymbolSet + <span class="lifetime">'static</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical_set = Box::new(border_set);
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Add a vertical divider.
+    </span><span class="kw">pub fn </span>vertical(<span class="kw-2">mut </span><span class="self">self</span>, pos: u16) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.vertical.push(pos);
+        <span class="self">self
+    </span>}
 }
 
 <span class="kw">impl </span>Widget <span class="kw">for </span>BlockGrid {
@@ -422,17 +454,57 @@
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="self">self</span>.layout();
+        <span class="comment">// render the block .
+        </span>render_block_direct(<span class="self">self</span>.outer_style, <span class="self">self</span>.outer_set.as_ref(), area, buf);
 
-        <span class="comment">// render the block and all connections.
-        </span><span class="self">self</span>.block.render(area, buf);
+        <span class="comment">// render connections
+        </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
+            <span class="kw">if </span>x == <span class="number">0 </span>|| x &gt;= area.width.saturating_sub(<span class="number">2</span>) {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x + x, area.y)) {
+                cell.set_symbol(<span class="self">self</span>.outer_set.symbol(
+                    Side::Top,
+                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_set.border_type()),
+                ));
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x + x, area.y + area.height.saturating_sub(<span class="number">1</span>))) {
+                cell.set_symbol(<span class="self">self</span>.outer_set.symbol(
+                    Side::Bottom,
+                    BorderSymbol::SideInward(<span class="self">self</span>.vertical_side, <span class="self">self</span>.vertical_set.border_type()),
+                ));
+            }
+        }
+        <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
+            <span class="kw">if </span>y == <span class="number">0 </span>|| y &gt;= area.height.saturating_sub(<span class="number">2</span>) {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x, area.y + y)) {
+                cell.set_symbol(<span class="self">self</span>.outer_set.symbol(
+                    Side::Left,
+                    BorderSymbol::SideInward(
+                        <span class="self">self</span>.horizontal_side,
+                        <span class="self">self</span>.horizontal_set.border_type(),
+                    ),
+                ));
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x + area.width.saturating_sub(<span class="number">2</span>), area.y + y)) {
+                cell.set_symbol(<span class="self">self</span>.outer_set.symbol(
+                    Side::Right,
+                    BorderSymbol::SideInward(
+                        <span class="self">self</span>.horizontal_side,
+                        <span class="self">self</span>.horizontal_set.border_type(),
+                    ),
+                ));
+            }
+        }
 
         <span class="comment">// render vertical
         </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
             <span class="kw">if </span>x &gt; <span class="number">0 </span>&amp;&amp; x &lt; area.width.saturating_sub(<span class="number">2</span>) {
                 <span class="kw">for </span>y <span class="kw">in </span>area.y + <span class="number">1</span>..area.y + area.height.saturating_sub(<span class="number">1</span>) {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
-                        cell.set_style(<span class="self">self</span>.inner_style);
+                        cell.set_style(<span class="self">self</span>.vertical_style);
                         cell.set_symbol(
                             <span class="self">self</span>.vertical_set
                                 .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
@@ -446,7 +518,7 @@
             <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {
                 <span class="kw">for </span>x <span class="kw">in </span>area.x + <span class="number">1</span>..area.x + area.width.saturating_sub(<span class="number">1</span>) {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
-                        cell.set_style(<span class="self">self</span>.inner_style);
+                        cell.set_style(<span class="self">self</span>.horizontal_style);
                         cell.set_symbol(
                             <span class="self">self</span>.horizontal_set
                                 .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
@@ -466,9 +538,9 @@
                                 <span class="self">self</span>.horizontal_side,
                                 BorderSymbol::SideCrossed(
                                     <span class="self">self</span>.vertical_side,
-                                    <span class="self">self</span>.vertical_border,
+                                    <span class="self">self</span>.vertical_set.border_type(),
                                     <span class="self">self</span>.vertical_side,
-                                    <span class="self">self</span>.vertical_border,
+                                    <span class="self">self</span>.vertical_set.border_type(),
                                 ),
                             ));
                         }

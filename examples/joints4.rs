@@ -90,7 +90,7 @@ fn repaint_buttons(
 
     buf.set_style(area, THEME.gray(0));
 
-    let mut gr = BlockGrid::new(state.area)
+    let mut gr = BlockGrid::new()
         .border_type(state.border)
         .horizontal_border_type(state.hborder)
         .horizontal_side(state.hside)

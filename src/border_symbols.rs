@@ -71,6 +71,10 @@ pub struct StaticSymbolSet {
 }
 
 impl BorderSymbolSet for StaticSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Plain
+    }
+
     #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         match side {
@@ -160,6 +164,10 @@ pub struct OldSymbolSet {
 }
 
 impl BorderSymbolSet for OldSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Plain
+    }
+
     #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         match side {
@@ -252,6 +260,10 @@ macro_rules! plain {
 pub struct PlainSymbolSet;
 
 impl BorderSymbolSet for PlainSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Plain
+    }
+
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
@@ -437,6 +449,10 @@ impl BorderSymbolSet for PlainSymbolSet {
 pub struct RoundedSymbolSet;
 
 impl BorderSymbolSet for RoundedSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Rounded
+    }
+
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
@@ -494,6 +510,10 @@ impl BorderSymbolSet for RoundedSymbolSet {
 pub struct DoubleSymbolSet;
 
 impl BorderSymbolSet for DoubleSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Double
+    }
+
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
@@ -599,6 +619,10 @@ impl BorderSymbolSet for DoubleSymbolSet {
 pub struct ThickSymbolSet;
 
 impl BorderSymbolSet for ThickSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Thick
+    }
+
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
@@ -765,6 +789,10 @@ impl BorderSymbolSet for ThickSymbolSet {
 pub struct QuadrantInsideSymbolSet;
 
 impl BorderSymbolSet for QuadrantInsideSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::QuadrantInside
+    }
+
     // #[inline(always)]
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
@@ -1067,6 +1095,10 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
 pub struct QuadrantOutsideSymbolSet;
 
 impl BorderSymbolSet for QuadrantOutsideSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::QuadrantOutside
+    }
+
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
         use BorderType::*;
@@ -1204,6 +1236,10 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
 pub struct AsciiSymbolSet;
 
 impl BorderSymbolSet for AsciiSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Plain
+    }
+
     fn symbol(&self, side: Side, symbol: BorderSymbol) -> &'static str {
         use crate::Side::*;
 
@@ -1291,6 +1327,10 @@ impl BorderSymbolSet for AsciiSymbolSet {
 pub struct StarSymbolSet;
 
 impl BorderSymbolSet for StarSymbolSet {
+    fn border_type(&self) -> BorderType {
+        BorderType::Plain
+    }
+
     fn symbol(&self, _side: Side, _symbol: BorderSymbol) -> &'static str {
         &"*"
     }
