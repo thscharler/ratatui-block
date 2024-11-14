@@ -1,19 +1,18 @@
 use crate::{BorderSymbol, BorderSymbolSet, Side};
 use ratatui::symbols::border;
 use ratatui::widgets::BorderType;
-use std::rc::Rc;
 
 ///
 /// Create the BorderSymbolSet for the given BorderType.
 ///
-pub fn symbol_set(border: BorderType) -> Rc<dyn BorderSymbolSet> {
+pub fn symbol_set(border: BorderType) -> Box<dyn BorderSymbolSet> {
     match border {
-        BorderType::Plain => Rc::new(PlainSymbolSet),
-        BorderType::Rounded => Rc::new(RoundedSymbolSet),
-        BorderType::Double => Rc::new(DoubleSymbolSet),
-        BorderType::Thick => Rc::new(ThickSymbolSet),
-        BorderType::QuadrantInside => Rc::new(QuadrantInsideSymbolSet),
-        BorderType::QuadrantOutside => Rc::new(QuadrantOutsideSymbolSet),
+        BorderType::Plain => Box::new(PlainSymbolSet),
+        BorderType::Rounded => Box::new(RoundedSymbolSet),
+        BorderType::Double => Box::new(DoubleSymbolSet),
+        BorderType::Thick => Box::new(ThickSymbolSet),
+        BorderType::QuadrantInside => Box::new(QuadrantInsideSymbolSet),
+        BorderType::QuadrantOutside => Box::new(QuadrantOutsideSymbolSet),
     }
 }
 
@@ -22,6 +21,7 @@ pub fn symbol_set(border: BorderType) -> Rc<dyn BorderSymbolSet> {
 /// This symbol set can have connections to other borders,
 /// but it's not possible to have different connections depending
 /// on the other border.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct StaticSymbolSet {
     pub top_left_regular: &'static str,
     pub top_left_angled: &'static str,
@@ -154,6 +154,7 @@ impl BorderSymbolSet for StaticSymbolSet {
 
 /// Takes one of the old border::Set as base.
 /// Acts just like an old-style border would.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct OldSymbolSet {
     pub symbol_set: border::Set,
 }
@@ -247,6 +248,7 @@ macro_rules! plain {
 }
 
 /// Plain border symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PlainSymbolSet;
 
 impl BorderSymbolSet for PlainSymbolSet {
@@ -431,6 +433,7 @@ impl BorderSymbolSet for PlainSymbolSet {
 }
 
 /// Rounded border symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct RoundedSymbolSet;
 
 impl BorderSymbolSet for RoundedSymbolSet {
@@ -487,6 +490,7 @@ impl BorderSymbolSet for RoundedSymbolSet {
 }
 
 /// Double border symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DoubleSymbolSet;
 
 impl BorderSymbolSet for DoubleSymbolSet {
@@ -591,6 +595,7 @@ impl BorderSymbolSet for DoubleSymbolSet {
 }
 
 /// Thick border symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ThickSymbolSet;
 
 impl BorderSymbolSet for ThickSymbolSet {
@@ -756,6 +761,7 @@ impl BorderSymbolSet for ThickSymbolSet {
 }
 
 /// Quadrant inside border symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct QuadrantInsideSymbolSet;
 
 impl BorderSymbolSet for QuadrantInsideSymbolSet {
@@ -1057,6 +1063,7 @@ impl BorderSymbolSet for QuadrantInsideSymbolSet {
 }
 
 /// Quadrant outside symbol set.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct QuadrantOutsideSymbolSet;
 
 impl BorderSymbolSet for QuadrantOutsideSymbolSet {
@@ -1193,6 +1200,7 @@ impl BorderSymbolSet for QuadrantOutsideSymbolSet {
 }
 
 /// Uses plain ascii characters to draw a border. Uses '+', '-' and '|'.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AsciiSymbolSet;
 
 impl BorderSymbolSet for AsciiSymbolSet {
@@ -1279,6 +1287,7 @@ impl BorderSymbolSet for AsciiSymbolSet {
 }
 
 /// Draws a border using only '*'.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct StarSymbolSet;
 
 impl BorderSymbolSet for StarSymbolSet {

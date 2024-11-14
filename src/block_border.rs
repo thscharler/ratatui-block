@@ -1,21 +1,20 @@
 use crate::border_symbols::symbol_set;
 use crate::{BorderSymbol, BorderSymbolSet, Side};
+use dyn_clone::clone_box;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::prelude::{Style, Widget};
 use ratatui::widgets::BorderType;
 use std::fmt::{Debug, Formatter};
-use std::rc::Rc;
 
 ///
 /// Border for a Block.
 ///
 /// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
 ///
-#[derive(Clone)]
 pub struct BlockBorder {
     border_style: Style,
-    symbol_set: Rc<dyn BorderSymbolSet>,
+    symbol_set: Box<dyn BorderSymbolSet>,
     // prepared border.
     pub(crate) prefab: Option<PrefabBorder>,
 }
@@ -25,6 +24,16 @@ pub(crate) struct PrefabBorder {
     width: u16,
     height: u16,
     symbols: Vec<BorderSymbol>,
+}
+
+impl Clone for BlockBorder {
+    fn clone(&self) -> Self {
+        Self {
+            border_style: self.border_style,
+            symbol_set: clone_box(self.symbol_set.as_ref()),
+            prefab: self.prefab.clone(),
+        }
+    }
 }
 
 impl Debug for BlockBorder {
@@ -92,7 +101,7 @@ impl BlockBorder {
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+    pub fn border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.symbol_set = border_set;
         self
     }

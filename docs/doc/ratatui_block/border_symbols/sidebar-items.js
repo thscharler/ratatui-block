@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["symbol_set"],"struct":["AsciiSymbolSet","DoubleSymbolSet","OldSymbolSet","PlainSymbolSet","QuadrantInsideSymbolSet","QuadrantOutsideSymbolSet","RoundedSymbolSet","StarSymbolSet","StaticSymbolSet","ThickSymbolSet"]};

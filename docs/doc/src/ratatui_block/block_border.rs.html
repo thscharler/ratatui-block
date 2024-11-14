@@ -633,60 +633,6 @@
 <a href="#633" id="633">633</a>
 <a href="#634" id="634">634</a>
 <a href="#635" id="635">635</a>
-<a href="#636" id="636">636</a>
-<a href="#637" id="637">637</a>
-<a href="#638" id="638">638</a>
-<a href="#639" id="639">639</a>
-<a href="#640" id="640">640</a>
-<a href="#641" id="641">641</a>
-<a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-<a href="#657" id="657">657</a>
-<a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::border_symbols::symbol_set;
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
 <span class="kw">use </span>ratatui::buffer::Buffer;
@@ -814,79 +760,43 @@
     buf: <span class="kw-2">&amp;mut </span>Buffer,
 ) {
     <span class="kw">let </span>(
-        top_left, <span class="comment">//
-        </span>top,
-        top_right,
-        right,
-        bottom_left,
+        top, <span class="comment">//
+        </span>right,
         bottom,
-        bottom_right,
         left,
-    ) = border.split();
+    ) = border.split_render();
 
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x, <span class="comment">//
-        </span>area.y,
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Top, <span class="kw-2">*</span>top_left));
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x + area.width.saturating_sub(<span class="number">1</span>), <span class="comment">//
-        </span>area.y,
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Top, <span class="kw-2">*</span>top_right));
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x,
-        area.y + area.height.saturating_sub(<span class="number">1</span>),
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Bottom, <span class="kw-2">*</span>bottom_left));
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x + area.width.saturating_sub(<span class="number">1</span>),
-        area.y + area.height.saturating_sub(<span class="number">1</span>),
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Bottom, <span class="kw-2">*</span>bottom_right));
-    }
-
-    <span class="kw">for </span>(i, symbol) <span class="kw">in </span>top.iter().enumerate() {
+    <span class="kw">for </span>(i, (top_sym, bottom_sym)) <span class="kw">in </span>top.iter().zip(bottom.iter()).enumerate() {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-            area.x + <span class="number">1 </span>+ i <span class="kw">as </span>u16, <span class="comment">//
+            area.x + i <span class="kw">as </span>u16, <span class="comment">//
             </span>area.y,
         )) {
             cell.set_style(style);
-            cell.set_symbol(symbols.symbol(Side::Top, <span class="kw-2">*</span>symbol));
+            cell.set_symbol(symbols.symbol(Side::Top, <span class="kw-2">*</span>top_sym));
         }
-    }
-    <span class="kw">for </span>(i, symbol) <span class="kw">in </span>bottom.iter().enumerate() {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-            area.x + <span class="number">1 </span>+ i <span class="kw">as </span>u16,
+            area.x + i <span class="kw">as </span>u16,
             area.y + area.height.saturating_sub(<span class="number">1</span>),
         )) {
             cell.set_style(style);
-            cell.set_symbol(symbols.symbol(Side::Bottom, <span class="kw-2">*</span>symbol));
+            cell.set_symbol(symbols.symbol(Side::Bottom, <span class="kw-2">*</span>bottom_sym));
         }
     }
-    <span class="kw">for </span>(i, symbol) <span class="kw">in </span>left.iter().enumerate() {
+
+    <span class="kw">for </span>(i, (left_sym, right_sym)) <span class="kw">in </span>left.iter().zip(right.iter()).enumerate() {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
             area.x, <span class="comment">//
             </span>area.y + <span class="number">1 </span>+ i <span class="kw">as </span>u16,
         )) {
             cell.set_style(style);
-            cell.set_symbol(symbols.symbol(Side::Left, <span class="kw-2">*</span>symbol));
+            cell.set_symbol(symbols.symbol(Side::Left, <span class="kw-2">*</span>left_sym));
         }
-    }
-    <span class="kw">for </span>(i, symbol) <span class="kw">in </span>right.iter().enumerate() {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(<span class="number">1</span>), <span class="comment">//
             </span>area.y + <span class="number">1 </span>+ i <span class="kw">as </span>u16,
         )) {
             cell.set_style(style);
-            cell.set_symbol(symbols.symbol(Side::Right, <span class="kw-2">*</span>symbol));
+            cell.set_symbol(symbols.symbol(Side::Right, <span class="kw-2">*</span>right_sym));
         }
     }
 }
@@ -900,40 +810,19 @@
         cell.set_style(style);
         cell.set_symbol(symbols.symbol(Side::Top, BorderSymbol::StartCornerRegular));
     }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x + area.width.saturating_sub(<span class="number">1</span>), <span class="comment">//
-        </span>area.y,
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Top, BorderSymbol::EndCornerRegular));
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x,
-        area.y + area.height.saturating_sub(<span class="number">1</span>),
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Bottom, BorderSymbol::StartCornerRegular));
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-        area.x + area.width.saturating_sub(<span class="number">1</span>),
-        area.y + area.height.saturating_sub(<span class="number">1</span>),
-    )) {
-        cell.set_style(style);
-        cell.set_symbol(symbols.symbol(Side::Bottom, BorderSymbol::EndCornerRegular));
-    }
 
     <span class="kw">let </span>top_sym = symbols.symbol(Side::Top, BorderSymbol::SideRegular);
     <span class="kw">let </span>bottom_sym = symbols.symbol(Side::Bottom, BorderSymbol::SideRegular);
-    <span class="kw">for </span>xx <span class="kw">in </span><span class="number">1</span>..area.width.saturating_sub(<span class="number">1</span>) {
+    <span class="kw">for </span>x <span class="kw">in </span><span class="number">1</span>..area.width.saturating_sub(<span class="number">1</span>) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-            area.x + xx, <span class="comment">//
+            area.x + x, <span class="comment">//
             </span>area.y,
         )) {
             cell.set_style(style);
             cell.set_symbol(top_sym);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
-            area.x + xx,
+            area.x + x,
             area.y + area.height.saturating_sub(<span class="number">1</span>),
         )) {
             cell.set_style(style);
@@ -941,23 +830,47 @@
         }
     }
 
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
+        area.x + area.width.saturating_sub(<span class="number">1</span>), <span class="comment">//
+        </span>area.y,
+    )) {
+        cell.set_style(style);
+        cell.set_symbol(symbols.symbol(Side::Top, BorderSymbol::EndCornerRegular));
+    }
+
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
+        area.x,
+        area.y + area.height.saturating_sub(<span class="number">1</span>),
+    )) {
+        cell.set_style(style);
+        cell.set_symbol(symbols.symbol(Side::Bottom, BorderSymbol::StartCornerRegular));
+    }
+
     <span class="kw">let </span>left_sym = symbols.symbol(Side::Left, BorderSymbol::SideRegular);
     <span class="kw">let </span>right_sym = symbols.symbol(Side::Right, BorderSymbol::SideRegular);
-    <span class="kw">for </span>yy <span class="kw">in </span><span class="number">1</span>..area.height.saturating_sub(<span class="number">1</span>) {
+    <span class="kw">for </span>y <span class="kw">in </span><span class="number">1</span>..area.height.saturating_sub(<span class="number">1</span>) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
             area.x, <span class="comment">//
-            </span>area.y + yy,
+            </span>area.y + y,
         )) {
             cell.set_style(style);
             cell.set_symbol(left_sym);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
             area.x + area.width.saturating_sub(<span class="number">1</span>), <span class="comment">//
-            </span>area.y + yy,
+            </span>area.y + y,
         )) {
             cell.set_style(style);
             cell.set_symbol(right_sym);
         }
+    }
+
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(
+        area.x + area.width.saturating_sub(<span class="number">1</span>),
+        area.y + area.height.saturating_sub(<span class="number">1</span>),
+    )) {
+        cell.set_style(style);
+        cell.set_symbol(symbols.symbol(Side::Bottom, BorderSymbol::EndCornerRegular));
     }
 }
 
@@ -1034,7 +947,7 @@
         <span class="kw">let </span>(bottom_right, rest) = rest.split_at_mut(<span class="number">1</span>);
         <span class="kw">let </span>(left, rest) = rest.split_at_mut(<span class="self">self</span>.height.saturating_sub(<span class="number">2</span>) <span class="kw">as </span>usize);
 
-        <span class="macro">assert!</span>(rest.is_empty());
+        <span class="macro">debug_assert!</span>(rest.is_empty());
 
         (
             <span class="kw-2">&amp;mut </span>top_left[<span class="number">0</span>],
@@ -1051,42 +964,26 @@
     <span class="doccomment">///
     /// Split into border parts.
     ///
-    /// (top_left, top, top_right, right, bottom_left, bottom, bottom_right, left)
+    /// (top, right, bottom, left)
     ///
     </span><span class="attr">#[inline(always)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>split(
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>split_render(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
     ) -&gt; (
-        <span class="kw-2">&amp;</span>BorderSymbol,
         <span class="kw-2">&amp;</span>[BorderSymbol],
-        <span class="kw-2">&amp;</span>BorderSymbol,
         <span class="kw-2">&amp;</span>[BorderSymbol],
-        <span class="kw-2">&amp;</span>BorderSymbol,
         <span class="kw-2">&amp;</span>[BorderSymbol],
-        <span class="kw-2">&amp;</span>BorderSymbol,
         <span class="kw-2">&amp;</span>[BorderSymbol],
     ) {
-        <span class="kw">let </span>(top_left, rest) = <span class="self">self</span>.symbols.split_at(<span class="number">1</span>);
-        <span class="kw">let </span>(top, rest) = rest.split_at(<span class="self">self</span>.width.saturating_sub(<span class="number">2</span>) <span class="kw">as </span>usize);
-        <span class="kw">let </span>(top_right, rest) = rest.split_at(<span class="number">1</span>);
+        <span class="kw">let </span>rest = <span class="self">self</span>.symbols.as_slice();
+        <span class="kw">let </span>(top, rest) = rest.split_at(<span class="self">self</span>.width <span class="kw">as </span>usize);
         <span class="kw">let </span>(right, rest) = rest.split_at(<span class="self">self</span>.height.saturating_sub(<span class="number">2</span>) <span class="kw">as </span>usize);
-        <span class="kw">let </span>(bottom_left, rest) = rest.split_at(<span class="number">1</span>);
-        <span class="kw">let </span>(bottom, rest) = rest.split_at(<span class="self">self</span>.width.saturating_sub(<span class="number">2</span>) <span class="kw">as </span>usize);
-        <span class="kw">let </span>(bottom_right, rest) = rest.split_at(<span class="number">1</span>);
+        <span class="kw">let </span>(bottom, rest) = rest.split_at(<span class="self">self</span>.width <span class="kw">as </span>usize);
         <span class="kw">let </span>(left, rest) = rest.split_at(<span class="self">self</span>.height.saturating_sub(<span class="number">2</span>) <span class="kw">as </span>usize);
 
-        <span class="macro">assert!</span>(rest.is_empty());
+        <span class="macro">debug_assert!</span>(rest.is_empty());
 
-        (
-            <span class="kw-2">&amp;</span>top_left[<span class="number">0</span>],
-            top,
-            <span class="kw-2">&amp;</span>top_right[<span class="number">0</span>],
-            right,
-            <span class="kw-2">&amp;</span>bottom_left[<span class="number">0</span>],
-            bottom,
-            <span class="kw-2">&amp;</span>bottom_right[<span class="number">0</span>],
-            left,
-        )
+        (top, right, bottom, left)
     }
 }
 
@@ -1096,6 +993,7 @@
 /// creates a BlockBorder for the selected area.
 /// This border has all the necessary connections to the
 /// other borders.
+</span><span class="attr">#[inline]
 </span><span class="kw">fn </span>create_connected_border(areas: <span class="kw-2">&amp;</span>[Rect], borders: <span class="kw-2">&amp;</span>[BorderType], n: usize) -&gt; BlockBorder {
     <span class="kw">let </span>own_border = borders[n];
     <span class="kw">let </span>area = areas[n];
@@ -1103,9 +1001,6 @@
     <span class="kw">let </span>area_y1 = area.y;
     <span class="kw">let </span>area_x2 = area.x + area.width.saturating_sub(<span class="number">1</span>);
     <span class="kw">let </span>area_y2 = area.y + area.height.saturating_sub(<span class="number">1</span>);
-
-    <span class="macro">assert!</span>(area_x1 &lt;= area_x2);
-    <span class="macro">assert!</span>(area_y1 &lt;= area_y2);
 
     <span class="kw">let </span><span class="kw-2">mut </span>block = BlockBorder::from_area(area).border_type(own_border);
 
@@ -1127,9 +1022,6 @@
         <span class="kw">let </span>y1 = test.y;
         <span class="kw">let </span>x2 = test.x + test.width.saturating_sub(<span class="number">1</span>);
         <span class="kw">let </span>y2 = test.y + test.height.saturating_sub(<span class="number">1</span>);
-
-        <span class="macro">assert!</span>(x1 &lt;= x2);
-        <span class="macro">assert!</span>(y1 &lt;= y2);
 
         <span class="comment">// test above
         </span><span class="kw">if </span>y2 == area_y1 {
@@ -1195,7 +1087,7 @@
     block
 }
 
-<span class="attr">#[inline(always)]
+<span class="attr">#[inline]
 </span><span class="kw">fn </span>create_horizontal_side(
     start_corner: <span class="kw-2">&amp;mut </span>BorderSymbol,
     block: <span class="kw-2">&amp;mut </span>[BorderSymbol],
@@ -1286,7 +1178,7 @@
     </span>}
 }
 
-<span class="attr">#[inline(always)]
+<span class="attr">#[inline]
 </span><span class="kw">fn </span>create_vertical_side(
     start_corner: <span class="kw-2">&amp;mut </span>BorderSymbol,
     block: <span class="kw-2">&amp;mut </span>[BorderSymbol],

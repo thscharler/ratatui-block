@@ -1,14 +1,13 @@
 use crate::block_border::BlockBorder;
 use crate::border_symbols::{symbol_set, PlainSymbolSet};
 use crate::{BorderSymbol, BorderSymbolSet, Side};
+use dyn_clone::clone_box;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::style::{Style, Stylize};
 use ratatui::widgets::{BorderType, Widget};
 use std::fmt::{Debug, Formatter};
-use std::rc::Rc;
 
-#[derive(Clone)]
 pub struct BlockGrid {
     block: BlockBorder,
     outer_border_type: BorderType,
@@ -17,13 +16,31 @@ pub struct BlockGrid {
 
     horizontal_side: Side,
     horizontal_border: BorderType,
-    horizontal_set: Rc<dyn BorderSymbolSet>,
+    horizontal_set: Box<dyn BorderSymbolSet>,
     vertical_side: Side,
     vertical_border: BorderType,
-    vertical_set: Rc<dyn BorderSymbolSet>,
+    vertical_set: Box<dyn BorderSymbolSet>,
 
     vertical: Vec<u16>,
     horizontal: Vec<u16>,
+}
+
+impl Clone for BlockGrid {
+    fn clone(&self) -> Self {
+        Self {
+            block: self.block.clone(),
+            outer_border_type: self.outer_border_type,
+            inner_style: self.inner_style,
+            horizontal_side: self.horizontal_side,
+            horizontal_border: self.horizontal_border,
+            horizontal_set: clone_box(self.horizontal_set.as_ref()),
+            vertical_side: self.vertical_side,
+            vertical_border: self.vertical_border,
+            vertical_set: clone_box(self.vertical_set.as_ref()),
+            vertical: self.vertical.clone(),
+            horizontal: self.horizontal.clone(),
+        }
+    }
 }
 
 impl Debug for BlockGrid {
@@ -48,10 +65,10 @@ impl BlockGrid {
             outer_border_type: Default::default(),
             horizontal_side: Side::Left,
             horizontal_border: Default::default(),
-            horizontal_set: Rc::new(PlainSymbolSet),
+            horizontal_set: Box::new(PlainSymbolSet),
             vertical_side: Side::Top,
             vertical_border: Default::default(),
-            vertical_set: Rc::new(PlainSymbolSet),
+            vertical_set: Box::new(PlainSymbolSet),
             vertical: vec![],
             horizontal: vec![],
         }
@@ -87,7 +104,7 @@ impl BlockGrid {
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+    pub fn border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.block = self.block.border_set(border_set);
         self
     }
@@ -104,7 +121,7 @@ impl BlockGrid {
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn horizontal_border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+    pub fn horizontal_border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.horizontal_set = border_set;
         self
     }
@@ -121,7 +138,7 @@ impl BlockGrid {
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn vertical_border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+    pub fn vertical_border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.vertical_set = border_set;
         self
     }

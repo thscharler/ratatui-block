@@ -1300,6 +1300,16 @@
 <a href="#1300" id="1300">1300</a>
 <a href="#1301" id="1301">1301</a>
 <a href="#1302" id="1302">1302</a>
+<a href="#1303" id="1303">1303</a>
+<a href="#1304" id="1304">1304</a>
+<a href="#1305" id="1305">1305</a>
+<a href="#1306" id="1306">1306</a>
+<a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
+<a href="#1309" id="1309">1309</a>
+<a href="#1310" id="1310">1310</a>
+<a href="#1311" id="1311">1311</a>
+<a href="#1312" id="1312">1312</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
 <span class="kw">use </span>ratatui::symbols::border;
 <span class="kw">use </span>ratatui::widgets::BorderType;
@@ -1324,6 +1334,7 @@
 /// This symbol set can have connections to other borders,
 /// but it's not possible to have different connections depending
 /// on the other border.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>StaticSymbolSet {
     <span class="kw">pub </span>top_left_regular: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     <span class="kw">pub </span>top_left_angled: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
@@ -1456,6 +1467,7 @@
 
 <span class="doccomment">/// Takes one of the old border::Set as base.
 /// Acts just like an old-style border would.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>OldSymbolSet {
     <span class="kw">pub </span>symbol_set: border::Set,
 }
@@ -1549,6 +1561,7 @@
 }
 
 <span class="doccomment">/// Plain border symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>PlainSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>PlainSymbolSet {
@@ -1733,6 +1746,7 @@
 }
 
 <span class="doccomment">/// Rounded border symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>RoundedSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>RoundedSymbolSet {
@@ -1789,6 +1803,7 @@
 }
 
 <span class="doccomment">/// Double border symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>DoubleSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>DoubleSymbolSet {
@@ -1893,6 +1908,7 @@
 }
 
 <span class="doccomment">/// Thick border symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>ThickSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>ThickSymbolSet {
@@ -2058,6 +2074,7 @@
 }
 
 <span class="doccomment">/// Quadrant inside border symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>QuadrantInsideSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>QuadrantInsideSymbolSet {
@@ -2359,6 +2376,7 @@
 }
 
 <span class="doccomment">/// Quadrant outside symbol set.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>QuadrantOutsideSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>QuadrantOutsideSymbolSet {
@@ -2495,6 +2513,7 @@
 }
 
 <span class="doccomment">/// Uses plain ascii characters to draw a border. Uses '+', '-' and '|'.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>AsciiSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>AsciiSymbolSet {
@@ -2581,6 +2600,7 @@
 }
 
 <span class="doccomment">/// Draws a border using only '*'.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>StarSymbolSet;
 
 <span class="kw">impl </span>BorderSymbolSet <span class="kw">for </span>StarSymbolSet {

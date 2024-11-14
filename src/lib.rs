@@ -5,6 +5,7 @@ pub mod block_connect;
 pub mod block_grid;
 pub mod border_symbols;
 
+use dyn_clone::DynClone;
 use ratatui::widgets::BorderType;
 use std::fmt::Debug;
 
@@ -22,7 +23,7 @@ pub enum Side {
 }
 
 /// Symbol set trait
-pub trait BorderSymbolSet {
+pub trait BorderSymbolSet: DynClone {
     ///
     /// Get the actual symbol occurring along one side of the area.
     ///

@@ -1,10 +1,10 @@
 use crate::border_symbols::{symbol_set, PlainSymbolSet};
 use crate::{BorderSymbol, BorderSymbolSet, Side};
+use dyn_clone::clone_box;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Position, Rect};
 use ratatui::style::Style;
 use ratatui::widgets::{BorderType, Widget};
-use std::rc::Rc;
 
 ///
 /// Add a connection point to an existing border.
@@ -13,12 +13,22 @@ use std::rc::Rc;
 /// The exact placement is up to the caller, it renders the glyph at
 /// (area.x, area.y).
 ///
-#[derive(Clone)]
 pub struct BlockConnect {
     border_style: Style,
-    symbol_set: Rc<dyn BorderSymbolSet>,
+    symbol_set: Box<dyn BorderSymbolSet>,
     side: Side,
     symbol: BorderSymbol,
+}
+
+impl Clone for BlockConnect {
+    fn clone(&self) -> Self {
+        Self {
+            border_style: self.border_style,
+            symbol_set: clone_box(self.symbol_set.as_ref()),
+            side: self.side,
+            symbol: self.symbol,
+        }
+    }
 }
 
 impl BlockConnect {
@@ -26,7 +36,7 @@ impl BlockConnect {
     pub fn new() -> Self {
         Self {
             border_style: Default::default(),
-            symbol_set: Rc::new(PlainSymbolSet),
+            symbol_set: Box::new(PlainSymbolSet),
             side: Side::Top,
             symbol: BorderSymbol::StartCornerRegular,
         }
@@ -51,7 +61,7 @@ impl BlockConnect {
     ///
     /// Use a BorderSymbolSet.
     ///
-    pub fn border_set(mut self, border_set: Rc<dyn BorderSymbolSet>) -> Self {
+    pub fn border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.symbol_set = border_set;
         self
     }

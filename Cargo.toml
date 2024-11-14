@@ -10,6 +10,7 @@ log = "0.4"
 unicode-segmentation = "1.11"
 unicode-width = "0.2"
 unicode-display-width = "0.3"
+dyn-clone = "1.0.17"
 
 rat-event = { version = "0.26", path = "../rat-event" }
 

@@ -258,6 +258,9 @@
 <a href="#258" id="258">258</a>
 <a href="#259" id="259">259</a>
 <a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Block borders.
 
 </span><span class="kw">pub mod </span>block_border;
@@ -282,7 +285,10 @@
 }
 
 <span class="doccomment">/// Symbol set trait
-</span><span class="kw">pub trait </span>BorderSymbolSet {
+</span><span class="kw">pub trait </span>BorderSymbolSet
+<span class="kw">where
+    for</span>&lt;<span class="lifetime">'a</span>&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">Self</span>: ToOwned,
+{
     <span class="doccomment">///
     /// Get the actual symbol occurring along one side of the area.
     ///
