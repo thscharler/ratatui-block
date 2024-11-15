@@ -66,8 +66,8 @@ impl Debug for BlockGrid {
     }
 }
 
-impl BlockGrid {
-    pub fn new() -> Self {
+impl Default for BlockGrid {
+    fn default() -> Self {
         Self {
             outer_style: Default::default(),
             outer_set: Box::new(PlainSymbolSet),
@@ -80,6 +80,12 @@ impl BlockGrid {
             vertical: vec![],
             horizontal: vec![],
         }
+    }
+}
+
+impl BlockGrid {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Create a grid line for every single cell gap between the
@@ -323,7 +329,7 @@ fn create_grid(areas: &[Rect]) -> BlockGrid {
     x_coord.dedup();
 
     let mut idx = 1;
-    let min_y = y_coord.get(0).copied().unwrap_or_default();
+    let min_y = y_coord.first().copied().unwrap_or_default();
     loop {
         if idx + 1 >= y_coord.len() {
             break;
@@ -339,7 +345,7 @@ fn create_grid(areas: &[Rect]) -> BlockGrid {
     }
 
     let mut idx = 1;
-    let min_x = x_coord.get(0).copied().unwrap_or_default();
+    let min_x = x_coord.first().copied().unwrap_or_default();
     loop {
         if idx + 1 >= x_coord.len() {
             break;

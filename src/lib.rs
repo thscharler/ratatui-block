@@ -46,6 +46,7 @@ pub trait BorderSymbolSet: DynClone {
     /// __Remark__
     /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.
     ///
+    #[allow(clippy::too_many_arguments)]
     fn crossing(
         &self,
         top_side: Side,

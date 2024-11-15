@@ -31,15 +31,21 @@ impl Clone for BlockConnect {
     }
 }
 
-impl BlockConnect {
-    ///
-    pub fn new() -> Self {
+impl Default for BlockConnect {
+    fn default() -> Self {
         Self {
             border_style: Default::default(),
             symbol_set: Box::new(PlainSymbolSet),
             side: Side::Top,
             symbol: BorderSymbol::StartCornerRegular,
         }
+    }
+}
+
+impl BlockConnect {
+    /// todo:
+    pub fn new() -> Self {
+        Self::default()
     }
 
     ///

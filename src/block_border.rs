@@ -57,14 +57,20 @@ impl Debug for BlockBorder {
     }
 }
 
-impl BlockBorder {
-    /// Create a block border.
-    pub fn new() -> Self {
+impl Default for BlockBorder {
+    fn default() -> Self {
         Self {
             border_style: Default::default(),
             symbol_set: symbol_set(BorderType::Plain),
             prefab: None,
         }
+    }
+}
+
+impl BlockBorder {
+    /// Create a block border.
+    pub fn new() -> Self {
+        Self::default()
     }
 
     ///
@@ -130,6 +136,8 @@ impl BlockBorder {
     /// Panics if the dimensions of the area don't match a prefabricated border.
     /// Panics if the given position doesn't lie on the border.
     ///
+    #[allow(clippy::collapsible_else_if)]
+    #[allow(clippy::if_same_then_else)]
     pub fn get_symbol(&self, area: Rect, position: Position) -> BorderSymbol {
         if let Some(border) = self.prefab.as_ref() {
             assert!(area.width == border.width && area.height == border.height);
@@ -374,6 +382,7 @@ impl PrefabBorder {
     ///
     /// (top_left, top, top_right, right, bottom_left, bottom, bottom_right, left)
     ///
+    #[allow(clippy::type_complexity)]
     #[inline(always)]
     pub(crate) fn split_mut(
         &mut self,
@@ -536,6 +545,7 @@ fn create_connected_border(areas: &[Rect], borders: &[BorderType], n: usize) -> 
     block
 }
 
+#[allow(clippy::too_many_arguments)]
 #[inline]
 fn create_horizontal_side(
     start_corner: &mut BorderSymbol,
@@ -627,6 +637,7 @@ fn create_horizontal_side(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 #[inline]
 fn create_vertical_side(
     start_corner: &mut BorderSymbol,

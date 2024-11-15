@@ -252,7 +252,7 @@ impl BorderSymbolSet for OldSymbolSet {
         _left_side: Side,
         _left: BorderType,
     ) -> &'static str {
-        &" "
+        " "
     }
 }
 
@@ -1325,7 +1325,7 @@ impl BorderSymbolSet for AsciiSymbolSet {
         _left_side: Side,
         _left: BorderType,
     ) -> &'static str {
-        &"+"
+        "+"
     }
 }
 
@@ -1339,7 +1339,7 @@ impl BorderSymbolSet for StarSymbolSet {
     }
 
     fn symbol(&self, _side: Side, _symbol: BorderSymbol) -> &'static str {
-        &"*"
+        "*"
     }
 
     fn crossing(
@@ -1353,6 +1353,6 @@ impl BorderSymbolSet for StarSymbolSet {
         _left_side: Side,
         _left: BorderType,
     ) -> &'static str {
-        &"*"
+        "*"
     }
 }
