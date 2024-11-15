@@ -8,6 +8,10 @@ use ratatui::style::{Style, Stylize};
 use ratatui::widgets::{BorderType, Widget};
 use std::fmt::{Debug, Formatter};
 
+///
+/// Renders a block border and a connected grid inside.
+///
+///
 pub struct BlockGrid {
     outer_style: Style,
     outer_set: Box<dyn BorderSymbolSet>,
@@ -20,7 +24,11 @@ pub struct BlockGrid {
     vertical_side: Side,
     vertical_set: Box<dyn BorderSymbolSet>,
 
+    // x coordinates for the vertical lines.
+    // relative to the area.
     vertical: Vec<u16>,
+    // y coordinates for the horizontal lines.
+    // relative to the area.
     horizontal: Vec<u16>,
 }
 
@@ -74,7 +82,14 @@ impl BlockGrid {
         }
     }
 
-    // TODO: from_layout()
+    /// Create a grid line for every single cell gap between the
+    /// given areas.
+    ///
+    /// If the areas overlap, or if they have overlapping x- or y-ranges
+    /// the results may not be what you expect.
+    pub fn from_layout(layout: &[Rect]) -> Self {
+        create_grid(layout)
+    }
 
     ///
     /// Border style for the border.
@@ -178,6 +193,15 @@ impl Widget for BlockGrid {
     where
         Self: Sized,
     {
+        Widget::render(&self, area, buf);
+    }
+}
+
+impl Widget for &BlockGrid {
+    fn render(self, area: Rect, buf: &mut Buffer)
+    where
+        Self: Sized,
+    {
         // render the block .
         render_block_direct(self.outer_style, self.outer_set.as_ref(), area, buf);
 
@@ -212,7 +236,7 @@ impl Widget for BlockGrid {
                     ),
                 ));
             }
-            if let Some(cell) = buf.cell_mut((area.x + area.width.saturating_sub(2), area.y + y)) {
+            if let Some(cell) = buf.cell_mut((area.x + area.width.saturating_sub(1), area.y + y)) {
                 cell.set_symbol(self.outer_set.symbol(
                     Side::Right,
                     BorderSymbol::SideInward(
@@ -225,52 +249,110 @@ impl Widget for BlockGrid {
 
         // render vertical
         for x in self.vertical.iter().copied() {
-            if x > 0 && x < area.width.saturating_sub(2) {
-                for y in area.y + 1..area.y + area.height.saturating_sub(1) {
-                    if let Some(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
-                        cell.set_style(self.vertical_style);
-                        cell.set_symbol(
-                            self.vertical_set
-                                .symbol(self.vertical_side, BorderSymbol::SideRegular),
-                        );
-                    }
+            if x == 0 || x >= area.width.saturating_sub(2) {
+                continue;
+            }
+            for y in area.y + 1..area.y + area.height.saturating_sub(1) {
+                if let Some(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
+                    cell.set_style(self.vertical_style);
+                    cell.set_symbol(
+                        self.vertical_set
+                            .symbol(self.vertical_side, BorderSymbol::SideRegular),
+                    );
                 }
             }
         }
         // render horizontal
         for y in self.horizontal.iter().copied() {
-            if y > 0 && y < area.height.saturating_sub(2) {
-                for x in area.x + 1..area.x + area.width.saturating_sub(1) {
-                    if let Some(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
-                        cell.set_style(self.horizontal_style);
-                        cell.set_symbol(
-                            self.horizontal_set
-                                .symbol(self.horizontal_side, BorderSymbol::SideRegular),
-                        );
-                    }
+            if y == 0 || y >= area.height.saturating_sub(2) {
+                continue;
+            }
+            for x in area.x + 1..area.x + area.width.saturating_sub(1) {
+                if let Some(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
+                    cell.set_style(self.horizontal_style);
+                    cell.set_symbol(
+                        self.horizontal_set
+                            .symbol(self.horizontal_side, BorderSymbol::SideRegular),
+                    );
                 }
             }
         }
         // render crossings
         for x in self.vertical.iter().copied() {
-            if x > 0 && x < area.width.saturating_sub(2) {
-                for y in self.horizontal.iter().copied() {
-                    if y > 0 && y < area.height.saturating_sub(2) {
-                        if let Some(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
-                            cell.set_style(Style::new().red());
-                            cell.set_symbol(self.horizontal_set.symbol(
-                                self.horizontal_side,
-                                BorderSymbol::SideCrossed(
-                                    self.vertical_side,
-                                    self.vertical_set.border_type(),
-                                    self.vertical_side,
-                                    self.vertical_set.border_type(),
-                                ),
-                            ));
-                        }
-                    }
+            if x == 0 || x >= area.width.saturating_sub(2) {
+                continue;
+            }
+            for y in self.horizontal.iter().copied() {
+                if y == 0 || y >= area.height.saturating_sub(2) {
+                    continue;
+                }
+                if let Some(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
+                    cell.set_style(Style::new().red());
+                    cell.set_symbol(self.horizontal_set.symbol(
+                        self.horizontal_side,
+                        BorderSymbol::SideCrossed(
+                            self.vertical_side,
+                            self.vertical_set.border_type(),
+                            self.vertical_side,
+                            self.vertical_set.border_type(),
+                        ),
+                    ));
                 }
             }
         }
     }
+}
+
+/// Create a grid from the gaps left by the given areas.
+fn create_grid(areas: &[Rect]) -> BlockGrid {
+    let mut grid = BlockGrid::new();
+
+    let mut y_coord = Vec::new();
+    let mut x_coord = Vec::new();
+
+    for area in areas {
+        y_coord.push(area.top());
+        y_coord.push(area.bottom().saturating_sub(1));
+        x_coord.push(area.left());
+        x_coord.push(area.right().saturating_sub(1));
+    }
+
+    y_coord.sort();
+    y_coord.dedup();
+    x_coord.sort();
+    x_coord.dedup();
+
+    let mut idx = 1;
+    let min_y = y_coord.get(0).copied().unwrap_or_default();
+    loop {
+        if idx + 1 >= y_coord.len() {
+            break;
+        }
+
+        // detect gaps
+        // only jumps from odd to even indexes mark area boundaries
+        if idx % 2 == 1 && y_coord[idx] + 2 == y_coord[idx + 1] {
+            grid = grid.horizontal(y_coord[idx] + 1 - min_y);
+        }
+
+        idx += 1;
+    }
+
+    let mut idx = 1;
+    let min_x = x_coord.get(0).copied().unwrap_or_default();
+    loop {
+        if idx + 1 >= x_coord.len() {
+            break;
+        }
+
+        // detect gaps
+        // only jumps from odd to even indexes mark area boundaries
+        if idx % 2 == 1 && x_coord[idx] + 2 == x_coord[idx + 1] {
+            grid = grid.vertical(x_coord[idx] + 1 - min_x);
+        }
+
+        idx += 1;
+    }
+
+    grid
 }

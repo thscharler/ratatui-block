@@ -274,6 +274,88 @@
 <a href="#274" id="274">274</a>
 <a href="#275" id="275">275</a>
 <a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::block_border::render_block_direct;
 <span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
@@ -284,7 +366,11 @@
 <span class="kw">use </span>ratatui::widgets::{BorderType, Widget};
 <span class="kw">use </span>std::fmt::{Debug, Formatter};
 
-<span class="kw">pub struct </span>BlockGrid {
+<span class="doccomment">///
+/// Renders a block border and a connected grid inside.
+///
+///
+</span><span class="kw">pub struct </span>BlockGrid {
     outer_style: Style,
     outer_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
@@ -296,8 +382,12 @@
     vertical_side: Side,
     vertical_set: Box&lt;<span class="kw">dyn </span>BorderSymbolSet&gt;,
 
-    vertical: Vec&lt;u16&gt;,
-    horizontal: Vec&lt;u16&gt;,
+    <span class="comment">// x coordinates for the vertical lines.
+    // relative to the area.
+    </span>vertical: Vec&lt;u16&gt;,
+    <span class="comment">// y coordinates for the horizontal lines.
+    // relative to the area.
+    </span>horizontal: Vec&lt;u16&gt;,
 }
 
 <span class="kw">impl </span>Clone <span class="kw">for </span>BlockGrid {
@@ -350,9 +440,16 @@
         }
     }
 
-    <span class="comment">// TODO: from_layout()
+    <span class="doccomment">/// Create a grid line for every single cell gap between the
+    /// given areas.
+    ///
+    /// If the areas overlap, or if they have overlapping x- or y-ranges
+    /// the results may not be what you expect.
+    </span><span class="kw">pub fn </span>from_layout(layout: <span class="kw-2">&amp;</span>[Rect]) -&gt; <span class="self">Self </span>{
+        create_grid(layout)
+    }
 
-    </span><span class="doccomment">///
+    <span class="doccomment">///
     /// Border style for the border.
     ///
     </span><span class="kw">pub fn </span>border_style(<span class="kw-2">mut </span><span class="self">self</span>, style: Style) -&gt; <span class="self">Self </span>{
@@ -450,7 +547,16 @@
 }
 
 <span class="kw">impl </span>Widget <span class="kw">for </span>BlockGrid {
-    <span class="kw">fn </span>render(<span class="kw-2">mut </span><span class="self">self</span>, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer)
+    <span class="kw">fn </span>render(<span class="self">self</span>, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer)
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        Widget::render(<span class="kw-2">&amp;</span><span class="self">self</span>, area, buf);
+    }
+}
+
+<span class="kw">impl </span>Widget <span class="kw">for </span><span class="kw-2">&amp;</span>BlockGrid {
+    <span class="kw">fn </span>render(<span class="self">self</span>, area: Rect, buf: <span class="kw-2">&amp;mut </span>Buffer)
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
@@ -488,7 +594,7 @@
                     ),
                 ));
             }
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x + area.width.saturating_sub(<span class="number">2</span>), area.y + y)) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut((area.x + area.width.saturating_sub(<span class="number">1</span>), area.y + y)) {
                 cell.set_symbol(<span class="self">self</span>.outer_set.symbol(
                     Side::Right,
                     BorderSymbol::SideInward(
@@ -501,53 +607,111 @@
 
         <span class="comment">// render vertical
         </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
-            <span class="kw">if </span>x &gt; <span class="number">0 </span>&amp;&amp; x &lt; area.width.saturating_sub(<span class="number">2</span>) {
-                <span class="kw">for </span>y <span class="kw">in </span>area.y + <span class="number">1</span>..area.y + area.height.saturating_sub(<span class="number">1</span>) {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
-                        cell.set_style(<span class="self">self</span>.vertical_style);
-                        cell.set_symbol(
-                            <span class="self">self</span>.vertical_set
-                                .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
-                        );
-                    }
+            <span class="kw">if </span>x == <span class="number">0 </span>|| x &gt;= area.width.saturating_sub(<span class="number">2</span>) {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">for </span>y <span class="kw">in </span>area.y + <span class="number">1</span>..area.y + area.height.saturating_sub(<span class="number">1</span>) {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, y)) {
+                    cell.set_style(<span class="self">self</span>.vertical_style);
+                    cell.set_symbol(
+                        <span class="self">self</span>.vertical_set
+                            .symbol(<span class="self">self</span>.vertical_side, BorderSymbol::SideRegular),
+                    );
                 }
             }
         }
         <span class="comment">// render horizontal
         </span><span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
-            <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {
-                <span class="kw">for </span>x <span class="kw">in </span>area.x + <span class="number">1</span>..area.x + area.width.saturating_sub(<span class="number">1</span>) {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
-                        cell.set_style(<span class="self">self</span>.horizontal_style);
-                        cell.set_symbol(
-                            <span class="self">self</span>.horizontal_set
-                                .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
-                        );
-                    }
+            <span class="kw">if </span>y == <span class="number">0 </span>|| y &gt;= area.height.saturating_sub(<span class="number">2</span>) {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">for </span>x <span class="kw">in </span>area.x + <span class="number">1</span>..area.x + area.width.saturating_sub(<span class="number">1</span>) {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(x, area.y + y)) {
+                    cell.set_style(<span class="self">self</span>.horizontal_style);
+                    cell.set_symbol(
+                        <span class="self">self</span>.horizontal_set
+                            .symbol(<span class="self">self</span>.horizontal_side, BorderSymbol::SideRegular),
+                    );
                 }
             }
         }
         <span class="comment">// render crossings
         </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.vertical.iter().copied() {
-            <span class="kw">if </span>x &gt; <span class="number">0 </span>&amp;&amp; x &lt; area.width.saturating_sub(<span class="number">2</span>) {
-                <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
-                    <span class="kw">if </span>y &gt; <span class="number">0 </span>&amp;&amp; y &lt; area.height.saturating_sub(<span class="number">2</span>) {
-                        <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
-                            cell.set_style(Style::new().red());
-                            cell.set_symbol(<span class="self">self</span>.horizontal_set.symbol(
-                                <span class="self">self</span>.horizontal_side,
-                                BorderSymbol::SideCrossed(
-                                    <span class="self">self</span>.vertical_side,
-                                    <span class="self">self</span>.vertical_set.border_type(),
-                                    <span class="self">self</span>.vertical_side,
-                                    <span class="self">self</span>.vertical_set.border_type(),
-                                ),
-                            ));
-                        }
-                    }
+            <span class="kw">if </span>x == <span class="number">0 </span>|| x &gt;= area.width.saturating_sub(<span class="number">2</span>) {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.horizontal.iter().copied() {
+                <span class="kw">if </span>y == <span class="number">0 </span>|| y &gt;= area.height.saturating_sub(<span class="number">2</span>) {
+                    <span class="kw">continue</span>;
+                }
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(cell) = buf.cell_mut(Position::new(area.x + x, area.y + y)) {
+                    cell.set_style(Style::new().red());
+                    cell.set_symbol(<span class="self">self</span>.horizontal_set.symbol(
+                        <span class="self">self</span>.horizontal_side,
+                        BorderSymbol::SideCrossed(
+                            <span class="self">self</span>.vertical_side,
+                            <span class="self">self</span>.vertical_set.border_type(),
+                            <span class="self">self</span>.vertical_side,
+                            <span class="self">self</span>.vertical_set.border_type(),
+                        ),
+                    ));
                 }
             }
         }
     }
+}
+
+<span class="doccomment">/// Create a grid from the gaps left by the given areas.
+</span><span class="kw">fn </span>create_grid(areas: <span class="kw-2">&amp;</span>[Rect]) -&gt; BlockGrid {
+    <span class="kw">let </span><span class="kw-2">mut </span>grid = BlockGrid::new();
+
+    <span class="kw">let </span><span class="kw-2">mut </span>y_coord = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>x_coord = Vec::new();
+
+    <span class="kw">for </span>area <span class="kw">in </span>areas {
+        y_coord.push(area.top());
+        y_coord.push(area.bottom().saturating_sub(<span class="number">1</span>));
+        x_coord.push(area.left());
+        x_coord.push(area.right().saturating_sub(<span class="number">1</span>));
+    }
+
+    y_coord.sort();
+    y_coord.dedup();
+    x_coord.sort();
+    x_coord.dedup();
+
+    <span class="kw">let </span><span class="kw-2">mut </span>idx = <span class="number">1</span>;
+    <span class="kw">let </span>min_y = y_coord.get(<span class="number">0</span>).copied().unwrap_or_default();
+    <span class="kw">loop </span>{
+        <span class="kw">if </span>idx + <span class="number">1 </span>&gt;= y_coord.len() {
+            <span class="kw">break</span>;
+        }
+
+        <span class="comment">// detect gaps
+        // only jumps from odd to even indexes mark area boundaries
+        </span><span class="kw">if </span>idx % <span class="number">2 </span>== <span class="number">1 </span>&amp;&amp; y_coord[idx] + <span class="number">2 </span>== y_coord[idx + <span class="number">1</span>] {
+            grid = grid.horizontal(y_coord[idx] + <span class="number">1 </span>- min_y);
+        }
+
+        idx += <span class="number">1</span>;
+    }
+
+    <span class="kw">let </span><span class="kw-2">mut </span>idx = <span class="number">1</span>;
+    <span class="kw">let </span>min_x = x_coord.get(<span class="number">0</span>).copied().unwrap_or_default();
+    <span class="kw">loop </span>{
+        <span class="kw">if </span>idx + <span class="number">1 </span>&gt;= x_coord.len() {
+            <span class="kw">break</span>;
+        }
+
+        <span class="comment">// detect gaps
+        // only jumps from odd to even indexes mark area boundaries
+        </span><span class="kw">if </span>idx % <span class="number">2 </span>== <span class="number">1 </span>&amp;&amp; x_coord[idx] + <span class="number">2 </span>== x_coord[idx + <span class="number">1</span>] {
+            grid = grid.vertical(x_coord[idx] + <span class="number">1 </span>- min_x);
+        }
+
+        idx += <span class="number">1</span>;
+    }
+
+    grid
 }
 </code></pre></div></section></main></body></html>

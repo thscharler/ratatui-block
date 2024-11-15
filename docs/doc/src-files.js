@@ -1,3 +1,3 @@
-var srcIndex = new Map(JSON.parse('[["ratatui_block",["",[],["block_border.rs","block_connect.rs","block_grid.rs","border_symbols.rs","lib.rs"]]],["ratatui_block",["",[],["block_border.rs","block_connect.rs","border_symbols.rs","lib.rs"]]],["ratatui_block",["",[],["block_border.rs","border_symbols.rs","lib.rs"]]],["ratatui_block",["",[],["border_symbols.rs","block_border","lib.rs"]]]]'));
+var srcIndex = new Map(JSON.parse('[["ratatui_block",["",[],["block_border.rs","block_connect.rs","block_grid.rs","border_symbols.rs","lib.rs"]]]]'));
 createSrcSidebar();
-//{"start":36,"fragment_lengths":[109,94,75,76]}
+//{"start":36,"fragment_lengths":[109]}

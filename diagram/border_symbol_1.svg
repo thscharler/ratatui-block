@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1920"
-   height="1080"
+   width="508mm"
+   height="285.75mm"
    viewBox="0 0 1920 1080"
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="illustration.svg"
-   inkscape:export-filename="illustration.png"
+   sodipodi:docname="border_symbol_1.svg"
+   inkscape:export-filename="border_symbol_1.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,18 +27,126 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.515625"
-     inkscape:cx="863.0303"
-     inkscape:cy="753.45455"
+     inkscape:zoom="0.2578125"
+     inkscape:cx="754.42424"
+     inkscape:cy="471.27273"
      inkscape:window-width="1366"
      inkscape:window-height="697"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g134"
-     inkscape:export-bgcolor="#ffffffff" />
+     inkscape:current-layer="layer1"
+     inkscape:export-bgcolor="#dadadaff"
+     showguides="true">
+    <sodipodi:guide
+       position="96,1008.6894"
+       orientation="-1,0"
+       id="guide1"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="0,984"
+       orientation="0,1"
+       id="guide2"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="0,96"
+       orientation="0,1"
+       id="guide3"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="1824,1080"
+       orientation="-1,0"
+       id="guide21"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
   <defs
      id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker24"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path24" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path23" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Dot"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         sodipodi:nodetypes="sssss"
+         id="path4" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Dot"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Dot"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         sodipodi:nodetypes="sssss"
+         id="path3" />
+    </marker>
     <linearGradient
        id="linearGradient7"
        inkscape:collect="always">
@@ -60,367 +168,271 @@
        x2="733.73279"
        y2="808.28784"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.82410534,0,0,0.82410534,340.39858,173.1694)" />
+       gradientTransform="matrix(0.82410534,0,0,0.82410534,338.01553,276.49152)" />
+    <marker
+       style="overflow:visible"
+       id="Dot-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Dot"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         sodipodi:nodetypes="sssss"
+         id="path3-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker24-9"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path24-8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-1"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path23-2" />
+    </marker>
   </defs>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <path
+       style="fill:#636363;fill-opacity:1;stroke:#acacac;stroke-width:2.70709;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Dot)"
+       d="M 696.95147,575.17639 122.97988,386.17968"
+       id="path41" />
+    <path
+       style="fill:#636363;fill-opacity:1;stroke:#acacac;stroke-width:2.04085;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Dot-5)"
+       d="M 1225.5505,577.35042 1521.1342,368.76629"
+       id="path41-6" />
     <g
-       id="g134"
-       transform="translate(-76.257766,-28.930808)">
-      <rect
-         style="fill:url(#linearGradient8);fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         id="rect6"
-         width="478.05087"
-         height="340.17334"
-         x="723.5174"
-         y="499.78101" />
-      <path
-         style="fill:#636363;fill-opacity:1;stroke:#acacac;stroke-width:1.98816;stroke-opacity:1"
-         d="M 1023.5446,497.73878 1581.2627,283.0718"
-         id="path17" />
-      <text
-         xml:space="preserve"
-         style="font-weight:bold;font-size:29.365px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono, Bold';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.44709;stroke-opacity:1"
-         x="865.11853"
-         y="624.5484"
-         id="text6"><tspan
-           sodipodi:role="line"
-           id="tspan6"
-           x="865.11853"
-           y="624.5484"
-           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';stroke-width:2.44709">BlockBorder</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="909.33856"
-         y="479.43842"
-         id="text9"><tspan
-           sodipodi:role="line"
-           id="tspan9"
-           x="909.33856"
-           y="479.43842"
-           style="stroke-width:1.64821">Side::Top</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="891.24115"
-         y="879.50934"
-         id="text11"><tspan
-           sodipodi:role="line"
-           id="tspan11"
-           x="891.24115"
-           y="879.50934"
-           style="stroke-width:1.64821">Side::Bottom</tspan></text>
-      <path
-         style="fill:#636363;fill-opacity:1;stroke:#acacac;stroke-width:1.20673;stroke-opacity:1"
-         d="M 722.0147,497.87762 508.28148,291.51779"
-         id="path41" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="-729.10443"
-         y="703.1994"
-         id="text12"
-         transform="rotate(-90)"><tspan
-           sodipodi:role="line"
-           id="tspan12"
-           x="-729.10443"
-           y="703.1994"
-           style="stroke-width:1.64821">Side::Left</tspan></text>
+       id="g14">
       <g
-         id="g7"
-         transform="matrix(-0.89922905,0,0,0.89922905,1661.0627,142.19163)">
+         id="g12"
+         transform="translate(0,-9.317828)">
         <path
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1"
-           d="m 1056,395.63636 h 120.2424 l -0.9697,0.9697"
-           id="path6" />
+           style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="M 143.72474,166.25543 H 119.87606 V 141.99555"
+           id="path53" />
         <path
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1"
-           d="m 1044.2626,379.72731 v -120.2424 l 0.9697,0.9697"
-           id="path7" />
-      </g>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="600.33167"
-         y="522.38391"
-         id="text13"><tspan
-           sodipodi:role="line"
-           id="tspan13"
-           x="600.33167"
-           y="522.38391"
-           style="stroke-width:1.64821">prolonged</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="-444.92535"
-         y="743.95813"
-         id="text14"
-         transform="rotate(-90)"><tspan
-           sodipodi:role="line"
-           id="tspan14"
-           x="-444.92535"
-           y="743.95813"
-           style="stroke-width:1.64821">angled</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="604.69739"
-         y="-1229.3093"
-         id="text10"
-         transform="rotate(90)"><tspan
-           sodipodi:role="line"
-           id="tspan10"
-           x="604.69739"
-           y="-1229.3093"
-           style="stroke-width:1.64821">Side::Right</tspan></text>
-      <g
-         id="g15"
-         transform="matrix(0.89922905,0,0,0.89922905,263.70337,142.19163)">
-        <path
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1"
-           d="m 1056,395.63636 h 120.2424 l -0.9697,0.9697"
-           id="path14" />
-        <path
-           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1"
-           d="m 1044.2626,379.72731 v -120.2424 l 0.9697,0.9697"
-           id="path15" />
-      </g>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="-444.92535"
-         y="1188.1047"
-         id="text16"
-         transform="rotate(-90)"><tspan
-           sodipodi:role="line"
-           id="tspan16"
-           x="-444.92535"
-           y="1188.1047"
-           style="stroke-width:1.64821">angled</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
-         x="1216.2601"
-         y="522.38391"
-         id="text17"><tspan
-           sodipodi:role="line"
-           id="tspan17"
-           x="1216.2601"
-           y="522.38391"
-           style="stroke-width:1.64821">prolonged</tspan></text>
-      <g
-         id="g104"
-         transform="translate(0,-45.398729)">
-        <g
-           id="g87"
-           transform="translate(-13.506474,-37.629125)">
-          <path
-             style="fill:none;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="m 194.71195,450.81214 h 23.84868 v -24.25988"
-             id="path86" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 242.40281,450.81214 H 218.55413 V 426.55226"
-             id="path53" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="m 242.42424,450.81798 h -23.84869 v 24.25988"
-             id="path55" />
-        </g>
-        <g
-           id="g100"
-           transform="translate(0,-47.515152)">
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="232.79655"
-             y="455.46179"
-             id="text73"><tspan
-               sodipodi:role="line"
-               id="tspan73"
-               x="232.79655"
-               y="455.46179">StartCornerAngled(</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="290.97839"
-             y="478.73447"
-             id="text74"><tspan
-               sodipodi:role="line"
-               id="tspan74"
-               x="290.97839"
-               y="478.73447">SIDE, BORDER</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="233.28139"
-             y="499.58304"
-             id="text75"><tspan
-               sodipodi:role="line"
-               id="tspan75"
-               x="233.28139"
-               y="499.58304">)</tspan></text>
-        </g>
+           style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="m 143.74617,166.26127 h -23.84869 v 24.25988"
+           id="path55" />
       </g>
       <g
-         id="g105"
-         transform="translate(0,-124.12349)">
-        <g
-           id="g68"
-           transform="translate(119.27273,-151.61222)">
-          <path
-             style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 109.57575,746.06693 H 85.727064 v -24.25988"
-             id="path67" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="m 61.932746,746.0907 h 23.848686 v 24.25988"
-             id="path51" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 109.57575,746.0907 H 85.727064 v 24.25988"
-             id="path50" />
-        </g>
-        <g
-           id="g101"
-           transform="translate(0,-19.878789)">
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="236.0164"
-             y="635.64392"
-             id="text76"><tspan
-               sodipodi:role="line"
-               id="tspan76"
-               x="236.0164"
-               y="635.64392">StartCornerProlonged(</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="291.95261"
-             y="660.2594"
-             id="text78"><tspan
-               sodipodi:role="line"
-               id="tspan78"
-               x="291.95261"
-               y="660.2594">SIDE, BORDER</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="237.60716"
-             y="688.48993"
-             id="text79"><tspan
-               sodipodi:role="line"
-               id="tspan79"
-               x="237.60716"
-               y="688.48993">)</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="291.95261"
-             y="660.2594"
-             id="text97"><tspan
-               sodipodi:role="line"
-               id="tspan97"
-               x="291.95261"
-               y="660.2594">SIDE, BORDER</tspan></text>
-        </g>
-      </g>
-      <g
-         id="g106"
-         transform="translate(0,-174.65964)">
-        <g
-           id="g69"
-           transform="translate(119.27273,372.36363)">
-          <path
-             style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 61.932746,410.998 H 85.781432 V 386.73812"
-             id="path59" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="m 61.932746,410.87528 h 23.848686 v 24.25988"
-             id="path60" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 109.57575,410.87528 H 85.727064 v 24.25988"
-             id="path61" />
-        </g>
-        <g
-           id="g102"
-           transform="translate(0,-44.121212)">
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="235.95932"
-             y="822.83069"
-             id="text77"><tspan
-               sodipodi:role="line"
-               id="tspan77"
-               x="235.95932"
-               y="822.83069">StartCornerCrossed(</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="290.56451"
-             y="848.88647"
-             id="text80"><tspan
-               sodipodi:role="line"
-               id="tspan80"
-               x="290.56451"
-               y="848.88647">SIDE, BORDER</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="291.21124"
-             y="872.19958"
-             id="text81"><tspan
-               sodipodi:role="line"
-               id="tspan81"
-               x="291.21124"
-               y="872.19958">SIDE, BORDER</tspan></text>
-          <text
-             xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             x="236.00539"
-             y="897.28583"
-             id="text82"><tspan
-               sodipodi:role="line"
-               id="tspan82"
-               x="236.00539"
-               y="897.28583">)</tspan></text>
-        </g>
-      </g>
-      <g
-         id="g103">
-        <g
-           id="g64"
-           transform="translate(119.27273,32.969697)">
-          <path
-             style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 61.932746,248.62057 H 85.781432 V 224.36069"
-             id="path64" />
-          <path
-             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-             d="M 109.57575,248.63615 H 85.727064 v 24.25988"
-             id="path45" />
-        </g>
+         id="g100"
+         transform="translate(-80.873073,-302.62407)">
         <text
            xml:space="preserve"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
-           x="232.2466"
-           y="301.35617"
-           id="text83"><tspan
+           x="232.79655"
+           y="455.46179"
+           id="text73"><tspan
              sodipodi:role="line"
-             id="tspan83"
-             x="232.2466"
-             y="301.35617">StartCornerRegular</tspan></text>
+             id="tspan73"
+             x="232.79655"
+             y="455.46179">StartCornerAngled(</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="290.97839"
+           y="478.73447"
+           id="text74"><tspan
+             sodipodi:role="line"
+             id="tspan74"
+             x="290.97839"
+             y="478.73447">SIDE, BORDER</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="233.28139"
+           y="499.58304"
+           id="text75"><tspan
+             sodipodi:role="line"
+             id="tspan75"
+             x="233.28139"
+             y="499.58304">)</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g16">
+      <g
+         id="g11"
+         transform="translate(0,-35.930889)">
+        <path
+           style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="m 96.03388,247.31838 h 23.84869 v 24.25988"
+           id="path51" />
+        <path
+           style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="M 143.67688,247.31838 H 119.8282 v 24.25988"
+           id="path50" />
       </g>
       <g
+         id="g101"
+         transform="translate(-84.092921,-406.12043)">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="236.0164"
+           y="635.64392"
+           id="text76"><tspan
+             sodipodi:role="line"
+             id="tspan76"
+             x="236.0164"
+             y="635.64392">StartCornerProlonged(</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="291.95261"
+           y="660.2594"
+           id="text78"><tspan
+             sodipodi:role="line"
+             id="tspan78"
+             x="291.95261"
+             y="660.2594">SIDE, BORDER</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="237.60716"
+           y="688.48993"
+           id="text79"><tspan
+             sodipodi:role="line"
+             id="tspan79"
+             x="237.60716"
+             y="688.48993">)</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="291.95261"
+           y="660.2594"
+           id="text97"><tspan
+             sodipodi:role="line"
+             id="tspan97"
+             x="291.95261"
+             y="660.2594">SIDE, BORDER</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g17">
+      <g
+         id="g69"
+         transform="translate(34.101134,-91.964102)">
+        <path
+           style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="M 61.932746,410.998 H 85.781432 V 386.73812"
+           id="path59" />
+        <path
+           style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="m 61.932746,410.87528 h 23.848686 v 24.25988"
+           id="path60" />
+        <path
+           style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="M 109.57575,410.87528 H 85.727064 v 24.25988"
+           id="path61" />
+      </g>
+      <g
+         id="g102"
+         transform="translate(-84.035838,-507.89667)">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="235.95932"
+           y="822.83069"
+           id="text77"><tspan
+             sodipodi:role="line"
+             id="tspan77"
+             x="235.95932"
+             y="822.83069">StartCornerCrossed(</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="290.56451"
+           y="848.88647"
+           id="text80"><tspan
+             sodipodi:role="line"
+             id="tspan80"
+             x="290.56451"
+             y="848.88647">SIDE, BORDER</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="291.21124"
+           y="872.19958"
+           id="text81"><tspan
+             sodipodi:role="line"
+             id="tspan81"
+             x="291.21124"
+             y="872.19958">SIDE, BORDER</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="236.00539"
+           y="897.28583"
+           id="text82"><tspan
+             sodipodi:role="line"
+             id="tspan82"
+             x="236.00539"
+             y="897.28583">)</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g13">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+         d="M 143.67688,103.0972 H 119.8282 v 24.25988"
+         id="path45" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+         x="151.92348"
+         y="118.8332"
+         id="text83"><tspan
+           sodipodi:role="line"
+           id="tspan83"
+           x="151.92348"
+           y="118.8332">StartCornerRegular</tspan></text>
+    </g>
+    <g
+       id="g23">
+      <g
          id="g129"
-         transform="translate(0,13.575762)">
+         transform="translate(-785.45263,-162.7761)">
         <text
            xml:space="preserve"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Bold';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
@@ -448,7 +460,7 @@
       </g>
       <g
          id="g130"
-         transform="translate(0,7.3098923)">
+         transform="translate(-785.45263,-196.46914)">
         <g
            id="g125">
           <text
@@ -518,7 +530,7 @@
       </g>
       <g
          id="g131"
-         transform="translate(0,23.790942)">
+         transform="translate(-784.48293,-207.41526)">
         <g
            id="g126">
           <text
@@ -577,7 +589,7 @@
       </g>
       <g
          id="g132"
-         transform="translate(0,28.359632)">
+         transform="translate(-788.36172,-230.27375)">
         <g
            id="g127">
           <text
@@ -636,7 +648,7 @@
       </g>
       <g
          id="g133"
-         transform="translate(0,13.575762)">
+         transform="translate(-784.48293,-272.48479)">
         <g
            id="g128">
           <text
@@ -706,6 +718,341 @@
                sodipodi:nodetypes="cc" />
           </g>
         </g>
+      </g>
+    </g>
+    <g
+       id="g31"
+       transform="translate(28.121212)">
+      <g
+         id="g28">
+        <g
+           id="g12-3"
+           transform="matrix(-1,0,0,1,1634.3021,-14.138643)">
+          <path
+             style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="M 143.72474,166.25543 H 119.87606 V 141.99555"
+             id="path53-6" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="m 143.74617,166.26127 h -23.84869 v 24.25988"
+             id="path55-0" />
+        </g>
+        <g
+           id="g100-6"
+           transform="translate(1291.8308,-307.44488)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="232.79655"
+             y="455.46179"
+             id="text73-2"><tspan
+               sodipodi:role="line"
+               id="tspan73-3"
+               x="232.79655"
+               y="455.46179">EndCornerAngled(</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="290.97839"
+             y="478.73447"
+             id="text74-1"><tspan
+               sodipodi:role="line"
+               id="tspan74-9"
+               x="290.97839"
+               y="478.73447">SIDE, BORDER</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="233.28139"
+             y="499.58304"
+             id="text75-0"><tspan
+               sodipodi:role="line"
+               id="tspan75-2"
+               x="233.28139"
+               y="499.58304">)</tspan></text>
+        </g>
+      </g>
+      <g
+         id="g29">
+        <g
+           id="g11-0"
+           transform="matrix(-1,0,0,1,1612.4147,-40.751703)">
+          <path
+             style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="m 96.03388,247.31838 h 23.84869 v 24.25988"
+             id="path51-5" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="M 143.67688,247.31838 H 119.8282 v 24.25988"
+             id="path50-0" />
+        </g>
+        <g
+           id="g101-2"
+           transform="translate(1288.611,-410.94124)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="236.0164"
+             y="635.64392"
+             id="text76-8"><tspan
+               sodipodi:role="line"
+               id="tspan76-1"
+               x="236.0164"
+               y="635.64392">EndCornerProlonged(</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="291.95261"
+             y="660.2594"
+             id="text78-7"><tspan
+               sodipodi:role="line"
+               id="tspan78-0"
+               x="291.95261"
+               y="660.2594">SIDE, BORDER</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="237.60716"
+             y="688.48993"
+             id="text79-1"><tspan
+               sodipodi:role="line"
+               id="tspan79-2"
+               x="237.60716"
+               y="688.48993">)</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="291.95261"
+             y="660.2594"
+             id="text97-4"><tspan
+               sodipodi:role="line"
+               id="tspan97-4"
+               x="291.95261"
+               y="660.2594">SIDE, BORDER</tspan></text>
+        </g>
+      </g>
+      <g
+         id="g30">
+        <g
+           id="g69-3"
+           transform="matrix(-1,0,0,1,1578.3135,-96.784916)">
+          <path
+             style="fill:none;fill-opacity:1;stroke:#21a300;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="M 61.932746,410.998 H 85.781432 V 386.73812"
+             id="path59-6" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#0647ff;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="m 61.932746,410.87528 h 23.848686 v 24.25988"
+             id="path60-8" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             d="M 109.57575,410.87528 H 85.727064 v 24.25988"
+             id="path61-7" />
+        </g>
+        <g
+           id="g102-4"
+           transform="translate(1288.6681,-512.71748)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="235.95932"
+             y="822.83069"
+             id="text77-4"><tspan
+               sodipodi:role="line"
+               id="tspan77-2"
+               x="235.95932"
+               y="822.83069">EndCornerCrossed(</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#22a300;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="290.56451"
+             y="848.88647"
+             id="text80-2"><tspan
+               sodipodi:role="line"
+               id="tspan80-4"
+               x="290.56451"
+               y="848.88647">SIDE, BORDER</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#0547ff;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="291.21124"
+             y="872.19958"
+             id="text81-7"><tspan
+               sodipodi:role="line"
+               id="tspan81-6"
+               x="291.21124"
+               y="872.19958">SIDE, BORDER</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+             x="236.00539"
+             y="897.28583"
+             id="text82-2"><tspan
+               sodipodi:role="line"
+               id="tspan82-0"
+               x="236.00539"
+               y="897.28583">)</tspan></text>
+        </g>
+      </g>
+      <g
+         id="g27">
+        <path
+           style="fill:none;fill-opacity:1;stroke:#580000;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           d="m 1490.5081,98.27639 h 23.8487 v 24.25988"
+           id="path45-10" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.048;stroke-dasharray:none;stroke-opacity:1"
+           x="1524.6274"
+           y="114.01238"
+           id="text83-7"><tspan
+             sodipodi:role="line"
+             id="tspan83-8"
+             x="1524.6274"
+             y="114.01238">EndCornerRegular</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g26">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#acacac;stroke-width:2.52411;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker4)"
+         d="M 855.91809,582.50992 840.00102,441.25648"
+         id="path17" />
+      <rect
+         style="fill:url(#linearGradient8);fill-opacity:1;stroke:#000000;stroke-width:2.66666667;stroke-opacity:1;stroke-dasharray:none"
+         id="rect6"
+         width="478.05087"
+         height="340.17334"
+         x="721.13434"
+         y="603.10315" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:29.365px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono, Bold';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.44709;stroke-opacity:1"
+         x="862.73547"
+         y="727.87048"
+         id="text6"><tspan
+           sodipodi:role="line"
+           id="tspan6"
+           x="862.73547"
+           y="727.87048"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';stroke-width:2.44709">BlockBorder</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
+         x="906.95551"
+         y="582.76056"
+         id="text9"><tspan
+           sodipodi:role="line"
+           id="tspan9"
+           x="906.95551"
+           y="582.76056"
+           style="stroke-width:1.64821">Side::Top</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
+         x="888.85809"
+         y="982.83142"
+         id="text11"><tspan
+           sodipodi:role="line"
+           id="tspan11"
+           x="888.85809"
+           y="982.83142"
+           style="stroke-width:1.64821">Side::Bottom</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
+         x="-832.42651"
+         y="700.81635"
+         id="text12"
+         transform="rotate(-90)"><tspan
+           sodipodi:role="line"
+           id="tspan12"
+           x="-832.42651"
+           y="700.81635"
+           style="stroke-width:1.64821">Side::Left</tspan></text>
+      <g
+         id="g24">
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#1454ff;stroke-width:2.66667;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker24)"
+           d="m 719.8055,603.09244 -120.00425,0"
+           id="path6"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-width:2.66667;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle)"
+           d="M 721.13226,601.77878 V 475.75238"
+           id="path7"
+           sodipodi:nodetypes="cc" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#1454ff;stroke-width:1.64821;stroke-opacity:1"
+           x="607.64557"
+           y="623.76666"
+           id="text13"><tspan
+             sodipodi:role="line"
+             id="tspan13"
+             x="607.64557"
+             y="623.76666"
+             style="stroke-width:1.64821;stroke:#1454ff;stroke-opacity:1">prolonged</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-width:1.64821;stroke-opacity:1"
+           x="-558.91418"
+           y="742.5448"
+           id="text14"
+           transform="rotate(-90)"><tspan
+             sodipodi:role="line"
+             id="tspan14"
+             x="-558.91418"
+             y="742.5448"
+             style="stroke-width:1.64821;fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-opacity:1">angled</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.64821;stroke-opacity:1"
+         x="708.01947"
+         y="-1226.9263"
+         id="text10"
+         transform="rotate(90)"><tspan
+           sodipodi:role="line"
+           id="tspan10"
+           x="708.01947"
+           y="-1226.9263"
+           style="stroke-width:1.64821">Side::Right</tspan></text>
+      <g
+         id="g25">
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#1454ff;stroke-width:2.66667;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker24-9)"
+           d="m 1200.5063,603.10554 h 120.0043"
+           id="path6-0"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-width:2.66667;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-1)"
+           d="M 1199.1765,601.77045 V 475.74405"
+           id="path7-5"
+           sodipodi:nodetypes="cc" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#000000;fill-opacity:1;stroke:#1454ff;stroke-width:1.64821;stroke-opacity:1"
+           x="1225.1506"
+           y="623.77979"
+           id="text13-8"><tspan
+             sodipodi:role="line"
+             id="tspan13-1"
+             x="1225.1506"
+             y="623.77979"
+             style="stroke:#1454ff;stroke-width:1.64821;stroke-opacity:1">prolonged</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-size:19.7785px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Thin';fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-width:1.64821;stroke-opacity:1"
+           x="-558.90588"
+           y="1220.5891"
+           id="text14-4"
+           transform="rotate(-90)"><tspan
+             sodipodi:role="line"
+             id="tspan14-6"
+             x="-558.90588"
+             y="1220.5891"
+             style="fill:#23a300;fill-opacity:1;stroke:#23a300;stroke-width:1.64821;stroke-opacity:1">angled</tspan></text>
       </g>
     </g>
   </g>

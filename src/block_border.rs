@@ -10,15 +10,26 @@ use std::fmt::{Debug, Formatter};
 ///
 /// Border for a Block.
 ///
-/// ![symbol organization](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
+/// Borders are rendered as four lines along the sides.
+///
+/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
+///
+/// The BorderSymbolSet maps geometrical positions along
+/// the lines to the actual glyphs used.
+///
+/// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/border_symbol_1.png)
+///
 ///
 pub struct BlockBorder {
     border_style: Style,
     symbol_set: Box<dyn BorderSymbolSet>,
-    // prepared border.
+
+    // prebuilt border.
     pub(crate) prefab: Option<PrefabBorder>,
 }
 
+/// Contains the data for a prefabricated block for some specific
+/// dimensions.
 #[derive(Debug, Clone)]
 pub(crate) struct PrefabBorder {
     width: u16,
@@ -104,6 +115,66 @@ impl BlockBorder {
     pub fn border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.symbol_set = border_set;
         self
+    }
+
+    ///
+    /// Return the symbol at the given position along the border.
+    ///
+    /// When using the returned BorderSymbol you must be aware,
+    /// that the corners are rendered with the top and bottom lines.
+    ///
+    /// x
+    ///
+    /// __Panic__
+    ///
+    /// Panics if the dimensions of the area don't match a prefabricated border.
+    /// Panics if the given position doesn't lie on the border.
+    ///
+    pub fn get_symbol(&self, area: Rect, position: Position) -> BorderSymbol {
+        if let Some(border) = self.prefab.as_ref() {
+            assert!(area.width == border.width && area.height == border.height);
+            assert!(area.left() == position.x || area.right().saturating_sub(1) == position.x);
+            assert!(area.top() == position.y || area.bottom().saturating_sub(1) == position.y);
+
+            if area.top() == position.y {
+                border.symbols[position.x as usize]
+            } else if area.bottom().saturating_sub(1) == position.y {
+                border.symbols
+                    [(border.width + border.height.saturating_sub(2) + position.x) as usize]
+            } else if area.right().saturating_sub(1) == position.x {
+                border.symbols[(border.width + position.y.saturating_sub(1)) as usize]
+            } else if area.left() == position.x {
+                border.symbols[(border.width * 2
+                    + border.height.saturating_sub(2)
+                    + position.y.saturating_sub(1)) as usize]
+            } else {
+                panic!("position not on the border");
+            }
+        } else {
+            if area.top() == position.y {
+                if area.left() == position.x {
+                    BorderSymbol::StartCornerRegular
+                } else if area.right().saturating_sub(1) == position.x {
+                    BorderSymbol::SideRegular
+                } else {
+                    BorderSymbol::EndCornerRegular
+                }
+            } else if area.bottom().saturating_sub(1) == position.y {
+                if area.left() == position.x {
+                    BorderSymbol::StartCornerRegular
+                } else if area.right().saturating_sub(1) == position.x {
+                    BorderSymbol::SideRegular
+                } else {
+                    BorderSymbol::EndCornerRegular
+                }
+            } else if area.right().saturating_sub(1) == position.x {
+                BorderSymbol::SideRegular
+            } else if area.left() == position.x {
+                BorderSymbol::SideRegular
+            } else {
+                panic!("position not on the border");
+            }
+        }
     }
 }
 
@@ -296,16 +367,6 @@ impl PrefabBorder {
             height: area.height,
             symbols,
         }
-    }
-
-    /// Area for the border.
-    pub(crate) fn width(&self) -> u16 {
-        self.width
-    }
-
-    /// Height of the border.
-    pub(crate) fn height(&self) -> u16 {
-        self.height
     }
 
     ///

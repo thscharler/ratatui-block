@@ -123,14 +123,6 @@ pub enum BorderSymbol {
     /// The first value is the border perpendicular to the line,
     /// the second goes in the direction of the line.
     EndCornerCrossed(Side, BorderType, Side, BorderType),
-    //
-    // /// 4-way crossing of up to 4 different border types
-    // /// along the side.
-    // ///
-    // /// This is only defined for Side::Cross
-    // ///
-    // /// Borders are (angled_outward, forward, angled_inward, backward).
-    // Cross(BorderType, BorderType, BorderType, BorderType),
 }
 
 impl Side {

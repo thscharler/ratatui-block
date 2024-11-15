@@ -256,14 +256,6 @@
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Block borders.
 
 </span><span class="kw">pub mod </span>block_border;
@@ -389,15 +381,7 @@
     /// The first value is the border perpendicular to the line,
     /// the second goes in the direction of the line.
     </span>EndCornerCrossed(Side, BorderType, Side, BorderType),
-    <span class="comment">//
-    // /// 4-way crossing of up to 4 different border types
-    // /// along the side.
-    // ///
-    // /// This is only defined for Side::Cross
-    // ///
-    // /// Borders are (angled_outward, forward, angled_inward, backward).
-    // Cross(BorderType, BorderType, BorderType, BorderType),
-</span>}
+}
 
 <span class="kw">impl </span>Side {
     <span class="doccomment">/// Give the opposite side.

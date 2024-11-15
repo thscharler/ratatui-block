@@ -23,6 +23,10 @@ pub fn symbol_set(border: BorderType) -> Box<dyn BorderSymbolSet> {
 /// on the other border.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct StaticSymbolSet {
+    /// When connecting to other borders, how does this one behave
+    /// like?
+    pub similar_to: BorderType,
+
     pub top_left_regular: &'static str,
     pub top_left_angled: &'static str,
     pub top_left_prolonged: &'static str,
@@ -72,7 +76,7 @@ pub struct StaticSymbolSet {
 
 impl BorderSymbolSet for StaticSymbolSet {
     fn border_type(&self) -> BorderType {
-        BorderType::Plain
+        self.similar_to
     }
 
     #[inline(always)]
@@ -160,12 +164,15 @@ impl BorderSymbolSet for StaticSymbolSet {
 /// Acts just like an old-style border would.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct OldSymbolSet {
+    /// BorderType
+    pub border_type: BorderType,
+    /// Symbol set
     pub symbol_set: border::Set,
 }
 
 impl BorderSymbolSet for OldSymbolSet {
     fn border_type(&self) -> BorderType {
-        BorderType::Plain
+        self.border_type
     }
 
     #[inline(always)]
