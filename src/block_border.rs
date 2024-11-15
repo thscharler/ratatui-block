@@ -144,8 +144,6 @@ impl BlockBorder {
     pub fn get_symbol(&self, area: Rect, position: Position) -> BorderSymbol {
         if let Some(border) = self.prefab.as_ref() {
             assert!(area.width == border.width && area.height == border.height);
-            assert!(area.left() == position.x || area.right().saturating_sub(1) == position.x);
-            assert!(area.top() == position.y || area.bottom().saturating_sub(1) == position.y);
 
             if area.top() == position.y {
                 border.symbols[position.x as usize]
@@ -210,8 +208,6 @@ impl BlockBorder {
         let border = self.prefab.as_mut().expect("border");
 
         assert!(area.width == border.width && area.height == border.height);
-        assert!(area.left() == position.x || area.right().saturating_sub(1) == position.x);
-        assert!(area.top() == position.y || area.bottom().saturating_sub(1) == position.y);
 
         if area.top() == position.y {
             border.symbols[position.x as usize] = symbol;

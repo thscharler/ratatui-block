@@ -56,6 +56,7 @@ fn repaint_buttons(
         Constraint::Length(25), //
         Constraint::Fill(1),
     ])
+    .spacing(Spacing::Space(1))
     .split(area);
 
     let layout = layout_grid::<5, 5>(
@@ -209,7 +210,6 @@ fn repaint_buttons(
             all = vec![area, left, right];
             borders = vec![state.border, state.other, state.other];
         }
-
         6 => {
             // both above
             state.max_offset = layout[0][0].union(layout[4][0]).width;
@@ -249,7 +249,26 @@ fn repaint_buttons(
                 state.border,
             ];
         }
+        7 => {
+            state.max_offset = layout[0][0].union(layout[4][0]).width;
 
+            let area = layout[2][2];
+            let left = Rect::new(
+                layout[1][0].x + 4,
+                layout[1][0].y + state.offset,
+                layout[2][2].width,
+                layout[2][2].height,
+            );
+            let right = Rect::new(
+                layout[3][0].x - 4,
+                layout[3][0].y + state.offset,
+                layout[2][2].width,
+                layout[2][2].height,
+            );
+            // all areas
+            all = vec![area, left, right];
+            borders = vec![state.border, state.other, state.other];
+        }
         _ => {
             unreachable!()
         }
@@ -318,7 +337,7 @@ fn repaint_buttons(
     Ok(())
 }
 
-const VARIANT_COUNT: u8 = 7;
+const VARIANT_COUNT: u8 = 8;
 
 pub fn rect_dbg(area: Rect) -> String {
     use std::fmt::Write;

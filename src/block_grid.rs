@@ -9,8 +9,7 @@ use ratatui::widgets::{BorderType, Widget};
 use std::fmt::{Debug, Formatter};
 
 ///
-/// Renders a block border and a connected grid inside.
-///
+/// Renders a block border and a grid inside.
 ///
 pub struct BlockGrid {
     outer_style: Style,
@@ -84,21 +83,30 @@ impl Default for BlockGrid {
 }
 
 impl BlockGrid {
+    ///
+    /// Create a default grid.
+    ///
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Create a grid line for every one cell wide gap between the
-    /// given areas.
+    /// Create a grid that fills the voids between the given areas.
+    /// It only recognizes one cell wide gaps for this.
     ///
-    /// If the areas overlap, or if they have overlapping x/y-ranges
-    /// the results may not be what you expect.
+    /// Use [Layout::spacing] with a value `Spacing::Space(1)` to create
+    /// a fitting layout.
+    ///
+    /// __Remark__
+    ///
+    /// For rendering a full grid it's not necessary to give this function
+    /// all the areas of the grid, the areas for one row and one column are enough.
+    ///
     pub fn from_layout(layout: &[Rect]) -> Self {
         create_grid(layout)
     }
 
     ///
-    /// Border style for the border.
+    /// Border style for the outer border.
     ///
     pub fn border_style(mut self, style: Style) -> Self {
         self.outer_style = style;
@@ -106,7 +114,9 @@ impl BlockGrid {
     }
 
     ///
-    /// Border style for the border.
+    /// Border type for the outer border.
+    ///
+    /// This replaces any [border_set](BlockGrid::border_set) set before.
     ///
     pub fn border_type(mut self, border_type: BorderType) -> Self {
         self.outer_set = symbol_set(border_type);
@@ -114,7 +124,9 @@ impl BlockGrid {
     }
 
     ///
-    /// Border style for the border.
+    /// Border symbol set for the outer border.
+    ///
+    /// This replaces any [border_type](BlockGrid::border_type) set before.
     ///
     pub fn border_set(mut self, border_set: impl BorderSymbolSet + 'static) -> Self {
         self.outer_set = Box::new(border_set);
@@ -122,21 +134,29 @@ impl BlockGrid {
     }
 
     ///
-    /// Border style for the border.
+    /// Border style for the horizontal grid lines.
     ///
     pub fn horizontal_style(mut self, style: Style) -> Self {
         self.horizontal_style = style;
         self
     }
 
-    /// Add a horizontal side.
+    ///
+    /// Set a horizontal side.
+    ///
+    /// Borders like QuadrantInside and QuadrantOutside render the
+    /// top border different from the bottom border. With this
+    /// you can set which rendering variant to use.
+    ///
+    /// When in doubt set `Side::Top` here.
+    ///
     pub fn horizontal_side(mut self, side: Side) -> Self {
         self.horizontal_side = side;
         self
     }
 
     ///
-    /// Sets the border type used.
+    /// Sets the border type used for horizontal lines.
     ///
     pub fn horizontal_border_type(mut self, border: BorderType) -> Self {
         self.horizontal_set = symbol_set(border);
@@ -144,35 +164,46 @@ impl BlockGrid {
     }
 
     ///
-    /// Use a BorderSymbolSet.
+    /// Sets the border symbol set used for horizontal lines.
     ///
     pub fn horizontal_border_set(mut self, border_set: impl BorderSymbolSet + 'static) -> Self {
         self.horizontal_set = Box::new(border_set);
         self
     }
 
-    /// Add a horizontal divider.
+    /// Add the y-position for a horizontal grid line.
+    ///
+    /// The position given here is relative to the rendered area.
+    ///
     pub fn horizontal(mut self, pos: u16) -> Self {
         self.horizontal.push(pos);
         self
     }
 
     ///
-    /// Border style for the border.
+    /// Border style for the vertical grid lines.
     ///
     pub fn vertical_style(mut self, style: Style) -> Self {
         self.vertical_style = style;
         self
     }
 
-    /// Add a vertical side.
+    ///
+    /// Set a vertical side.
+    ///
+    /// Borders like QuadrantInside and QuadrantOutside render the
+    /// left border different from the right border. With this
+    /// you can set which rendering variant to use.
+    ///
+    /// When in doubt set `Side::Left` here.
+    ///
     pub fn vertical_side(mut self, side: Side) -> Self {
         self.vertical_side = side;
         self
     }
 
     ///
-    /// Sets the border type used.
+    /// Sets the border type used to render the vertical grid lines.
     ///
     pub fn vertical_border_type(mut self, border: BorderType) -> Self {
         self.vertical_set = symbol_set(border);
@@ -180,14 +211,17 @@ impl BlockGrid {
     }
 
     ///
-    /// Use a BorderSymbolSet.
+    /// Sets the border symbol set used to render the vertical grid lines.
     ///
     pub fn vertical_border_set(mut self, border_set: impl BorderSymbolSet + 'static) -> Self {
         self.vertical_set = Box::new(border_set);
         self
     }
 
-    /// Add a vertical divider.
+    /// Add the x-position for a vertical grid line.
+    ///
+    /// The position given here is relative to the rendered area.
+    ///
     pub fn vertical(mut self, pos: u16) -> Self {
         self.vertical.push(pos);
         self
