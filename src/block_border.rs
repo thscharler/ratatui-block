@@ -11,6 +11,7 @@ use std::fmt::{Debug, Formatter};
 /// Border for a Block.
 ///
 /// Borders are rendered as four lines along the sides.
+/// Be aware that the corners are thrown in with the top/bottom lines.
 ///
 /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
 ///
@@ -68,23 +69,11 @@ impl Default for BlockBorder {
 }
 
 impl BlockBorder {
-    /// Create a block border.
+    ///
+    /// Create a default block border.
+    ///
     pub fn new() -> Self {
         Self::default()
-    }
-
-    ///
-    /// New block border for the given area.
-    ///
-    /// The resulting border can only be rendered for an area of the
-    /// same size.
-    ///
-    pub fn from_area(area: Rect) -> Self {
-        Self {
-            border_style: Default::default(),
-            symbol_set: symbol_set(BorderType::Plain),
-            prefab: Some(PrefabBorder::new(area)),
-        }
     }
 
     ///
@@ -93,10 +82,19 @@ impl BlockBorder {
     /// Given all the areas of the layout and each border type,
     /// this creates a border that is connected at the edges.
     ///
-    /// The resulting border can only be rendered for an area of the same size.
+    /// This only connects areas which overlap at the edges. Use
+    /// [Layout::spacing] with a value `Spacing::Overlap(1)` to create the
+    /// areas for such a layout.
     ///
-    pub fn from_layout(areas: &[Rect], borders: &[BorderType], select: usize) -> Self {
-        create_connected_border(areas, borders, select)
+    /// The created border is fixed in size and will panic if you
+    /// try to render it for a different area.
+    ///
+    /// * areas - List of all involved areas.
+    /// * borders - Bordertype for each area.
+    /// * select - Create the BlockBorder for area `n`.
+    ///
+    pub fn from_layout(areas: &[Rect], borders: &[BorderType], n: usize) -> Self {
+        create_connected_border(areas, borders, n)
     }
 
     ///
@@ -108,7 +106,10 @@ impl BlockBorder {
     }
 
     ///
-    /// Sets the border type used.
+    /// Sets the border type used to render this border.
+    ///
+    /// Settings this overrides any [border_set](BlockBorder::border_set)
+    /// set before.
     ///
     pub fn border_type(mut self, border: BorderType) -> Self {
         self.symbol_set = symbol_set(border);
@@ -116,7 +117,10 @@ impl BlockBorder {
     }
 
     ///
-    /// Use a BorderSymbolSet.
+    /// Sets the symbols used to render this border.
+    ///
+    /// Setting this overrides any [border_type](BlockBorder::border_type)
+    /// set before.
     ///
     pub fn border_set(mut self, border_set: Box<dyn BorderSymbolSet>) -> Self {
         self.symbol_set = border_set;
@@ -129,13 +133,12 @@ impl BlockBorder {
     /// When using the returned BorderSymbol you must be aware,
     /// that the corners are rendered with the top and bottom lines.
     ///
-    /// x
-    ///
     /// __Panic__
     ///
     /// Panics if the dimensions of the area don't match a prefabricated border.
     /// Panics if the given position doesn't lie on the border.
     ///
+    #[inline]
     #[allow(clippy::collapsible_else_if)]
     #[allow(clippy::if_same_then_else)]
     pub fn get_symbol(&self, area: Rect, position: Position) -> BorderSymbol {
@@ -184,6 +187,47 @@ impl BlockBorder {
             }
         }
     }
+
+    ///
+    /// Set the symbol at the given position along the border.
+    ///
+    /// Setting a symbol fixates the size of the area. The border
+    /// can still be rendered at a different position, but no longer
+    /// at a different size.
+    ///
+    /// __Panic__
+    ///
+    /// Panics if the dimensions of the area don't match with a previous
+    /// set_symbol() call. .
+    /// Panics if the given position doesn't lie on the border.
+    ///
+    #[inline]
+    pub fn set_symbol(&mut self, area: Rect, position: Position, symbol: BorderSymbol) {
+        if self.prefab.is_none() {
+            self.prefab = Some(PrefabBorder::new(area));
+        }
+
+        let border = self.prefab.as_mut().expect("border");
+
+        assert!(area.width == border.width && area.height == border.height);
+        assert!(area.left() == position.x || area.right().saturating_sub(1) == position.x);
+        assert!(area.top() == position.y || area.bottom().saturating_sub(1) == position.y);
+
+        if area.top() == position.y {
+            border.symbols[position.x as usize] = symbol;
+        } else if area.bottom().saturating_sub(1) == position.y {
+            border.symbols
+                [(border.width + border.height.saturating_sub(2) + position.x) as usize] = symbol;
+        } else if area.right().saturating_sub(1) == position.x {
+            border.symbols[(border.width + position.y.saturating_sub(1)) as usize] = symbol;
+        } else if area.left() == position.x {
+            border.symbols[(border.width * 2
+                + border.height.saturating_sub(2)
+                + position.y.saturating_sub(1)) as usize] = symbol;
+        } else {
+            panic!("position not on the border");
+        }
+    }
 }
 
 impl Widget for BlockBorder {
@@ -213,6 +257,9 @@ impl Widget for &BlockBorder {
         }
     }
 }
+
+//
+// Render a prefabricated border.
 
 pub(crate) fn render_block_prefab(
     border: &PrefabBorder,
@@ -263,6 +310,9 @@ pub(crate) fn render_block_prefab(
     }
 }
 
+//
+// Render a standard border.
+//
 pub(crate) fn render_block_direct(
     style: Style,
     symbols: &dyn BorderSymbolSet,
@@ -445,6 +495,20 @@ impl PrefabBorder {
     }
 }
 
+///
+/// New block border for the given area.
+///
+/// The resulting border can only be rendered for an area of the
+/// same size.
+///
+fn create_default_border(area: Rect) -> BlockBorder {
+    BlockBorder {
+        border_style: Default::default(),
+        symbol_set: symbol_set(BorderType::Plain),
+        prefab: Some(PrefabBorder::new(area)),
+    }
+}
+
 /// Create a connected border.
 ///
 /// Given the layout and the border type for each area
@@ -460,7 +524,7 @@ fn create_connected_border(areas: &[Rect], borders: &[BorderType], n: usize) -> 
     let area_x2 = area.x + area.width.saturating_sub(1);
     let area_y2 = area.y + area.height.saturating_sub(1);
 
-    let mut block = BlockBorder::from_area(area).border_type(own_border);
+    let mut block = create_default_border(area).border_type(own_border);
 
     let (
         top_left, //

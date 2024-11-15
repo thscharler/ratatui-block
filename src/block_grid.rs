@@ -88,10 +88,10 @@ impl BlockGrid {
         Self::default()
     }
 
-    /// Create a grid line for every single cell gap between the
+    /// Create a grid line for every one cell wide gap between the
     /// given areas.
     ///
-    /// If the areas overlap, or if they have overlapping x- or y-ranges
+    /// If the areas overlap, or if they have overlapping x/y-ranges
     /// the results may not be what you expect.
     pub fn from_layout(layout: &[Rect]) -> Self {
         create_grid(layout)

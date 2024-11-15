@@ -256,6 +256,7 @@
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Block borders.
 
 </span><span class="kw">pub mod </span>block_border;
@@ -304,6 +305,7 @@
     /// __Remark__
     /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.
     ///
+    </span><span class="attr">#[allow(clippy::too_many_arguments)]
     </span><span class="kw">fn </span>crossing(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         top_side: Side,

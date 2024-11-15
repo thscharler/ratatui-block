@@ -94,6 +94,12 @@
 <a href="#94" id="94">94</a>
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::border_symbols::{symbol_set, PlainSymbolSet};
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
 <span class="kw">use </span>dyn_clone::clone_box;
@@ -127,15 +133,21 @@
     }
 }
 
-<span class="kw">impl </span>BlockConnect {
-    <span class="doccomment">///
-    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+<span class="kw">impl </span>Default <span class="kw">for </span>BlockConnect {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             border_style: Default::default(),
             symbol_set: Box::new(PlainSymbolSet),
             side: Side::Top,
             symbol: BorderSymbol::StartCornerRegular,
         }
+    }
+}
+
+<span class="kw">impl </span>BlockConnect {
+    <span class="doccomment">/// todo:
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::default()
     }
 
     <span class="doccomment">///

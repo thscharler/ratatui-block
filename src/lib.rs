@@ -41,7 +41,7 @@ pub trait BorderSymbolSet: DynClone {
     /// Get the symbol for a 4-way crossing of lines.
     ///
     /// The number of parameters comes from handling Quadrant crossings.
-    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/quadrant_inside.png)
+    /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/quadrant_inside_cross.png)
     ///
     /// __Remark__
     /// Not needed for drawing Rects or grids, but a bit of a missing link otherwise.

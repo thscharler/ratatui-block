@@ -39,22 +39,22 @@ fn test_1() {
 
 #[test]
 fn test_2() {
-    let mut buf = Buffer::empty(Rect::new(0, 0, 80, 25));
-    let buf = &mut buf;
-
-    let area = Rect::new(1, 1, 40, 20);
-
-    // eprintln!("{:?}", BlockBorder::from_area(area));
-
-    let et = SystemTime::now();
-    for _ in 0..100_000 {
-        black_box({
-            let b = BlockBorder::from_area(area);
-            buf.set_style(area, Style::new());
-            b.render(area, buf);
-        });
-    }
-    eprintln!("prefab {:?}", et.elapsed().unwrap().div_f64(100_000.));
+    // let mut buf = Buffer::empty(Rect::new(0, 0, 80, 25));
+    // let buf = &mut buf;
+    //
+    // let area = Rect::new(1, 1, 40, 20);
+    //
+    // // eprintln!("{:?}", BlockBorder::from_area(area));
+    //
+    // let et = SystemTime::now();
+    // for _ in 0..100_000 {
+    //     black_box({
+    //         let b = BlockBorder::from_area(area);
+    //         buf.set_style(area, Style::new());
+    //         b.render(area, buf);
+    //     });
+    // }
+    // eprintln!("prefab {:?}", et.elapsed().unwrap().div_f64(100_000.));
 }
 
 #[test]

@@ -717,6 +717,18 @@
 <a href="#717" id="717">717</a>
 <a href="#718" id="718">718</a>
 <a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::border_symbols::symbol_set;
 <span class="kw">use crate</span>::{BorderSymbol, BorderSymbolSet, Side};
 <span class="kw">use </span>dyn_clone::clone_box;
@@ -730,6 +742,7 @@
 /// Border for a Block.
 ///
 /// Borders are rendered as four lines along the sides.
+/// Be aware that the corners are thrown in with the top/bottom lines.
 ///
 /// ![schematics](https://raw.githubusercontent.com/thscharler/ratatui-block/refs/heads/master/diagram/blockborder.png)
 ///
@@ -776,28 +789,20 @@
     }
 }
 
-<span class="kw">impl </span>BlockBorder {
-    <span class="doccomment">/// Create a block border.
-    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+<span class="kw">impl </span>Default <span class="kw">for </span>BlockBorder {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             border_style: Default::default(),
             symbol_set: symbol_set(BorderType::Plain),
             prefab: <span class="prelude-val">None</span>,
         }
     }
+}
 
-    <span class="doccomment">///
-    /// New block border for the given area.
-    ///
-    /// The resulting border can only be rendered for an area of the
-    /// same size.
-    ///
-    </span><span class="kw">pub fn </span>from_area(area: Rect) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            border_style: Default::default(),
-            symbol_set: symbol_set(BorderType::Plain),
-            prefab: <span class="prelude-val">Some</span>(PrefabBorder::new(area)),
-        }
+<span class="kw">impl </span>BlockBorder {
+    <span class="doccomment">/// Create a block border without any restrictions.
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::default()
     }
 
     <span class="doccomment">///
@@ -849,6 +854,8 @@
     /// Panics if the dimensions of the area don't match a prefabricated border.
     /// Panics if the given position doesn't lie on the border.
     ///
+    </span><span class="attr">#[allow(clippy::collapsible_else_if)]
+    #[allow(clippy::if_same_then_else)]
     </span><span class="kw">pub fn </span>get_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>, area: Rect, position: Position) -&gt; BorderSymbol {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(border) = <span class="self">self</span>.prefab.as_ref() {
             <span class="macro">assert!</span>(area.width == border.width &amp;&amp; area.height == border.height);
@@ -1093,7 +1100,8 @@
     ///
     /// (top_left, top, top_right, right, bottom_left, bottom, bottom_right, left)
     ///
-    </span><span class="attr">#[inline(always)]
+    </span><span class="attr">#[allow(clippy::type_complexity)]
+    #[inline(always)]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>split_mut(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
     ) -&gt; (
@@ -1155,6 +1163,20 @@
     }
 }
 
+<span class="doccomment">///
+/// New block border for the given area.
+///
+/// The resulting border can only be rendered for an area of the
+/// same size.
+///
+</span><span class="kw">fn </span>create_default_border(area: Rect) -&gt; BlockBorder {
+    BlockBorder {
+        border_style: Default::default(),
+        symbol_set: symbol_set(BorderType::Plain),
+        prefab: <span class="prelude-val">Some</span>(PrefabBorder::new(area)),
+    }
+}
+
 <span class="doccomment">/// Create a connected border.
 ///
 /// Given the layout and the border type for each area
@@ -1170,7 +1192,7 @@
     <span class="kw">let </span>area_x2 = area.x + area.width.saturating_sub(<span class="number">1</span>);
     <span class="kw">let </span>area_y2 = area.y + area.height.saturating_sub(<span class="number">1</span>);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>block = BlockBorder::from_area(area).border_type(own_border);
+    <span class="kw">let </span><span class="kw-2">mut </span>block = create_default_border(area).border_type(own_border);
 
     <span class="kw">let </span>(
         top_left, <span class="comment">//
@@ -1255,7 +1277,8 @@
     block
 }
 
-<span class="attr">#[inline]
+<span class="attr">#[allow(clippy::too_many_arguments)]
+#[inline]
 </span><span class="kw">fn </span>create_horizontal_side(
     start_corner: <span class="kw-2">&amp;mut </span>BorderSymbol,
     block: <span class="kw-2">&amp;mut </span>[BorderSymbol],
@@ -1346,7 +1369,8 @@
     </span>}
 }
 
-<span class="attr">#[inline]
+<span class="attr">#[allow(clippy::too_many_arguments)]
+#[inline]
 </span><span class="kw">fn </span>create_vertical_side(
     start_corner: <span class="kw-2">&amp;mut </span>BorderSymbol,
     block: <span class="kw-2">&amp;mut </span>[BorderSymbol],
