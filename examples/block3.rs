@@ -174,8 +174,6 @@ fn repaint_buttons(
     areas.push(state.area);
     borders.push(state.border);
 
-    // debug!("******************************");
-
     for i in 0..areas.len().saturating_sub(1) {
         BlockBorder::from_layout(areas.as_slice(), borders.as_slice(), i).render(areas[i], buf);
     }
